@@ -1,8 +1,8 @@
 <h1 align="center">hyperliquid-math</h1>
 
 <p align="center">
-  确定性的、可解释的 Hyperliquid 数学库。<br>
-  精确 decimal、零网络 I/O，每个结果都带着自己的审计链。
+  基于 decimal 字符串的确定性 Hyperliquid 数学库。<br>
+  零网络 I/O；每个结果都带一条计算 trace。
 </p>
 
 <p align="center">
@@ -23,12 +23,12 @@
 
 ---
 
-## 为什么用它
+## 它做什么
 
-- **钱永远不走浮点。** 全部运算基于 40 位有效数字的 decimal；取整方向永远对用户保守。CCXT 那类档案化的浮点精度 bug 在这里结构性不可能发生。
-- **每个结果自带解释。** 每个函数返回 `{ value, trace }` —— trace 记录规范化输入、公式与来源 ID、每一次取整决策、每一条假设。任何一个数都能审计回它出自的官方文档。
-- **难算的数学正是价值所在。** tier 一致的清算价求根（含 maintenance deduction 与 backstop 阈值）、账户保证金评估、PnL 归因、funding、费用、订单预览、TWAP/scale 排程、账本重放、spot 单位换算、HIP-1/HIP-3 约束——这些是 SDK 们不提供的公式层。
-- **对过真实世界。** 1100+ 测试、100% 行/分支/函数覆盖、CI 内 pin 死官方 SDK oracle、带日期的 live API fixtures，以及一个[可复跑的线上对拍脚本](scripts/oracles/manual-live-verify.mjs)：对一个持有 82 个仓位的公开账户，本地保证金合计与服务器一致到小数点后 10 位，50 个清算价里 48 个在 0.1% 容差内一致（另外 2 个是极端远端根，随快照时点漂移）。
+- **精确 decimal 运算。** 所有值都是 decimal 字符串，运算基于 40 位有效数字的 decimal；量化取整方向对用户保守——size 和买价向下、卖价向上。金额不经过浮点。
+- **每个结果带一条 trace。** 每个函数返回 `{ value, trace }`。trace 记录规范化输入、公式与来源 ID、每一次取整决策和每一条假设，任何一个输出都能追溯到它依据的规则。
+- **覆盖需要推导的公式。** 跨保证金 tier 的清算价求根（含 maintenance deduction 与 backstop 阈值）、账户保证金评估、PnL 归因、funding、费用、订单预览、TWAP/scale 排程、账本重放、spot 单位换算、HIP-1/HIP-3 约束。
+- **对过官方 SDK 和线上数据。** 1100+ 测试、运行时源码 100% 覆盖、CI 内 pin 死官方 Python SDK oracle、带日期的 live API fixtures，以及一个[可复跑的线上对拍脚本](scripts/oracles/manual-live-verify.mjs)：对一个持有 82 个仓位的公开账户，本地保证金合计与服务器一致到小数点后 10 位，50 个清算价里 48 个在 0.1% 内一致（另外 2 个是极端远端根，随快照时点漂移）。
 
 ## 安装
 
@@ -38,7 +38,7 @@ npm install hyperliquid-math    # 或 pnpm / yarn / bun
 
 纯 ESM。Node ≥ 22（也可在浏览器运行——CI 验证 Chromium 下字节级一致）。
 
-## 60 秒算出清算价
+## 示例：计算清算价
 
 这个包只负责计算；**取数和映射是你的代码**。逐字段映射规则见
 [`spec/KIT-MAPPING.md`](spec/KIT-MAPPING.md)——下面的例子是真实可跑、对过主网的：
@@ -109,7 +109,7 @@ value.status === 'not-applicable'  // → 数学上无解（如零仓位）
 value.status === 'indeterminate'   // → 声明的规则不完整
 ```
 
-错误信息可"自愈"——`expected` 直接告诉你正确的 key 列表或格式，大多数映射错误看一眼报错就能改对。
+校验错误信息很具体——`expected` 直接给出正确的 key 列表或格式，大多数映射错误看一眼报错就能定位。
 
 ## 内容一览
 

@@ -1,8 +1,8 @@
 <h1 align="center">hyperliquid-math</h1>
 
 <p align="center">
-  Deterministic, explainable Hyperliquid math.<br>
-  Exact decimals, zero network I/O, and every result carries its own audit trace.
+  Deterministic Hyperliquid math on plain decimal strings.<br>
+  No network I/O; every result carries a calculation trace.
 </p>
 
 <p align="center">
@@ -23,24 +23,23 @@
 
 ---
 
-## Why
+## What it does
 
-- **Money never touches floats.** All arithmetic runs on 40-significant-digit decimals; rounding
-  direction is always conservative for the user. CCXT-class float precision bugs are structurally
-  impossible here.
-- **Every result explains itself.** Each function returns `{ value, trace }` — the trace records
-  normalized inputs, formula and source IDs, every rounding decision, and every assumption. You can
-  audit any number back to the official docs it came from.
-- **The hard math is the point.** Tier-consistent liquidation-price root solving (with maintenance
-  deductions and backstop thresholds), account margin evaluation, PnL attribution, funding, fees,
-  order previews, TWAP/scale schedules, ledger replay, spot units, HIP-1/HIP-3 constraints — the
-  formulas SDKs don't ship.
-- **Verified against reality.** 1,100+ tests at 100% line/branch/function coverage, a pinned
-  official-SDK oracle in CI, dated live-API fixtures, and a
-  [replayable live comparison](scripts/oracles/manual-live-verify.mjs): on a public account with 82
-  open positions, computed margin totals matched the server to 10 decimal places and 48/50
-  liquidation prices matched within 0.1% (the other two are far-out-of-the-money roots that move
-  with snapshot timing).
+- **Exact decimal arithmetic.** Every value is a decimal string; arithmetic runs on 40-significant-digit
+  decimals, and quantization rounds in the direction that is conservative for the user — down for size and
+  buy prices, up for sell prices. Monetary values never pass through floating point.
+- **A trace on every result.** Each function returns `{ value, trace }`. The trace records the normalized
+  inputs, the formula and source IDs, each rounding decision, and each assumption, so any output can be
+  traced back to the rule it came from.
+- **Covers the derived formulas.** Liquidation-price root solving across margin tiers (with maintenance
+  deductions and backstop thresholds), account margin evaluation, PnL attribution, funding, fees, order
+  previews, TWAP/scale schedules, ledger replay, spot units, and HIP-1/HIP-3 constraints.
+- **Checked against the official SDK and live data.** 1,100+ tests at 100% coverage of the runtime source,
+  a pinned official Python SDK oracle in CI, and dated live-API fixtures. A
+  [replayable live comparison](scripts/oracles/manual-live-verify.mjs) runs against a public account with 82
+  open positions: computed margin totals matched the server to 10 decimal places, and 48 of 50 liquidation
+  prices matched within 0.1% (the remaining two are far-out-of-the-money roots that shift with snapshot
+  timing).
 
 ## Install
 
@@ -50,7 +49,7 @@ npm install hyperliquid-math    # or pnpm / yarn / bun
 
 ESM-only. Node ≥ 22 (also runs in browsers — CI verifies byte-identical results in Chromium).
 
-## Sixty seconds to a liquidation price
+## Example: computing a liquidation price
 
 The package computes; **you** fetch and map. Field-by-field mapping is documented in
 [`spec/KIT-MAPPING.md`](spec/KIT-MAPPING.md) — this example is the real thing, verified against
@@ -123,8 +122,8 @@ value.status === 'not-applicable'  // → the math has no answer here (e.g. flat
 value.status === 'indeterminate'   // → a declared rule was incomplete
 ```
 
-Error messages are self-healing — `expected` states the exact keys or format required, so most
-mapping mistakes fix themselves on the first read.
+Validation errors are specific — the `expected` field states the exact keys or format required, so most
+mapping mistakes are clear from the first error.
 
 ## What's inside
 
