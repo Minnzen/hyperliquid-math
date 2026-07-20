@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.15.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.18.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm pack:check
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: hyperliquid-dex/hyperliquid-python-sdk
+          ref: 2fdb18f9517675ea03695a0962bd19eece9c83f0
+          fetch-depth: 0
+          path: .oracle/hyperliquid-python-sdk
+      - name: Install pinned official Python SDK oracle
+        run: |
+          python3 -m venv "$RUNNER_TEMP/hyperliquid-python-sdk-venv"
+          "$RUNNER_TEMP/hyperliquid-python-sdk-venv/bin/python" -m pip install \
+            --disable-pip-version-check \
+            ./.oracle/hyperliquid-python-sdk
+      - name: Replay pinned official Python SDK oracle
+        env:
+          HYPERLIQUID_PYTHON: ${{ runner.temp }}/hyperliquid-python-sdk-venv/bin/python
+          HYPERLIQUID_PYTHON_SDK_PATH: ${{ github.workspace }}/.oracle/hyperliquid-python-sdk
+        run: pnpm exec vitest run test/oracle/official-python-sdk-replay.test.ts

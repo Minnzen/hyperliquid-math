@@ -1,0 +1,20 @@
+node_modules/
+dist/
+coverage/
+temp/
+*.tgz
+.DS_Store
+
+
+# docs site (VitePress)
+website/node_modules/
+website/.vitepress/dist/
+website/.vitepress/cache/
+# content synced from spec/ + SKILL.md at build time (regenerated, never committed)
+website/reference/
+website/zh/reference/
+website/guide/field-mapping.md
+website/guide/for-ai-agents.md
+website/zh/guide/field-mapping.md
+website/zh/guide/for-ai-agents.md
+website/public/worked-examples.json

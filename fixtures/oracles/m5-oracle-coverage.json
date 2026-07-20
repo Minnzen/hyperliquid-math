@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "scope": "M5",
+  "inherits": "fixtures/oracles/m4-oracle-coverage.json",
+  "lastVerified": "2026-07-19",
+  "pinnedImplementations": {
+    "officialPythonSdk": {
+      "package": "hyperliquid-python-sdk",
+      "version": "0.24.0",
+      "commit": "2fdb18f9517675ea03695a0962bd19eece9c83f0",
+      "license": "MIT",
+      "usage": "test-only info/action schema oracle; no standalone M5 formula implementation"
+    },
+    "liveFixtures": {
+      "mainnet": "fixtures/live/2026-07-19-mainnet-m5.json",
+      "testnet": "fixtures/live/2026-07-19-testnet-m5.json",
+      "usage": "offline schema and dated observation replay for spot metadata, spot asset contexts, allMids, HIP-3 DEX metadata, HIP-3 asset contexts, and empty public spotClearinghouseState"
+    }
+  },
+  "functions": [
+    {
+      "exportName": "convertSpotTokenUnits",
+      "formulaId": "hl.spot.units.convert",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The spotMeta schema does not independently execute or verify token-unit conversion."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "mainnet/testnet spot token weiDecimals, szDecimals, tokenId, and canonical flags"
+        }
+      }
+    },
+    {
+      "exportName": "calculateSpotOrderDeltas",
+      "formulaId": "hl.spot.order-deltas.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The SDK builds requests but does not expose a standalone spot balance-delta or minimal-unit commitment calculator."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No submitted Spot order commitment or authoritative base/quote balance delta was captured."
+        }
+      }
+    },
+    {
+      "exportName": "projectSpotPositionEvent",
+      "formulaId": "hl.spot.position-event.project",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No independent spot PnL or entryNtl transition formula is exposed."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "The public HLP spotClearinghouseState response contains empty balances; no fill pair or position transition was captured."
+        }
+      }
+    },
+    {
+      "exportName": "calculateSpotPortfolioValue",
+      "formulaId": "hl.spot.portfolio-value.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No offline valuation formula is exposed."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "spot markPx/midPx contexts and allMids observations; no non-empty balance vector was captured"
+        }
+      }
+    },
+    {
+      "exportName": "evaluateSpotDustEligibility",
+      "formulaId": "hl.spot.dust-eligibility.evaluate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No dust eligibility helper exists."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "spot token lot-size metadata and spot mid/mark observations; no live dust conversion execution was captured"
+        }
+      }
+    },
+    {
+      "exportName": "projectSpotDustAllocation",
+      "formulaId": "hl.spot.dust-allocation.project",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No dust allocation helper exists."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No aggregate dust sale or weighted USDC allocation response was captured; server execution can vary with liquidity and impact controls."
+        }
+      }
+    },
+    {
+      "exportName": "validateHip1Deployment",
+      "formulaId": "hl.hip1.deployment.validate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "An action schema is not an executable or independent HIP-1 deployment validator."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "existing spot token name, weiDecimals, szDecimals, tokenId, canonical flag, and deployerTradingFeeShare observations"
+        }
+      }
+    },
+    {
+      "exportName": "evaluateHip1AnchorGenesisEligibility",
+      "formulaId": "hl.hip1.anchor-genesis.evaluate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No independent anchor eligibility formula is exposed."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No HIP-1 deployment or genesis allocation execution was captured."
+        }
+      }
+    },
+    {
+      "exportName": "resolveHip3CollateralSource",
+      "formulaId": "hl.hip3.collateral-source.resolve",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The info schema does not independently execute collateral-source resolution."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "mainnet xyz and testnet test HIP-3 meta collateralToken observations; no collateral transfer or settlement execution"
+        }
+      }
+    },
+    {
+      "exportName": "evaluateHip3MarginMode",
+      "formulaId": "hl.hip3.margin-mode.evaluate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The info schema does not independently execute margin-mode evaluation."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "mainnet xyz normal/growth/noCross observations and testnet test DEX meta"
+        }
+      }
+    },
+    {
+      "exportName": "calculateHip3FeeRates",
+      "formulaId": "hl.hip3.fee-rates.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No standalone HIP-3 fee-rate helper exists."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "perpDexs deployerFeeScale, feeRecipient, growthMode, and subDeployer schema observations; no executed fee row"
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "SDK coverage is schema or metadata coverage only, not formula parity.",
+    "Spot PnL and dust execution are not proven by the public HLP address because spot balances were empty.",
+    "HIP-1 deployment and anchor-genesis behavior are official-doc constrained but not live-executed.",
+    "HIP-3 margin and fee fixtures prove current metadata shapes, including noCross/growthMode/deployerFeeScale fields, but not signed execution parity.",
+    "No mainnet or testnet signed spot, HIP-1, or HIP-3 action was submitted."
+  ]
+}

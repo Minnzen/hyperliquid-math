@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "HL.TESTNET.UPDATE_LEVERAGE.HARNESS.M3.2026-07-19",
+  "network": "testnet",
+  "endpoint": "https://api.hyperliquid-testnet.xyz/exchange",
+  "status": "not-executed",
+  "reason": "missing-testnet-credentials",
+  "containsSecrets": false,
+  "containsSignature": false,
+  "containsNonce": false,
+  "officialDocSources": {
+    "exchangeEndpoint": {
+      "sourceId": "HL.DOC.EXCHANGE.2026-07-19",
+      "sha256": "f4eed32de54e2fe29ce2ee33c343a06729f00e0cde458dbe3599364381c71966"
+    },
+    "margining": {
+      "sourceId": "HL.DOC.MARGINING.2026-07-19",
+      "sha256": "95891a47102caca3171f406873178efc0d456ecda5636ed89fd5dc797f6c90a7"
+    }
+  },
+  "actionSchema": {
+    "type": "updateLeverage",
+    "fields": {
+      "type": "updateLeverage",
+      "asset": "perp asset index",
+      "isCross": "boolean",
+      "leverage": "integer user leverage"
+    }
+  },
+  "matrix": [
+    {
+      "caseId": "zero-position-cross-to-cross",
+      "precondition": "zero-position",
+      "fromMode": "cross",
+      "toMode": "cross",
+      "action": {
+        "type": "updateLeverage",
+        "asset": 3,
+        "isCross": true,
+        "leverage": 5
+      },
+      "expectedObservationFields": [
+        "status",
+        "responseHash",
+        "clearinghouseStateBeforeHash",
+        "clearinghouseStateAfterHash",
+        "leverageBefore",
+        "leverageAfter"
+      ],
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "caseId": "zero-position-cross-to-isolated",
+      "precondition": "zero-position",
+      "fromMode": "cross",
+      "toMode": "isolated",
+      "action": {
+        "type": "updateLeverage",
+        "asset": 3,
+        "isCross": false,
+        "leverage": 5
+      },
+      "expectedObservationFields": [
+        "status",
+        "responseHash",
+        "clearinghouseStateBeforeHash",
+        "clearinghouseStateAfterHash",
+        "leverageBefore",
+        "leverageAfter"
+      ],
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "caseId": "zero-position-isolated-to-isolated",
+      "precondition": "zero-position",
+      "fromMode": "isolated",
+      "toMode": "isolated",
+      "action": {
+        "type": "updateLeverage",
+        "asset": 3,
+        "isCross": false,
+        "leverage": 10
+      },
+      "expectedObservationFields": [
+        "status",
+        "responseHash",
+        "clearinghouseStateBeforeHash",
+        "clearinghouseStateAfterHash",
+        "leverageBefore",
+        "leverageAfter",
+        "leverageRawUsdBefore",
+        "leverageRawUsdAfter"
+      ],
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "caseId": "zero-position-isolated-to-cross",
+      "precondition": "zero-position",
+      "fromMode": "isolated",
+      "toMode": "cross",
+      "action": {
+        "type": "updateLeverage",
+        "asset": 3,
+        "isCross": true,
+        "leverage": 10
+      },
+      "expectedObservationFields": [
+        "status",
+        "responseHash",
+        "clearinghouseStateBeforeHash",
+        "clearinghouseStateAfterHash",
+        "leverageBefore",
+        "leverageAfter",
+        "leverageRawUsdBefore",
+        "leverageRawUsdAfter"
+      ],
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "caseId": "open-position-cross-to-cross",
+      "precondition": "open-position",
+      "fromMode": "cross",
+      "toMode": "cross",
+      "action": {
+        "type": "updateLeverage",
+        "asset": 3,
+        "isCross": true,
+        "leverage": 5
+      },
+      "expectedObservationFields": [
+        "status",
+        "responseHash",
+        "clearinghouseStateBeforeHash",
+        "clearinghouseStateAfterHash",
+        "leverageBefore",
+        "leverageAfter",
+        "marginUsedBefore",
+        "marginUsedAfter"
+      ],
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "caseId": "open-position-cross-to-isolated",
+      "precondition": "open-position",
+      "fromMode": "cross",
+      "toMode": "isolated",
+      "action": {
+        "type": "updateLeverage",
+        "asset": 3,
+        "isCross": false,
+        "leverage": 5
+      },
+      "expectedObservationFields": [
+        "status",
+        "responseHash",
+        "clearinghouseStateBeforeHash",
+        "clearinghouseStateAfterHash",
+        "leverageBefore",
+        "leverageAfter",
+        "leverageRawUsdBefore",
+        "leverageRawUsdAfter",
+        "marginUsedBefore",
+        "marginUsedAfter",
+        "isolatedMarginBefore",
+        "isolatedMarginAfter"
+      ],
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "caseId": "open-position-isolated-to-isolated",
+      "precondition": "open-position",
+      "fromMode": "isolated",
+      "toMode": "isolated",
+      "action": {
+        "type": "updateLeverage",
+        "asset": 3,
+        "isCross": false,
+        "leverage": 10
+      },
+      "expectedObservationFields": [
+        "status",
+        "responseHash",
+        "clearinghouseStateBeforeHash",
+        "clearinghouseStateAfterHash",
+        "leverageBefore",
+        "leverageAfter",
+        "leverageRawUsdBefore",
+        "leverageRawUsdAfter",
+        "marginUsedBefore",
+        "marginUsedAfter",
+        "isolatedMarginBefore",
+        "isolatedMarginAfter"
+      ],
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "caseId": "open-position-isolated-to-cross",
+      "precondition": "open-position",
+      "fromMode": "isolated",
+      "toMode": "cross",
+      "action": {
+        "type": "updateLeverage",
+        "asset": 3,
+        "isCross": true,
+        "leverage": 10
+      },
+      "expectedObservationFields": [
+        "status",
+        "responseHash",
+        "clearinghouseStateBeforeHash",
+        "clearinghouseStateAfterHash",
+        "leverageBefore",
+        "leverageAfter",
+        "leverageRawUsdBefore",
+        "leverageRawUsdAfter",
+        "marginUsedBefore",
+        "marginUsedAfter",
+        "isolatedMarginBefore",
+        "isolatedMarginAfter"
+      ],
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    }
+  ],
+  "executionGuard": {
+    "requiresExplicitCredentials": true,
+    "requiresTestnetOnly": true,
+    "forbiddenNetworks": ["mainnet"],
+    "forbiddenFields": ["signature", "nonce", "privateKey", "secretKey"],
+    "notes": [
+      "This fixture is a data-only harness contract. It must not be transformed into a live action without an explicit credentialed testnet runner.",
+      "A future live runner must capture before/after clearinghouseState hashes and server response hashes without storing secrets."
+    ]
+  }
+}

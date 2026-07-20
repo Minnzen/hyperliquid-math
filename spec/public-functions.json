@@ -1,0 +1,545 @@
+{
+  "schemaVersion": 1,
+  "functions": [
+    {
+      "exportName": "canonicalizeDecimalString",
+      "subpaths": [".", "./precision"],
+      "formulaId": "hl.precision.decimal.canonicalize",
+      "formulaVersion": 1,
+      "specPath": "spec/precision.md",
+      "testKinds": ["unit", "property", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "quantizePrice",
+      "subpaths": [".", "./precision"],
+      "formulaId": "hl.precision.price.quantize",
+      "formulaVersion": 1,
+      "specPath": "spec/precision.md",
+      "testKinds": ["unit", "property", "metamorphic", "differential", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "partial",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "quantizeSize",
+      "subpaths": [".", "./precision"],
+      "formulaId": "hl.precision.size.quantize",
+      "formulaVersion": 1,
+      "specPath": "spec/precision.md",
+      "testKinds": ["unit", "property", "metamorphic", "differential", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "partial",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "deriveCanonicalAssetKey",
+      "subpaths": [".", "./identifiers"],
+      "formulaId": "hl.identifiers.asset-key.derive",
+      "formulaVersion": 1,
+      "specPath": "spec/identifiers.md",
+      "testKinds": ["unit", "property", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "encodeAssetId",
+      "subpaths": [".", "./identifiers"],
+      "formulaId": "hl.identifiers.asset-id.encode",
+      "formulaVersion": 1,
+      "specPath": "spec/identifiers.md",
+      "testKinds": ["unit", "property", "differential", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "partial",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "decodeAssetId",
+      "subpaths": [".", "./identifiers"],
+      "formulaId": "hl.identifiers.asset-id.decode",
+      "formulaVersion": 1,
+      "specPath": "spec/identifiers.md",
+      "testKinds": ["unit", "property", "differential", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "partial",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculateBookMetrics",
+      "subpaths": [".", "./orderbook"],
+      "formulaId": "hl.orderbook.metrics",
+      "formulaVersion": 1,
+      "specPath": "spec/orderbook.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "simulateBookFill",
+      "subpaths": [".", "./orderbook"],
+      "formulaId": "hl.orderbook.fill.simulate",
+      "formulaVersion": 1,
+      "specPath": "spec/orderbook.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculateTradeFee",
+      "subpaths": [".", "./fees", "./hip3"],
+      "formulaId": "hl.fees.trade-fee.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/fees.md",
+      "testKinds": ["unit", "property", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculateWeightedFeeVolume",
+      "subpaths": [".", "./fees", "./hip3"],
+      "formulaId": "hl.fees.weighted-volume.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/fees.md",
+      "testKinds": ["unit", "property", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "selectFeeTier",
+      "subpaths": [".", "./fees", "./hip3"],
+      "formulaId": "hl.fees.tier.select",
+      "formulaVersion": 1,
+      "specPath": "spec/fees.md",
+      "testKinds": ["unit", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculatePerpUnrealizedPnl",
+      "subpaths": [".", "./positions", "./hip3"],
+      "formulaId": "hl.positions.unrealized-pnl.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/positions.md",
+      "testKinds": ["unit", "property", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "projectPerpFill",
+      "subpaths": [".", "./positions", "./hip3"],
+      "formulaId": "hl.positions.fill.project",
+      "formulaVersion": 1,
+      "specPath": "spec/positions.md",
+      "testKinds": ["unit", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "projectPerpFillSequence",
+      "subpaths": [".", "./positions", "./hip3"],
+      "formulaId": "hl.positions.sequence.project",
+      "formulaVersion": 1,
+      "specPath": "spec/positions.md",
+      "testKinds": ["unit", "property", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculatePerpBreakEvenPrice",
+      "subpaths": [".", "./positions", "./hip3"],
+      "formulaId": "hl.positions.break-even-price.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/positions.md",
+      "testKinds": ["unit", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculateFundingPremiumIndex",
+      "subpaths": [".", "./funding"],
+      "formulaId": "hl.funding.premium-index.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/funding.md",
+      "testKinds": ["unit", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculateFundingRate",
+      "subpaths": [".", "./funding"],
+      "formulaId": "hl.funding.rate.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/funding.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculateFundingPayment",
+      "subpaths": [".", "./funding", "./hip3"],
+      "formulaId": "hl.funding.payment.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/funding.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "annualizeFundingRate",
+      "subpaths": [".", "./funding", "./hip3"],
+      "formulaId": "hl.funding.rate.annualize",
+      "formulaVersion": 1,
+      "specPath": "spec/funding.md",
+      "testKinds": ["unit", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculatePerpInitialMargin",
+      "subpaths": [".", "./margin", "./hip3"],
+      "formulaId": "hl.margin.initial.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/margin.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculatePerpMaintenanceMargin",
+      "subpaths": [".", "./margin", "./hip3"],
+      "formulaId": "hl.margin.maintenance.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/margin.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "evaluatePerpAccountMargin",
+      "subpaths": [".", "./margin", "./hip3"],
+      "formulaId": "hl.margin.account.evaluate",
+      "formulaVersion": 1,
+      "specPath": "spec/margin.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculatePerpLiquidationPrice",
+      "subpaths": [".", "./liquidation", "./hip3"],
+      "formulaId": "hl.liquidation-price.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/liquidation.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "simulatePerpAccountScenario",
+      "subpaths": [".", "./scenarios", "./hip3"],
+      "formulaId": "hl.scenario.perp-account.simulate",
+      "formulaVersion": 1,
+      "specPath": "spec/scenarios.md",
+      "testKinds": ["unit", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "validatePerpOrder",
+      "subpaths": [".", "./orders"],
+      "formulaId": "hl.orders.perp.validate",
+      "formulaVersion": 1,
+      "specPath": "spec/orders.md",
+      "testKinds": ["unit", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculatePerpMaxOrderSize",
+      "subpaths": [".", "./orders"],
+      "formulaId": "hl.orders.perp.max-size.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/orders.md",
+      "testKinds": ["unit", "property", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "evaluatePerpReduceOnly",
+      "subpaths": [".", "./orders"],
+      "formulaId": "hl.orders.perp.reduce-only.evaluate",
+      "formulaVersion": 1,
+      "specPath": "spec/orders.md",
+      "testKinds": ["unit", "property", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculatePerpSlippagePrice",
+      "subpaths": [".", "./orders"],
+      "formulaId": "hl.orders.perp.slippage-price.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/orders.md",
+      "testKinds": ["unit", "property", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "classifyPerpTrigger",
+      "subpaths": [".", "./orders"],
+      "formulaId": "hl.orders.perp.trigger.classify",
+      "formulaVersion": 1,
+      "specPath": "spec/orders.md",
+      "testKinds": ["unit", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "derivePerpTriggerPrice",
+      "subpaths": [".", "./orders"],
+      "formulaId": "hl.orders.perp.trigger-price.derive",
+      "formulaVersion": 1,
+      "specPath": "spec/orders.md",
+      "testKinds": ["unit", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "buildPerpScaleLadder",
+      "subpaths": [".", "./orders"],
+      "formulaId": "hl.orders.perp.scale.build",
+      "formulaVersion": 1,
+      "specPath": "spec/orders.md",
+      "testKinds": ["unit", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculatePerpTwapSchedule",
+      "subpaths": [".", "./orders"],
+      "formulaId": "hl.orders.perp.twap-schedule.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/orders.md",
+      "testKinds": ["unit", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "replayPerpAccountEvents",
+      "subpaths": [".", "./reconciliation"],
+      "formulaId": "hl.reconciliation.perp-account.replay",
+      "formulaVersion": 1,
+      "specPath": "spec/reconciliation.md",
+      "testKinds": ["unit", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "reconcilePerpAccountSnapshot",
+      "subpaths": [".", "./reconciliation"],
+      "formulaId": "hl.reconciliation.perp-account.reconcile",
+      "formulaVersion": 1,
+      "specPath": "spec/reconciliation.md",
+      "testKinds": ["unit", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "convertSpotTokenUnits",
+      "subpaths": [".", "./spot"],
+      "formulaId": "hl.spot.units.convert",
+      "formulaVersion": 1,
+      "specPath": "spec/spot.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculateSpotOrderDeltas",
+      "subpaths": [".", "./spot"],
+      "formulaId": "hl.spot.order-deltas.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/spot.md",
+      "testKinds": ["unit", "property", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "projectSpotPositionEvent",
+      "subpaths": [".", "./spot"],
+      "formulaId": "hl.spot.position-event.project",
+      "formulaVersion": 1,
+      "specPath": "spec/spot.md",
+      "testKinds": ["unit", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculateSpotPortfolioValue",
+      "subpaths": [".", "./spot"],
+      "formulaId": "hl.spot.portfolio-value.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/spot.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "evaluateSpotDustEligibility",
+      "subpaths": [".", "./spot"],
+      "formulaId": "hl.spot.dust-eligibility.evaluate",
+      "formulaVersion": 1,
+      "specPath": "spec/spot.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "projectSpotDustAllocation",
+      "subpaths": [".", "./spot"],
+      "formulaId": "hl.spot.dust-allocation.project",
+      "formulaVersion": 1,
+      "specPath": "spec/spot.md",
+      "testKinds": ["unit", "property", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "validateHip1Deployment",
+      "subpaths": [".", "./hip1"],
+      "formulaId": "hl.hip1.deployment.validate",
+      "formulaVersion": 1,
+      "specPath": "spec/hip1.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "evaluateHip1AnchorGenesisEligibility",
+      "subpaths": [".", "./hip1"],
+      "formulaId": "hl.hip1.anchor-genesis.evaluate",
+      "formulaVersion": 1,
+      "specPath": "spec/hip1.md",
+      "testKinds": ["unit", "property", "metamorphic", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "resolveHip3CollateralSource",
+      "subpaths": [".", "./hip3"],
+      "formulaId": "hl.hip3.collateral-source.resolve",
+      "formulaVersion": 1,
+      "specPath": "spec/hip3.md",
+      "testKinds": ["unit", "property", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "evaluateHip3MarginMode",
+      "subpaths": [".", "./hip3"],
+      "formulaId": "hl.hip3.margin-mode.evaluate",
+      "formulaVersion": 1,
+      "specPath": "spec/hip3.md",
+      "testKinds": ["unit", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculateHip3FeeRates",
+      "subpaths": [".", "./hip3"],
+      "formulaId": "hl.hip3.fee-rates.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/hip3.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "partial"
+      }
+    }
+  ]
+}

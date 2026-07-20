@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "scope": "M1",
+  "lastVerified": "2026-07-19",
+  "pinnedImplementations": {
+    "officialPythonSdk": {
+      "package": "hyperliquid-python-sdk",
+      "version": "0.24.0",
+      "commit": "2fdb18f9517675ea03695a0962bd19eece9c83f0",
+      "license": "MIT",
+      "usage": "test-only golden fixture replay"
+    },
+    "liveFixtures": {
+      "mainnet": "fixtures/live/2026-07-19-mainnet-m1.json",
+      "testnet": "fixtures/live/2026-07-19-testnet-m1.json",
+      "usage": "offline replay of captured protocol metadata and L2 book responses"
+    }
+  },
+  "functions": [
+    {
+      "exportName": "canonicalizeDecimalString",
+      "formulaId": "hl.precision.decimal.canonicalize",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "Math-owned serialization contract with no official SDK equivalent."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "Captured API responses do not define Math canonicalization."
+        }
+      }
+    },
+    {
+      "exportName": "quantizePrice",
+      "formulaId": "hl.precision.price.quantize",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "partial",
+          "slice": "canonical wire strings for valid fixture values, not server-side quantization"
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured meta szDecimals and accepted response precision"
+        }
+      }
+    },
+    {
+      "exportName": "quantizeSize",
+      "formulaId": "hl.precision.size.quantize",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "partial",
+          "slice": "canonical wire strings for valid fixture values, not a full lot-size validator"
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured meta szDecimals and accepted response precision"
+        }
+      }
+    },
+    {
+      "exportName": "deriveCanonicalAssetKey",
+      "formulaId": "hl.identifiers.asset-key.derive",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "Asset keys are a local Math join identity."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "Live endpoints return protocol metadata, not local Math asset keys."
+        }
+      }
+    },
+    {
+      "exportName": "encodeAssetId",
+      "formulaId": "hl.identifiers.asset-id.encode",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "partial",
+          "slice": "main perp and spot metadata mapping plus one testnet HIP-3 fixture row"
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured metadata index alignment"
+        }
+      }
+    },
+    {
+      "exportName": "decodeAssetId",
+      "formulaId": "hl.identifiers.asset-id.decode",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "partial",
+          "slice": "main perp and spot metadata reverse mapping only"
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured metadata index alignment"
+        }
+      }
+    },
+    {
+      "exportName": "calculateBookMetrics",
+      "formulaId": "hl.orderbook.metrics",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "official SDK has no Math book metric oracle."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "fixture replay of captured L2 book levels"
+        }
+      }
+    },
+    {
+      "exportName": "simulateBookFill",
+      "formulaId": "hl.orderbook.fill.simulate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "official SDK has no Math fill simulation oracle."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "fixture replay only; not a server-authoritative formula comparison"
+        }
+      }
+    }
+  ]
+}

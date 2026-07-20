@@ -1,0 +1,19 @@
+{
+  "name": "hyperliquid-math-docs",
+  "version": "0.0.0",
+  "description": "Documentation site for hyperliquid-math (VitePress). Reference content is generated from spec/ and SKILL.md at build time.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "sync": "node sync-content.mjs",
+    "dev": "node sync-content.mjs && vitepress dev",
+    "build": "node sync-content.mjs && vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.4"
+  }
+}

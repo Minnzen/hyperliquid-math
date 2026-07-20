@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "HL.LIVE.TESTNET.M2.2026-07-19",
+  "network": "testnet",
+  "endpoint": "https://api.hyperliquid-testnet.xyz/info",
+  "capturedAt": "2026-07-19T04:44:05.799Z",
+  "subject": {
+    "kind": "zero-address",
+    "address": "0x0000000000000000000000000000000000000000"
+  },
+  "requests": {
+    "clearinghouseState": {
+      "type": "clearinghouseState",
+      "user": "0x0000000000000000000000000000000000000000"
+    },
+    "userFills": {
+      "type": "userFills",
+      "user": "0x0000000000000000000000000000000000000000"
+    },
+    "userFunding": {
+      "type": "userFunding",
+      "user": "0x0000000000000000000000000000000000000000",
+      "startTime": 1784349845800
+    },
+    "userFees": {
+      "type": "userFees",
+      "user": "0x0000000000000000000000000000000000000000"
+    },
+    "metaAndAssetCtxs": {
+      "type": "metaAndAssetCtxs"
+    },
+    "fundingHistory": {
+      "type": "fundingHistory",
+      "coin": "BTC",
+      "startTime": 1784414645800
+    }
+  },
+  "responseHashes": {
+    "clearinghouseState": "13420117dbbf5167e70932a4613f63475a20e2c0aee4b0c7dc2bd5830cfd3ddf",
+    "userFills": "b263be240cc5152bbeef3db29f0aa99ea3300b9abc3470e4b72bfa824a48e7b8",
+    "userFunding": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "userFees": "18930399dcb3264efa0d75d9ddf1d21908b0c6e9cb478618b0d807ae584ed296",
+    "metaAndAssetCtxs": "f9756285d32aa5aa3ae5a7f535eb766f3c0483b4c4ebc1b4dfe4bc17f47a1689",
+    "fundingHistory": "2da83e4f374e74bea97a5aff86436de0a866ca937e0aa63f842ea12f5f5fde63"
+  },
+  "selection": {
+    "marginSummary": {
+      "accountValue": "54.702826",
+      "totalNtlPos": "0.0",
+      "totalRawUsd": "54.702826",
+      "totalMarginUsed": "0.0"
+    },
+    "positions": [],
+    "fills": [],
+    "funding": [],
+    "userFees": {
+      "userAddRate": "0.00015",
+      "userCrossRate": "0.00045",
+      "userSpotAddRate": "0.0004",
+      "userSpotCrossRate": "0.0007",
+      "feeSchedule": {
+        "add": "0.00015",
+        "cross": "0.00045",
+        "spotAdd": "0.0004",
+        "spotCross": "0.0007",
+        "vip": [
+          {
+            "ntlCutoff": "5000000.0",
+            "cross": "0.0004",
+            "add": "0.00012",
+            "spotCross": "0.0006",
+            "spotAdd": "0.0003"
+          },
+          {
+            "ntlCutoff": "25000000.0",
+            "cross": "0.00035",
+            "add": "0.00008",
+            "spotCross": "0.0005",
+            "spotAdd": "0.0002"
+          },
+          {
+            "ntlCutoff": "100000000.0",
+            "cross": "0.0003",
+            "add": "0.00004",
+            "spotCross": "0.0004",
+            "spotAdd": "0.0001"
+          },
+          {
+            "ntlCutoff": "500000000.0",
+            "cross": "0.00028",
+            "add": "0.0",
+            "spotCross": "0.00035",
+            "spotAdd": "0.0"
+          },
+          {
+            "ntlCutoff": "2000000000.0",
+            "cross": "0.00026",
+            "add": "0.0",
+            "spotCross": "0.0003",
+            "spotAdd": "0.0"
+          },
+          {
+            "ntlCutoff": "7000000000.0",
+            "cross": "0.00024",
+            "add": "0.0",
+            "spotCross": "0.00025",
+            "spotAdd": "0.0"
+          }
+        ],
+        "mm": [
+          { "makerFractionCutoff": "0.005", "add": "-0.00001" },
+          { "makerFractionCutoff": "0.015", "add": "-0.00002" },
+          { "makerFractionCutoff": "0.03", "add": "-0.00003" }
+        ]
+      }
+    },
+    "btcAssetContext": {
+      "funding": "-0.0000399297",
+      "premium": "-0.0009975653",
+      "oraclePx": "75.985",
+      "markPx": "75.873",
+      "midPx": "75.8615",
+      "impactPxs": ["75.7849", "75.9092"]
+    },
+    "btcFundingHistory": [
+      {
+        "coin": "BTC",
+        "fundingRate": "0.0000125",
+        "premium": "0.0",
+        "time": 1784422800042
+      },
+      {
+        "coin": "BTC",
+        "fundingRate": "0.0000125",
+        "premium": "0.0",
+        "time": 1784426400056
+      },
+      {
+        "coin": "BTC",
+        "fundingRate": "0.0000125",
+        "premium": "0.0",
+        "time": 1784430000078
+      },
+      {
+        "coin": "BTC",
+        "fundingRate": "0.0000125",
+        "premium": "0.0",
+        "time": 1784433600049
+      }
+    ]
+  },
+  "oracleLimitations": [
+    "The zero-address fixture intentionally has no fills or funding settlements.",
+    "Current asset contexts are observational snapshots and need not equal the completed hourly funding history sample."
+  ]
+}

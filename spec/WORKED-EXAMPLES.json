@@ -1,0 +1,162 @@
+[
+  {
+    "function": "canonicalizeDecimalString",
+    "input": { "value": "001.2300" },
+    "expectedValue": { "status": "ok", "data": "1.23" }
+  },
+  {
+    "function": "quantizePrice",
+    "input": {
+      "value": "103436.7",
+      "marketKind": "perp",
+      "szDecimals": 0,
+      "rounding": "down"
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": { "value": "103436", "precisionChanged": true }
+    }
+  },
+  {
+    "function": "simulateBookFill",
+    "input": {
+      "levels": [
+        [{ "px": "99", "sz": "2", "n": 1 }],
+        [{ "px": "100", "sz": "1", "n": 1 }, { "px": "110", "sz": "1", "n": 1 }]
+      ],
+      "side": "buy",
+      "amount": { "kind": "size", "value": "1.5" },
+      "referencePrice": "100"
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "filledSize": "1.5",
+        "filledNotional": "155",
+        "vwap": "103.3333333333333333333333333333333333333"
+      }
+    }
+  },
+  {
+    "function": "projectPerpFill",
+    "input": {
+      "position": { "kind": "open", "signedSize": "5", "entryPrice": "100" },
+      "fill": {
+        "side": "buy",
+        "size": "1",
+        "price": "160",
+        "fee": { "kind": "none" }
+      }
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "classification": "increase",
+        "nextState": { "kind": "open", "signedSize": "6", "entryPrice": "110" }
+      }
+    }
+  },
+  {
+    "function": "calculatePerpInitialMargin",
+    "input": {
+      "position": {
+        "asset": {
+          "network": "mainnet",
+          "marketKind": "perp",
+          "dex": null,
+          "index": 0
+        },
+        "signedSize": "2",
+        "markPrice": "100",
+        "leverage": "5",
+        "marginMode": { "kind": "cross" },
+        "marginTiers": [{ "lowerBound": "0", "maxLeverage": "20" }]
+      }
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "positionValue": "200",
+        "initialMargin": "40",
+        "transferMarginRequirement": "40",
+        "tierIndex": 0,
+        "maxLeverage": "20"
+      }
+    }
+  },
+  {
+    "function": "calculatePerpLiquidationPrice",
+    "input": {
+      "targetAsset": {
+        "network": "mainnet",
+        "marketKind": "perp",
+        "dex": null,
+        "index": 0
+      },
+      "crossAccountValue": "0",
+      "positions": [
+        {
+          "asset": {
+            "network": "mainnet",
+            "marketKind": "perp",
+            "dex": null,
+            "index": 0
+          },
+          "signedSize": "1",
+          "entryPrice": "100",
+          "markPrice": "100",
+          "marginMode": {
+            "kind": "isolated",
+            "isolatedMarginValue": "20",
+            "marginRemoval": "strict"
+          },
+          "marginTiers": [{ "lowerBound": "0", "maxLeverage": "10" }]
+        }
+      ]
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "liquidationPrice": "84.21052631578947368421052631578947368421",
+        "accountEquityAtLiquidation": "4.21052631578947368421052631578947368421",
+        "targetMaintenanceMargin": "4.21052631578947368421052631578947368421"
+      }
+    }
+  },
+  {
+    "function": "projectSpotPositionEvent",
+    "input": {
+      "position": { "kind": "flat" },
+      "event": { "kind": "buy", "size": "2", "price": "3", "feeQuoteAmount": "0.1" }
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "classification": "open",
+        "nextState": { "kind": "open", "balance": "2", "entryPrice": "3" },
+        "grossRealizedPnl": "0",
+        "closedPnl": "-0.1"
+      }
+    }
+  },
+  {
+    "function": "calculateHip3FeeRates",
+    "input": {
+      "makerRate": "0.001",
+      "takerRate": "0.002",
+      "activeReferralDiscount": "0",
+      "isAlignedQuoteToken": false,
+      "deployerFeeScale": "0.5",
+      "growthMode": false
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "hip3Scale": "1.5",
+        "effectiveMakerRate": "0.0015",
+        "effectiveTakerRate": "0.003",
+        "deployerShare": "0.3333333333333333333333333333333333333333"
+      }
+    }
+  }
+]

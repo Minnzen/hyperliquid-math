@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "HL.LIVE.TESTNET.M3.2026-07-19",
+  "network": "testnet",
+  "endpoint": "https://api.hyperliquid-testnet.xyz/info",
+  "capturedAt": "2026-07-19T05:50:05.170Z",
+  "subject": {
+    "kind": "zero-address",
+    "address": "0x0000000000000000000000000000000000000000"
+  },
+  "officialDocSources": {
+    "margining": {
+      "sourceId": "HL.DOC.MARGINING.2026-07-19",
+      "sha256": "95891a47102caca3171f406873178efc0d456ecda5636ed89fd5dc797f6c90a7"
+    },
+    "marginTiers": {
+      "sourceId": "HL.DOC.MARGIN_TIERS.2026-07-19",
+      "sha256": "f6e6f5ec37b26359e128983b9c94bc3ab4b1736b471da9234620834f6546bbaf"
+    },
+    "liquidations": {
+      "sourceId": "HL.DOC.LIQUIDATIONS.2026-07-19",
+      "sha256": "162afe17f94665546d4e4169591368921a06a94d3f7f48c8fbec6b1ee9394a57"
+    },
+    "infoPerpetuals": {
+      "sourceId": "HL.DOC.INFO.PERP.2026-07-19",
+      "sha256": "d253ee0aaf3d56c9bbb926d76aafc7a001379a3bf57d5911c825983c893a8c85"
+    },
+    "exchangeEndpoint": {
+      "sourceId": "HL.DOC.EXCHANGE.2026-07-19",
+      "sha256": "f4eed32de54e2fe29ce2ee33c343a06729f00e0cde458dbe3599364381c71966"
+    }
+  },
+  "requests": {
+    "meta": {
+      "type": "meta"
+    },
+    "metaAndAssetCtxs": {
+      "type": "metaAndAssetCtxs"
+    },
+    "clearinghouseState": {
+      "type": "clearinghouseState",
+      "user": "0x0000000000000000000000000000000000000000"
+    }
+  },
+  "responseHashes": {
+    "meta": "5d5ac211381a32407ba71406b83ec3be4fd08148d505b56863a2ab66b7c2ba51",
+    "metaAndAssetCtxs": "8dfc632f8e87148d2f95710dba8ad592946026ab5e90dac14286e89799cb9510",
+    "clearinghouseState": "2e9d6b349d434b35fa30792a5aaeb81519f333b8d39d6ffd1d26b3921483b09d"
+  },
+  "selection": {
+    "perpUniverse": [
+      {
+        "index": 3,
+        "name": "BTC",
+        "szDecimals": 5,
+        "maxLeverage": 40,
+        "marginTableId": 54,
+        "marginTable": {
+          "id": 54,
+          "description": "tiered 40x",
+          "marginTiers": [
+            {
+              "lowerBound": "0.0",
+              "maxLeverage": 40
+            },
+            {
+              "lowerBound": "10000.0",
+              "maxLeverage": 25
+            },
+            {
+              "lowerBound": "50000.0",
+              "maxLeverage": 10
+            }
+          ]
+        }
+      },
+      {
+        "index": 4,
+        "name": "ETH",
+        "szDecimals": 4,
+        "maxLeverage": 25,
+        "marginTableId": 53,
+        "marginTable": {
+          "id": 53,
+          "description": "tiered 25x",
+          "marginTiers": [
+            {
+              "lowerBound": "0.0",
+              "maxLeverage": 25
+            },
+            {
+              "lowerBound": "20000.0",
+              "maxLeverage": 10
+            },
+            {
+              "lowerBound": "50000.0",
+              "maxLeverage": 5
+            }
+          ]
+        }
+      }
+    ],
+    "assetContexts": [
+      {
+        "index": 3,
+        "name": "BTC",
+        "markPx": "64690.0",
+        "oraclePx": "64716.0",
+        "midPx": "64696.0",
+        "funding": "0.0000125",
+        "premium": "0.0",
+        "impactPxs": ["64629.5", "64776.2"]
+      },
+      {
+        "index": 4,
+        "name": "ETH",
+        "markPx": "1871.1",
+        "oraclePx": "1868.98",
+        "midPx": "1871.65",
+        "funding": "0.0000582441",
+        "premium": "0.0007116181",
+        "impactPxs": ["1870.31", "1874.03"]
+      }
+    ],
+    "marginSummary": {
+      "accountValue": "54.702826",
+      "totalNtlPos": "0.0",
+      "totalRawUsd": "54.702826",
+      "totalMarginUsed": "0.0"
+    },
+    "crossMarginSummary": {
+      "accountValue": "54.702826",
+      "totalNtlPos": "0.0",
+      "totalRawUsd": "54.702826",
+      "totalMarginUsed": "0.0"
+    },
+    "crossMaintenanceMarginUsed": "0.0",
+    "positions": []
+  },
+  "liveActionGates": [
+    {
+      "name": "updateLeverage",
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "name": "updateIsolatedMargin",
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    },
+    {
+      "name": "actual-fill-replay",
+      "status": "not-executed",
+      "reason": "missing-testnet-credentials"
+    }
+  ],
+  "oracleLimitations": [
+    "The zero-address fixture has no open positions; it validates schema and public meta/tier mapping only.",
+    "No signed testnet exchange action was executed. updateLeverage and isolated-margin behavior remain unverified live gates.",
+    "Action replay in M3 must use deterministic offline fixtures until credentials and an explicit testnet account are available."
+  ]
+}

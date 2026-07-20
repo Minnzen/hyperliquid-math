@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "case": "m1-orderbook-bounded-trace",
+  "maxMetricsTraceBytes": 1600,
+  "maxFillTraceBytes": 2000,
+  "maxFillTraceGrowthBytes": 128,
+  "maxTwentyLevelFillResultBytes": 8192
+}

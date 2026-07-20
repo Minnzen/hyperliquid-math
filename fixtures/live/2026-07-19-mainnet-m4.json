@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "HL.LIVE.MAINNET.M4.2026-07-19",
+  "network": "mainnet",
+  "endpoint": "https://api.hyperliquid.xyz/info",
+  "capturedAt": "2026-07-19T07:51:54Z",
+  "subject": {
+    "kind": "public-hlp-child",
+    "address": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+  },
+  "requests": {
+    "userFillsByTime": {
+      "type": "userFillsByTime",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a",
+      "startTime": 1784447469000,
+      "endTime": 1784447475000,
+      "aggregateByTime": false
+    },
+    "historicalOrders": {
+      "type": "historicalOrders",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+    },
+    "openOrders": {
+      "type": "openOrders",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+    },
+    "orderStatus": {
+      "type": "orderStatus",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a",
+      "oid": 498601872037
+    }
+  },
+  "responseHashes": {
+    "userFillsByTime": "6605c879a4b7b6a4367fba2e4195540cf2b31ce491bb600acfd9091cf8781c46",
+    "historicalOrders": "df89d03423e84b7f5fdb09d1ca84988c854306510ab0d61270122a2659651250",
+    "openOrders": "19549c9796bbb0447c4b9957bb50c70835a70d27a45bbd77af53b0ec783c1b16",
+    "orderStatus": "cfb3707fe9870aa6dfedcb90a34edf287bc637ae6e52aae4c4e06c86526f04a7"
+  },
+  "responseFacts": {
+    "userFillsByTimeCount": 16,
+    "historicalOrdersCount": 2000,
+    "openOrdersCount": 3590,
+    "historicalOrdersReachedDocumentedCap": true,
+    "capturedFillOrdersPresentInHistoricalOrdersResponse": false
+  },
+  "selection": {
+    "fills": [
+      {
+        "coin": "DASH",
+        "px": "34.477",
+        "sz": "0.56",
+        "side": "A",
+        "time": 1784447469725,
+        "startPosition": "-127.08",
+        "dir": "Open Short",
+        "closedPnl": "0.0",
+        "hash": "0x2e368df60a08ef8f2fb0044043028801d000a5dba50c0e61d1ff3948c90cc979",
+        "oid": 498601872037,
+        "crossed": true,
+        "fee": "0.0",
+        "tid": 330113933162012,
+        "feeToken": "USDC",
+        "twapId": null
+      },
+      {
+        "coin": "ANIME",
+        "px": "0.002641",
+        "sz": "7460.0",
+        "side": "A",
+        "time": 1784447470333,
+        "startPosition": "12290171.0",
+        "dir": "Close Long",
+        "closedPnl": "-0.27602",
+        "hash": "0x2b5847b2be4eb8a72cd2044043029101c7005f985941d779cf20f3057d429291",
+        "oid": 498601874515,
+        "crossed": true,
+        "fee": "0.0",
+        "tid": 608985798133481,
+        "feeToken": "USDC",
+        "twapId": null
+      },
+      {
+        "coin": "NEO",
+        "px": "2.0324",
+        "sz": "8.42",
+        "side": "A",
+        "time": 1784447470534,
+        "startPosition": "-5608.58",
+        "dir": "Open Short",
+        "closedPnl": "0.0",
+        "hash": "0xf2a2122623b767edf41b044043029401e7002a0bbeba86c0966abd78e2bb41d8",
+        "oid": 498601875476,
+        "crossed": true,
+        "fee": "0.0",
+        "tid": 514534728215127,
+        "feeToken": "USDC",
+        "twapId": null
+      },
+      {
+        "coin": "DYDX",
+        "px": "0.12178",
+        "sz": "145.1",
+        "side": "A",
+        "time": 1784447470733,
+        "startPosition": "-98572.4",
+        "dir": "Open Short",
+        "closedPnl": "0.0",
+        "hash": "0x8d0b754d84a741308e85044043029702017f00331faa600230d420a043ab1b1b",
+        "oid": 498601876492,
+        "crossed": true,
+        "fee": "0.0",
+        "tid": 833243423612331,
+        "feeToken": "USDC",
+        "twapId": null
+      },
+      {
+        "coin": "ZETA",
+        "px": "0.03394",
+        "sz": "486.8",
+        "side": "B",
+        "time": 1784447470733,
+        "startPosition": "-307455.4",
+        "dir": "Close Short",
+        "closedPnl": "0.014604",
+        "hash": "0x70d3b38b37901292724d04404302970201860070d2933164149c5eddf693ec7d",
+        "oid": 498601876498,
+        "crossed": true,
+        "fee": "0.0",
+        "tid": 855220060900880,
+        "feeToken": "USDC",
+        "twapId": null
+      },
+      {
+        "coin": "INIT",
+        "px": "0.052505",
+        "sz": "401.0",
+        "side": "B",
+        "time": 1784447471131,
+        "startPosition": "281173.0",
+        "dir": "Open Long",
+        "closedPnl": "0.0",
+        "hash": "0x1cfb359470f158c11e74044043029d01ee004d7a0bf47793c0c3e0e72ff532ab",
+        "oid": 498601877910,
+        "crossed": true,
+        "fee": "0.0",
+        "tid": 883542071155269,
+        "feeToken": "USDC",
+        "twapId": null
+      },
+      {
+        "coin": "0G",
+        "px": "0.16904",
+        "sz": "200.0",
+        "side": "B",
+        "time": 1784447471949,
+        "startPosition": "-31975.0",
+        "dir": "Close Short",
+        "closedPnl": "-0.1688",
+        "hash": "0x43fe4dd4e665925a457804404302a902022100ba8168b12ce7c6f927a5696c44",
+        "oid": 498601881393,
+        "crossed": true,
+        "fee": "0.0",
+        "tid": 1094476618307680,
+        "feeToken": "USDC",
+        "twapId": null
+      },
+      {
+        "coin": "S",
+        "px": "0.024148",
+        "sz": "683.0",
+        "side": "A",
+        "time": 1784447472220,
+        "startPosition": "-509841.0",
+        "dir": "Open Short",
+        "closedPnl": "0.0",
+        "hash": "0xe77e207d32d4ea47e8f704404302ad016c003862cdd809198b46cbcff1d8c432",
+        "oid": 498601882464,
+        "crossed": true,
+        "fee": "0.0",
+        "tid": 711268475460424,
+        "feeToken": "USDC",
+        "twapId": null
+      }
+    ],
+    "orderStatus": {
+      "status": "order",
+      "order": {
+        "order": {
+          "coin": "DASH",
+          "side": "A",
+          "limitPx": "34.477",
+          "sz": "0.0",
+          "oid": 498601872037,
+          "timestamp": 1784447469725,
+          "triggerCondition": "N/A",
+          "isTrigger": false,
+          "triggerPx": "0.0",
+          "children": [],
+          "isPositionTpsl": false,
+          "reduceOnly": false,
+          "orderType": "Limit",
+          "origSz": "0.56",
+          "tif": "Ioc",
+          "cloid": null
+        },
+        "status": "filled",
+        "statusTimestamp": 1784447469725
+      }
+    },
+    "openOrders": [
+      {
+        "coin": "HBAR",
+        "side": "B",
+        "limitPx": "0.067099",
+        "sz": "5753.0",
+        "oid": 498602071058,
+        "timestamp": 1784447513478,
+        "origSz": "5753.0"
+      },
+      {
+        "coin": "MINA",
+        "side": "A",
+        "limitPx": "0.044519",
+        "sz": "17291.0",
+        "oid": 498602071057,
+        "timestamp": 1784447513478,
+        "origSz": "17291.0"
+      },
+      {
+        "coin": "MINA",
+        "side": "A",
+        "limitPx": "0.044503",
+        "sz": "15633.0",
+        "oid": 498602071056,
+        "timestamp": 1784447513478,
+        "origSz": "15633.0"
+      },
+      {
+        "coin": "MINA",
+        "side": "A",
+        "limitPx": "0.044489",
+        "sz": "8352.0",
+        "oid": 498602071055,
+        "timestamp": 1784447513478,
+        "origSz": "8352.0"
+      }
+    ]
+  },
+  "limitations": [
+    "The fixture is a bounded selection, not a complete account ledger.",
+    "historicalOrders returned exactly 2000 rows and did not contain the selected recent fills; orderStatus was required for lifecycle truth.",
+    "No REST/WS ordering claim, signed action, TP/SL, Scale, or TWAP execution is captured."
+  ]
+}

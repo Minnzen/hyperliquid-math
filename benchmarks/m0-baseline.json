@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "case": "canonicalize-decimal-valid",
+  "iterationsPerBatch": 20000,
+  "warmupBatches": 20,
+  "measuredBatches": 50,
+  "maxFacadeToKernelRatio": 35,
+  "maxSerializedBytes": 640
+}

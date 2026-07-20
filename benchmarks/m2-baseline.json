@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "case": "m2-position-funding-bounded-trace",
+  "maxFillProjectionTraceBytes": 1600,
+  "maxFundingRateTraceBytes": 1600,
+  "maxSequenceTraceBytes": 1600,
+  "maxSequenceTraceGrowthBytes": 256,
+  "maxTwoThousandFillResultBytes": 786432
+}

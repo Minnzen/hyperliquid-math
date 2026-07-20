@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "oracle": "official-python-sdk",
+    "package": "hyperliquid-python-sdk",
+    "version": "0.24.0",
+    "commit": "2fdb18f9517675ea03695a0962bd19eece9c83f0",
+    "license": "MIT"
+  },
+  "generation": {
+    "mode": "deterministic SDK replay",
+    "implementationCopied": false,
+    "notes": "Fixture records SDK-prepared wire values and metadata IDs only; it does not vendor SDK code or claim server-side rounding."
+  },
+  "preparedOrderCases": [
+    {
+      "name": "prepares a mainnet BTC perp order with canonical wire strings",
+      "network": "mainnet",
+      "asset": {
+        "kind": "perp",
+        "symbol": "BTC",
+        "index": 0,
+        "assetId": 0,
+        "sourceFixture": "fixtures/live/2026-07-19-mainnet-m1.json"
+      },
+      "sdkOrderWire": {
+        "a": 0,
+        "b": true,
+        "p": "64639",
+        "s": "0.00217",
+        "r": false,
+        "t": {
+          "limit": {
+            "tif": "Gtc"
+          }
+        }
+      },
+      "sdkOrderAction": {
+        "type": "order",
+        "orders": [
+          {
+            "a": 0,
+            "b": true,
+            "p": "64639",
+            "s": "0.00217",
+            "r": false,
+            "t": {
+              "limit": {
+                "tif": "Gtc"
+              }
+            }
+          }
+        ],
+        "grouping": "na"
+      },
+      "wire": {
+        "px": "64639",
+        "sz": "0.00217"
+      },
+      "coverage": {
+        "assetId": "full",
+        "price": "partial",
+        "size": "partial"
+      }
+    },
+    {
+      "name": "prepares a mainnet PURR spot order with canonical wire strings",
+      "network": "mainnet",
+      "asset": {
+        "kind": "spot",
+        "symbol": "PURR/USDC",
+        "index": 0,
+        "assetId": 10000,
+        "sourceFixture": "fixtures/live/2026-07-19-mainnet-m1.json"
+      },
+      "sdkOrderWire": {
+        "a": 10000,
+        "b": true,
+        "p": "1.2345",
+        "s": "12",
+        "r": false,
+        "t": {
+          "limit": {
+            "tif": "Gtc"
+          }
+        }
+      },
+      "sdkOrderAction": {
+        "type": "order",
+        "orders": [
+          {
+            "a": 10000,
+            "b": true,
+            "p": "1.2345",
+            "s": "12",
+            "r": false,
+            "t": {
+              "limit": {
+                "tif": "Gtc"
+              }
+            }
+          }
+        ],
+        "grouping": "na"
+      },
+      "wire": {
+        "px": "1.2345",
+        "sz": "12"
+      },
+      "coverage": {
+        "assetId": "full",
+        "price": "partial",
+        "size": "partial"
+      }
+    },
+    {
+      "name": "prepares a testnet HIP-3 order with partial asset-id coverage",
+      "network": "testnet",
+      "asset": {
+        "kind": "hip3-perp",
+        "symbol": "test:ABC",
+        "dexIndex": 1,
+        "index": 0,
+        "assetId": 110000,
+        "sourceFixture": "fixtures/live/2026-07-19-testnet-m1.json"
+      },
+      "sdkOrderWire": {
+        "a": 110000,
+        "b": true,
+        "p": "10",
+        "s": "2",
+        "r": false,
+        "t": {
+          "limit": {
+            "tif": "Gtc"
+          }
+        }
+      },
+      "sdkOrderAction": {
+        "type": "order",
+        "orders": [
+          {
+            "a": 110000,
+            "b": true,
+            "p": "10",
+            "s": "2",
+            "r": false,
+            "t": {
+              "limit": {
+                "tif": "Gtc"
+              }
+            }
+          }
+        ],
+        "grouping": "na"
+      },
+      "wire": {
+        "px": "10",
+        "sz": "2"
+      },
+      "coverage": {
+        "assetId": "partial",
+        "price": "partial",
+        "size": "partial"
+      }
+    }
+  ]
+}

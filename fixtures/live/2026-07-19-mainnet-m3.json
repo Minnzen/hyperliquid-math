@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "HL.LIVE.MAINNET.M3.2026-07-19",
+  "network": "mainnet",
+  "endpoint": "https://api.hyperliquid.xyz/info",
+  "capturedAt": "2026-07-19T05:50:05.170Z",
+  "subject": {
+    "kind": "public-hlp-child",
+    "address": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+  },
+  "officialDocSources": {
+    "margining": {
+      "sourceId": "HL.DOC.MARGINING.2026-07-19",
+      "sha256": "95891a47102caca3171f406873178efc0d456ecda5636ed89fd5dc797f6c90a7"
+    },
+    "marginTiers": {
+      "sourceId": "HL.DOC.MARGIN_TIERS.2026-07-19",
+      "sha256": "f6e6f5ec37b26359e128983b9c94bc3ab4b1736b471da9234620834f6546bbaf"
+    },
+    "liquidations": {
+      "sourceId": "HL.DOC.LIQUIDATIONS.2026-07-19",
+      "sha256": "162afe17f94665546d4e4169591368921a06a94d3f7f48c8fbec6b1ee9394a57"
+    },
+    "infoPerpetuals": {
+      "sourceId": "HL.DOC.INFO.PERP.2026-07-19",
+      "sha256": "d253ee0aaf3d56c9bbb926d76aafc7a001379a3bf57d5911c825983c893a8c85"
+    },
+    "exchangeEndpoint": {
+      "sourceId": "HL.DOC.EXCHANGE.2026-07-19",
+      "sha256": "f4eed32de54e2fe29ce2ee33c343a06729f00e0cde458dbe3599364381c71966"
+    }
+  },
+  "requests": {
+    "meta": {
+      "type": "meta"
+    },
+    "metaAndAssetCtxs": {
+      "type": "metaAndAssetCtxs"
+    },
+    "clearinghouseState": {
+      "type": "clearinghouseState",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+    }
+  },
+  "responseHashes": {
+    "meta": "eb191a003d8ad2d0b52e6ff16e660c9ba105c03dade579e83abcfed9ee046a93",
+    "metaAndAssetCtxs": "2184fbde86f83b67a821a2f44904d474e4ff28e2fb15cc0198d49016c604acce",
+    "clearinghouseState": "cb8e3cf6b14968f18a602385d45ac8b148db1ec12dc504afbfdc8fffc3a8d061"
+  },
+  "officialSchemaExamples": {
+    "clearinghouseStateIsolatedPosition": {
+      "sourceId": "HL.DOC.INFO.PERP.2026-07-19",
+      "usage": "schema and snapshot-mapping evidence only; not a dated live parity fixture",
+      "position": {
+        "coin": "ETH",
+        "szi": "0.0335",
+        "entryPx": "2986.3",
+        "positionValue": "100.02765",
+        "unrealizedPnl": "-0.0134",
+        "returnOnEquity": "-0.0026789",
+        "liquidationPx": "2866.26936529",
+        "marginUsed": "4.967826",
+        "maxLeverage": 50,
+        "leverage": {
+          "type": "isolated",
+          "value": 20,
+          "rawUsd": "-95.059824"
+        },
+        "cumFunding": {
+          "allTime": "514.085417",
+          "sinceOpen": "0.0",
+          "sinceChange": "0.0"
+        }
+      },
+      "accountSummaries": {
+        "crossMaintenanceMarginUsed": "0.0",
+        "crossMarginSummary": {
+          "accountValue": "13104.514502",
+          "totalMarginUsed": "0.0",
+          "totalNtlPos": "0.0",
+          "totalRawUsd": "13104.514502"
+        },
+        "marginSummary": {
+          "accountValue": "13109.482328",
+          "totalMarginUsed": "4.967826",
+          "totalNtlPos": "100.02765",
+          "totalRawUsd": "13009.454678"
+        },
+        "withdrawable": "13104.514502"
+      },
+      "mappingAssertions": {
+        "crossAccountValueSource": "crossMarginSummary.accountValue",
+        "isolatedMarginValueSource": "marginSummary.accountValue - crossMarginSummary.accountValue",
+        "isolatedMarginValue": "4.967826",
+        "isolatedMarginValueIncludesUnrealizedPnl": true,
+        "isolatedPositionRawUsdField": "-95.059824"
+      }
+    }
+  },
+  "selection": {
+    "perpUniverse": [
+      {
+        "index": 0,
+        "name": "BTC",
+        "szDecimals": 5,
+        "maxLeverage": 40,
+        "marginTableId": 56,
+        "marginTable": {
+          "id": 56,
+          "description": "tiered 40x",
+          "marginTiers": [
+            {
+              "lowerBound": "0.0",
+              "maxLeverage": 40
+            },
+            {
+              "lowerBound": "150000000.0",
+              "maxLeverage": 20
+            }
+          ]
+        }
+      },
+      {
+        "index": 1,
+        "name": "ETH",
+        "szDecimals": 4,
+        "maxLeverage": 25,
+        "marginTableId": 55,
+        "marginTable": {
+          "id": 55,
+          "description": "tiered 25x",
+          "marginTiers": [
+            {
+              "lowerBound": "0.0",
+              "maxLeverage": 25
+            },
+            {
+              "lowerBound": "100000000.0",
+              "maxLeverage": 15
+            }
+          ]
+        }
+      },
+      {
+        "index": 4,
+        "name": "DYDX",
+        "szDecimals": 1,
+        "maxLeverage": 5,
+        "marginTableId": 5,
+        "marginTable": null
+      }
+    ],
+    "assetContexts": [
+      {
+        "index": 0,
+        "name": "BTC",
+        "markPx": "64706.0",
+        "oraclePx": "64716.0",
+        "midPx": "64706.5",
+        "funding": "0.0000125",
+        "premium": "-0.0001390692",
+        "impactPxs": ["64706.0", "64707.0"]
+      },
+      {
+        "index": 1,
+        "name": "ETH",
+        "markPx": "1869.3",
+        "oraclePx": "1869.0",
+        "midPx": "1869.35",
+        "funding": "0.0000125",
+        "premium": "0.0001605136",
+        "impactPxs": ["1869.3", "1869.4"]
+      },
+      {
+        "index": 4,
+        "name": "DYDX",
+        "markPx": "0.12083",
+        "oraclePx": "0.12091",
+        "midPx": "0.12084",
+        "funding": "0.0000125",
+        "premium": "0.0",
+        "impactPxs": ["0.12072", "0.12092"]
+      }
+    ],
+    "marginSummary": {
+      "accountValue": "3001412.122254",
+      "totalNtlPos": "3831232.83103",
+      "totalRawUsd": "1887689.2728180001",
+      "totalMarginUsed": "191561.641496"
+    },
+    "crossMarginSummary": {
+      "accountValue": "3001412.122254",
+      "totalNtlPos": "3831232.83103",
+      "totalRawUsd": "1887689.2728180001",
+      "totalMarginUsed": "191561.641496"
+    },
+    "crossMaintenanceMarginUsed": "38312.328233",
+    "positions": [
+      {
+        "coin": "BTC",
+        "szi": "0.26876",
+        "entryPx": "64716.4",
+        "positionValue": "17390.38456",
+        "unrealizedPnl": "-2.813455",
+        "returnOnEquity": "-0.003235121",
+        "liquidationPx": null,
+        "marginUsed": "869.519228",
+        "maxLeverage": 50,
+        "leverage": {
+          "type": "cross",
+          "value": 20
+        },
+        "cumFunding": {
+          "allTime": "-612870.033115",
+          "sinceOpen": "6.742523",
+          "sinceChange": "0.0"
+        }
+      },
+      {
+        "coin": "ETH",
+        "szi": "23.8678",
+        "entryPx": "1864.86",
+        "positionValue": "44616.07854",
+        "unrealizedPnl": "105.813339",
+        "returnOnEquity": "0.0475455891",
+        "liquidationPx": null,
+        "marginUsed": "2230.803927",
+        "maxLeverage": 50,
+        "leverage": {
+          "type": "cross",
+          "value": 20
+        },
+        "cumFunding": {
+          "allTime": "-484204.475783",
+          "sinceOpen": "19.678165",
+          "sinceChange": "0.0"
+        }
+      },
+      {
+        "coin": "DYDX",
+        "szi": "-100480.9",
+        "entryPx": "0.12169",
+        "positionValue": "12141.107147",
+        "unrealizedPnl": "87.368284",
+        "returnOnEquity": "0.142893175",
+        "liquidationPx": "29.3180423289",
+        "marginUsed": "607.055357",
+        "maxLeverage": 50,
+        "leverage": {
+          "type": "cross",
+          "value": 20
+        },
+        "cumFunding": {
+          "allTime": "-19633.921816",
+          "sinceOpen": "-30.59173",
+          "sinceChange": "0.0"
+        }
+      }
+    ]
+  },
+  "oracleLimitations": [
+    "The public HLP child account is a large cross-margin portfolio; selected positions do not isolate all account-level maintenance effects.",
+    "BTC and ETH have null server liquidationPx in this snapshot because the account has substantial excess cross margin.",
+    "DYDX has marginTableId 5 but the current meta response did not include a custom margin table entry for id 5; tests must treat this as default-table evidence only when the domain spec defines that mapping.",
+    "Selected position maxLeverage fields differ from current meta maxLeverage values; tests use meta marginTableId/rules for arithmetic and retain the position fields only as server observations.",
+    "Live observations are partial parity checks against server fields, not executable updateLeverage or liquidation-trigger evidence."
+  ]
+}

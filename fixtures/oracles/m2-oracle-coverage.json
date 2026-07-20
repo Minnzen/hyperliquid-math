@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "scope": "M2",
+  "inherits": "fixtures/oracles/m1-oracle-coverage.json",
+  "lastVerified": "2026-07-19",
+  "pinnedImplementations": {
+    "officialPythonSdk": {
+      "package": "hyperliquid-python-sdk",
+      "version": "0.24.0",
+      "commit": "2fdb18f9517675ea03695a0962bd19eece9c83f0",
+      "license": "MIT",
+      "usage": "test-only schema/cassette oracle; no M2 formula implementation found"
+    },
+    "liveFixtures": {
+      "mainnet": "fixtures/live/2026-07-19-mainnet-m2.json",
+      "testnet": "fixtures/live/2026-07-19-testnet-m2.json",
+      "usage": "offline replay of captured public positions, fills, funding, and fee schedules"
+    }
+  },
+  "functions": [
+    {
+      "exportName": "calculateTradeFee",
+      "formulaId": "hl.fees.trade-fee.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK exposes fee fields but no standalone trade-fee formula helper."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "Captured fills have zero fees and the fixture contains rates only, so no executed trade-fee amount can be replayed."
+        }
+      }
+    },
+    {
+      "exportName": "calculateWeightedFeeVolume",
+      "formulaId": "hl.fees.weighted-volume.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK has no weighted-volume calculation helper."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "The selected live fixture does not contain the complete rolling perps/spot volume inputs."
+        }
+      }
+    },
+    {
+      "exportName": "selectFeeTier",
+      "formulaId": "hl.fees.tier.select",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK has no independent tier-selection implementation."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured current VIP thresholds and rates replayed at exact and just-above boundaries"
+        }
+      }
+    },
+    {
+      "exportName": "calculatePerpUnrealizedPnl",
+      "formulaId": "hl.positions.unrealized-pnl.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK exposes position fields but no independent unrealized-PnL implementation."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured signed size, displayed entry, mark context, and server unrealized-PnL observations; hidden precision prevents byte-exact parity"
+        }
+      }
+    },
+    {
+      "exportName": "projectPerpFill",
+      "formulaId": "hl.positions.fill.project",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK exposes fill cassettes but no transition reducer."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured startPosition, side, size, and Long > Short classification replay"
+        }
+      }
+    },
+    {
+      "exportName": "projectPerpFillSequence",
+      "formulaId": "hl.positions.sequence.project",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK has no sequential position reducer."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured fill order and classification shapes only; full account replay is deferred to M4"
+        }
+      }
+    },
+    {
+      "exportName": "calculatePerpBreakEvenPrice",
+      "formulaId": "hl.positions.break-even-price.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK has no explicit-cost break-even helper."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "The live snapshot does not expose the exact cumulative-cost input used by this Math contract."
+        }
+      }
+    },
+    {
+      "exportName": "calculateFundingPremiumIndex",
+      "formulaId": "hl.funding.premium-index.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK has no premium-index implementation."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured impact prices, oracle price, and current premium fields; sampling-window parity is not asserted"
+        }
+      }
+    },
+    {
+      "exportName": "calculateFundingRate",
+      "formulaId": "hl.funding.rate.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK exposes funding history but no rate implementation."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured mainnet and testnet premium/rate history replayed through explicit official default rules"
+        }
+      }
+    },
+    {
+      "exportName": "calculateFundingPayment",
+      "formulaId": "hl.funding.payment.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned official SDK exposes funding settlement fields but no payment implementation."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured signed sizes, rates, and USDC account deltas validate settlement signs; historical oracle is not exposed"
+        }
+      }
+    },
+    {
+      "exportName": "annualizeFundingRate",
+      "formulaId": "hl.funding.rate.annualize",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "Annualization is a caller-selected analytical convention with no official SDK equivalent."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "Live protocol responses do not define simple or compounded analytical annualization."
+        }
+      }
+    }
+  ]
+}

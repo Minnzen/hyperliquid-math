@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "case": "m5-spot-hip1-hip3-bounded-serialization",
+  "maxSpotPositionTraceBytes": 2000,
+  "maxHip1DeploymentTraceBytes": 2400,
+  "maxHip3FeeTraceBytes": 2800,
+  "maxPortfolioTraceGrowthBytes": 180000,
+  "maxOneThousandTwentyFourPortfolioResultBytes": 420000
+}

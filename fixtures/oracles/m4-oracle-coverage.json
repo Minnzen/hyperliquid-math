@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "scope": "M4",
+  "inherits": "fixtures/oracles/m3-oracle-coverage.json",
+  "lastVerified": "2026-07-19",
+  "pinnedImplementations": {
+    "officialPythonSdk": {
+      "package": "hyperliquid-python-sdk",
+      "version": "0.24.0",
+      "commit": "2fdb18f9517675ea03695a0962bd19eece9c83f0",
+      "license": "MIT",
+      "usage": "test-only wire/action/state schema oracle; no M4 preview or reconciliation engine"
+    },
+    "liveFixtures": {
+      "mainnet": "fixtures/live/2026-07-19-mainnet-m4.json",
+      "usage": "offline schema and completeness replay for bounded fills, order status, open orders, and the historicalOrders cap"
+    }
+  },
+  "functions": [
+    {
+      "exportName": "validatePerpOrder",
+      "formulaId": "hl.orders.perp.validate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "Valid wire serialization does not independently evaluate validatePerpOrder constraint checks."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No rejected submission with authoritative minimum-notional or price-band reasons was captured."
+        }
+      }
+    },
+    {
+      "exportName": "calculatePerpMaxOrderSize",
+      "formulaId": "hl.orders.perp.max-size.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No local max-size calculator exists."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "The fixture does not expose contemporaneous available-collateral and server-max-size decisions."
+        }
+      }
+    },
+    {
+      "exportName": "evaluatePerpReduceOnly",
+      "formulaId": "hl.orders.perp.reduce-only.evaluate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "reduce_only is a wire field, not an independent evaluator."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No reduce-only rejection or complete position/order pair was captured."
+        }
+      }
+    },
+    {
+      "exportName": "calculatePerpSlippagePrice",
+      "formulaId": "hl.orders.perp.slippage-price.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No offline pinned harness covers explicit-reference side-aware conservative rounding."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No submitted slippage boundary was captured."
+        }
+      }
+    },
+    {
+      "exportName": "classifyPerpTrigger",
+      "formulaId": "hl.orders.perp.trigger.classify",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "Trigger fields are schema-only."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No TP/SL trigger order was captured."
+        }
+      }
+    },
+    {
+      "exportName": "derivePerpTriggerPrice",
+      "formulaId": "hl.orders.perp.trigger-price.derive",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No PnL/ROE trigger-price solver exists."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "The fixture has no target-PnL/ROE intent."
+        }
+      }
+    },
+    {
+      "exportName": "buildPerpScaleLadder",
+      "formulaId": "hl.orders.perp.scale.build",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No scale ladder allocator exists."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No scale order or hidden server allocation algorithm was captured."
+        }
+      }
+    },
+    {
+      "exportName": "calculatePerpTwapSchedule",
+      "formulaId": "hl.orders.perp.twap-schedule.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned release has no independent schedule-math oracle."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No TWAP slice fills were captured."
+        }
+      }
+    },
+    {
+      "exportName": "replayPerpAccountEvents",
+      "formulaId": "hl.reconciliation.perp-account.replay",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "Info methods return snapshots/events but expose no replay engine."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "bounded fill identity and side mapping plus objective startPosition, closedPnl, and fee residual calculation from raw server evidence; full history and true pre-fill cost basis unavailable"
+        }
+      }
+    },
+    {
+      "exportName": "reconcilePerpAccountSnapshot",
+      "formulaId": "hl.reconciliation.perp-account.reconcile",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "No account reconciliation engine exists."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "documented 2000-row historicalOrders cap and missing recent order demonstrate explicit incomplete-evidence handling"
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "SDK schema/wire coverage is not formula parity.",
+    "Scale is an explicit local ladder contract, not a hidden server-algorithm reproduction.",
+    "TWAP coverage excludes actual scheduling, fills, catch-up decisions, and completion.",
+    "The mainnet fixture is bounded and cannot prove a complete account replay.",
+    "Server closedPnl and fee residuals are reported neutrally; the fixture does not establish which server display-field convention is formula truth.",
+    "No signed mainnet or testnet order was submitted."
+  ]
+}

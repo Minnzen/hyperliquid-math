@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "scope": "M3",
+  "inherits": "fixtures/oracles/m2-oracle-coverage.json",
+  "lastVerified": "2026-07-19",
+  "pinnedImplementations": {
+    "officialPythonSdk": {
+      "package": "hyperliquid-python-sdk",
+      "version": "0.24.0",
+      "commit": "2fdb18f9517675ea03695a0962bd19eece9c83f0",
+      "license": "MIT",
+      "usage": "test-only schema/action-shape oracle; no standalone M3 formula helpers identified"
+    },
+    "liveFixtures": {
+      "mainnet": "fixtures/live/2026-07-19-mainnet-m3.json",
+      "testnet": "fixtures/live/2026-07-19-testnet-m3.json",
+      "usage": "offline replay of public meta, margin tiers, asset contexts, clearinghouse margin summaries, selected server liquidationPx observations, and official isolated-position schema mapping"
+    },
+    "testnetHarness": {
+      "updateLeverage": "fixtures/testnet/update-leverage-m3-harness.json",
+      "usage": "data-only matrix for credential-gated updateLeverage validation; all rows are intentionally not-executed"
+    }
+  },
+  "functions": [
+    {
+      "exportName": "calculatePerpInitialMargin",
+      "formulaId": "hl.margin.initial.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The official SDK can submit actions and fetch states but does not expose an independent initial-margin calculator."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured public positionValue, leverage value, and marginUsed observations for selected cross positions"
+        }
+      }
+    },
+    {
+      "exportName": "calculatePerpMaintenanceMargin",
+      "formulaId": "hl.margin.maintenance.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The official SDK exposes meta/margin table responses but no standalone maintenance-margin implementation."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "The selected live position set is not the complete account behind crossMaintenanceMarginUsed, so no authoritative maintenance total can be replayed."
+        }
+      }
+    },
+    {
+      "exportName": "evaluatePerpAccountMargin",
+      "formulaId": "hl.margin.account.evaluate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The official SDK has no account-margin evaluator separate from server state."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "The fixture exposes account summaries but not the complete position vector needed to replay the public account evaluator."
+        }
+      }
+    },
+    {
+      "exportName": "calculatePerpLiquidationPrice",
+      "formulaId": "hl.liquidation-price.calculate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The official SDK exposes clearinghouseState but no independent liquidation-price solver."
+        },
+        "live-fixtures": {
+          "coverage": "partial",
+          "slice": "captured official liquidation formula sources and selected server liquidationPx observations; BTC/ETH null liquidationPx and wide portfolio effects limit parity"
+        }
+      }
+    },
+    {
+      "exportName": "simulatePerpAccountScenario",
+      "formulaId": "hl.scenario.perp-account.simulate",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The official SDK has no deterministic scenario engine or offline replay oracle."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No actual-fill pair or signed testnet action was captured for M3; scenario behavior must remain offline/experimental until a credentialed testnet gate is executed."
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "M3 SDK coverage is schema-only. Formula parity relies on official documentation plus live field observations.",
+    "updateLeverage, mode-switch, and actual-fill replay are not executed without testnet credentials.",
+    "Scenario maturity cannot be promoted to stable from these fixtures alone."
+  ]
+}

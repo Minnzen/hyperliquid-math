@@ -1,0 +1,147 @@
+{
+  "name": "hyperliquid-math",
+  "version": "0.0.0",
+  "description": "Deterministic, explainable Hyperliquid math: margin, liquidation price, PnL, funding, fees, orders, and spot — exact decimals, zero network I/O, every result carries an auditable trace.",
+  "keywords": [
+    "hyperliquid",
+    "perpetuals",
+    "liquidation-price",
+    "margin",
+    "funding-rate",
+    "pnl",
+    "trading-math",
+    "decimal",
+    "deterministic",
+    "defi",
+    "hip-3"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Minnzen/hyperliquid-math.git"
+  },
+  "homepage": "https://minnzen.github.io/hyperliquid-math/",
+  "bugs": "https://github.com/Minnzen/hyperliquid-math/issues",
+  "private": false,
+  "packageManager": "pnpm@11.15.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist",
+    "spec",
+    "README.md",
+    "README.zh-CN.md",
+    "SKILL.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./model": {
+      "types": "./dist/model/index.d.ts",
+      "import": "./dist/model/index.js"
+    },
+    "./identifiers": {
+      "types": "./dist/identifiers/index.d.ts",
+      "import": "./dist/identifiers/index.js"
+    },
+    "./liquidation": {
+      "types": "./dist/liquidation/index.d.ts",
+      "import": "./dist/liquidation/index.js"
+    },
+    "./margin": {
+      "types": "./dist/margin/index.d.ts",
+      "import": "./dist/margin/index.js"
+    },
+    "./fees": {
+      "types": "./dist/fees/index.d.ts",
+      "import": "./dist/fees/index.js"
+    },
+    "./funding": {
+      "types": "./dist/funding/index.d.ts",
+      "import": "./dist/funding/index.js"
+    },
+    "./hip1": {
+      "types": "./dist/hip1/index.d.ts",
+      "import": "./dist/hip1/index.js"
+    },
+    "./hip3": {
+      "types": "./dist/hip3/index.d.ts",
+      "import": "./dist/hip3/index.js"
+    },
+    "./orderbook": {
+      "types": "./dist/orderbook/index.d.ts",
+      "import": "./dist/orderbook/index.js"
+    },
+    "./orders": {
+      "types": "./dist/orders/index.d.ts",
+      "import": "./dist/orders/index.js"
+    },
+    "./positions": {
+      "types": "./dist/positions/index.d.ts",
+      "import": "./dist/positions/index.js"
+    },
+    "./precision": {
+      "types": "./dist/precision/index.d.ts",
+      "import": "./dist/precision/index.js"
+    },
+    "./reconciliation": {
+      "types": "./dist/reconciliation/index.d.ts",
+      "import": "./dist/reconciliation/index.js"
+    },
+    "./scenarios": {
+      "types": "./dist/scenarios/index.d.ts",
+      "import": "./dist/scenarios/index.js"
+    },
+    "./spot": {
+      "types": "./dist/spot/index.d.ts",
+      "import": "./dist/spot/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:browser": "vitest run --config vitest.browser.config.ts",
+    "manifest:check": "pnpm build && node scripts/check-public-functions.mjs",
+    "dependencies:check": "node scripts/check-runtime-dependencies.mjs",
+    "boundaries:check": "node scripts/check-import-boundaries.mjs",
+    "api:report": "pnpm build && api-extractor run --local --verbose",
+    "api:check": "pnpm build && api-extractor run --verbose",
+    "publint": "pnpm build && publint",
+    "pack:check": "pnpm build && node scripts/pack-smoke.mjs",
+    "benchmark:record": "pnpm build && node scripts/benchmark.mjs --record",
+    "benchmark:check": "pnpm build && node scripts/benchmark.mjs",
+    "actions:check": "node scripts/check-action-pins.mjs",
+    "check": "pnpm lint && pnpm build && pnpm typecheck && pnpm test:coverage && pnpm manifest:check && pnpm dependencies:check && pnpm boundaries:check && pnpm api:check && pnpm publint && pnpm actions:check && pnpm benchmark:check",
+    "prepack": "pnpm build"
+  },
+  "dependencies": {
+    "decimal.js": "10.6.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.4",
+    "@changesets/cli": "2.31.1",
+    "@microsoft/api-extractor": "7.58.11",
+    "@types/node": "24.13.3",
+    "@vitest/browser-playwright": "4.1.10",
+    "@vitest/coverage-v8": "4.1.10",
+    "fast-check": "4.9.0",
+    "playwright": "1.61.1",
+    "publint": "0.3.21",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

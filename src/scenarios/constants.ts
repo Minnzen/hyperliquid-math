@@ -1,0 +1,13 @@
+export const scenarioFormulaId = 'hl.scenario.perp-account.simulate'
+
+export const scenarioSourceRefs = [
+  'HLM.SPEC.SCENARIOS.PERP_ACCOUNT.V1',
+  'HLM.SPEC.POSITIONS.FILL_PROJECT.V1',
+  'HLM.SPEC.MARGIN.ACCOUNT_EVALUATE.V1',
+  'HLM.SPEC.LIQUIDATION.PRICE.V1',
+  'HL.DOC.MARGINING.2026-07-19',
+  'HL.DOC.MARGIN_TIERS.2026-07-19',
+  'HL.DOC.LIQUIDATIONS.2026-07-19',
+  'HL.DOC.EXCHANGE.2026-07-19',
+  'DECIMALJS.10.6.0',
+] as const

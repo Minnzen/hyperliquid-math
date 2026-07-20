@@ -1,0 +1,4 @@
+# Standalone docs project (not linked to the root package).
+# pnpm 11 reads build-script approvals from this file; esbuild ships VitePress's bundler.
+allowBuilds:
+  esbuild: true

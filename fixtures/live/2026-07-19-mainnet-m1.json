@@ -1,0 +1,437 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "HL.LIVE.MAINNET.M1.2026-07-19",
+  "network": "mainnet",
+  "endpoint": "https://api.hyperliquid.xyz/info",
+  "capturedAt": "2026-07-19T03:22:29.392Z",
+  "requests": {
+    "perpMeta": {
+      "type": "meta"
+    },
+    "spotMeta": {
+      "type": "spotMeta"
+    },
+    "perpDexs": {
+      "type": "perpDexs"
+    },
+    "hip3Meta": {
+      "type": "meta",
+      "dex": "xyz"
+    },
+    "l2Book": {
+      "type": "l2Book",
+      "coin": "BTC"
+    }
+  },
+  "responseHashes": {
+    "perpMeta": "eb191a003d8ad2d0b52e6ff16e660c9ba105c03dade579e83abcfed9ee046a93",
+    "spotMeta": "4eb569c3c14df4fe566f3e6e5e573d69951f85a55c2877c85bb0f0e4b161fff5",
+    "perpDexs": "1bfb112256a7145953cad4fee451556eb21d45f6280b498e07c95e98d94fa50d",
+    "hip3Meta": "fa114fc6f8ade5f334c8fde61607dd71f036c1779ab368dea46956748e7c6a30",
+    "l2Book": "51a0439647190f134eb7a3098cf20a8d7b0ef4ee89ac8fea9a1d79228d719364"
+  },
+  "selection": {
+    "perpUniverse": [
+      {
+        "index": 0,
+        "szDecimals": 5,
+        "name": "BTC",
+        "maxLeverage": 40,
+        "marginTableId": 56
+      },
+      {
+        "index": 1,
+        "szDecimals": 4,
+        "name": "ETH",
+        "maxLeverage": 25,
+        "marginTableId": 55
+      },
+      {
+        "index": 2,
+        "szDecimals": 2,
+        "name": "ATOM",
+        "maxLeverage": 5,
+        "marginTableId": 5
+      },
+      {
+        "index": 3,
+        "szDecimals": 1,
+        "name": "MATIC",
+        "maxLeverage": 20,
+        "marginTableId": 20,
+        "isDelisted": true
+      },
+      {
+        "index": 4,
+        "szDecimals": 1,
+        "name": "DYDX",
+        "maxLeverage": 5,
+        "marginTableId": 5
+      }
+    ],
+    "spotUniverse": [
+      {
+        "tokens": [1, 0],
+        "name": "PURR/USDC",
+        "index": 0,
+        "isCanonical": true
+      },
+      {
+        "tokens": [2, 0],
+        "name": "@1",
+        "index": 1,
+        "isCanonical": false
+      },
+      {
+        "tokens": [3, 0],
+        "name": "@2",
+        "index": 2,
+        "isCanonical": false
+      }
+    ],
+    "spotTokens": [
+      {
+        "name": "USDC",
+        "szDecimals": 8,
+        "weiDecimals": 8,
+        "index": 0,
+        "tokenId": "0x6d1e7cde53ba9467b783cb7c530ce054",
+        "isCanonical": true,
+        "evmContract": {
+          "address": "0x6b9e773128f453f5c2c60935ee2de2cbc5390a24",
+          "evm_extra_wei_decimals": -2
+        },
+        "fullName": null,
+        "deployerTradingFeeShare": "0.0"
+      },
+      {
+        "name": "PURR",
+        "szDecimals": 0,
+        "weiDecimals": 5,
+        "index": 1,
+        "tokenId": "0xc1fb593aeffbeb02f85e0308e9956a90",
+        "isCanonical": true,
+        "evmContract": {
+          "address": "0x9b498c3c8a0b8cd8ba1d9851d40d186f1872b44e",
+          "evm_extra_wei_decimals": 13
+        },
+        "fullName": null,
+        "deployerTradingFeeShare": "0.0"
+      },
+      {
+        "name": "HFUN",
+        "szDecimals": 2,
+        "weiDecimals": 8,
+        "index": 2,
+        "tokenId": "0xbaf265ef389da684513d98d68edf4eae",
+        "isCanonical": false,
+        "evmContract": {
+          "address": "0xa320d9f65ec992eff38622c63627856382db726c",
+          "evm_extra_wei_decimals": 10
+        },
+        "fullName": null,
+        "deployerTradingFeeShare": "0.0"
+      },
+      {
+        "name": "LICK",
+        "szDecimals": 0,
+        "weiDecimals": 5,
+        "index": 3,
+        "tokenId": "0xba3aaf468f793d9b42fd3328e24f1de9",
+        "isCanonical": false,
+        "evmContract": null,
+        "fullName": null,
+        "deployerTradingFeeShare": "0.0"
+      }
+    ],
+    "perpDexs": [
+      {
+        "dexIndex": 1,
+        "name": "xyz",
+        "fullName": "XYZ"
+      },
+      {
+        "dexIndex": 2,
+        "name": "flx",
+        "fullName": "Felix Exchange"
+      },
+      {
+        "dexIndex": 3,
+        "name": "vntl",
+        "fullName": "Ventuals"
+      },
+      {
+        "dexIndex": 4,
+        "name": "hyna",
+        "fullName": "HyENA"
+      },
+      {
+        "dexIndex": 5,
+        "name": "km",
+        "fullName": "Markets by Kinetiq"
+      }
+    ],
+    "hip3Dex": {
+      "dexIndex": 1,
+      "name": "xyz",
+      "fullName": "XYZ"
+    },
+    "hip3Universe": [
+      {
+        "index": 0,
+        "szDecimals": 4,
+        "name": "xyz:XYZ100",
+        "maxLeverage": 30,
+        "marginTableId": 30,
+        "growthMode": "enabled",
+        "lastGrowthModeChangeTime": "2025-11-23T17:37:10.033211662"
+      },
+      {
+        "index": 1,
+        "szDecimals": 3,
+        "name": "xyz:TSLA",
+        "maxLeverage": 20,
+        "marginTableId": 20,
+        "growthMode": "enabled",
+        "lastGrowthModeChangeTime": "2025-11-23T17:37:10.033211662"
+      },
+      {
+        "index": 2,
+        "szDecimals": 3,
+        "name": "xyz:NVDA",
+        "maxLeverage": 20,
+        "marginTableId": 20,
+        "growthMode": "enabled",
+        "lastGrowthModeChangeTime": "2025-11-23T17:37:10.033211662"
+      },
+      {
+        "index": 3,
+        "szDecimals": 4,
+        "name": "xyz:GOLD",
+        "maxLeverage": 25,
+        "marginTableId": 25
+      },
+      {
+        "index": 4,
+        "szDecimals": 3,
+        "name": "xyz:HOOD",
+        "maxLeverage": 10,
+        "marginTableId": 10,
+        "onlyIsolated": true,
+        "marginMode": "noCross",
+        "growthMode": "enabled",
+        "lastGrowthModeChangeTime": "2025-11-23T17:37:10.033211662"
+      }
+    ]
+  },
+  "l2Book": {
+    "coin": "BTC",
+    "time": 1784431349577,
+    "levels": [
+      [
+        {
+          "px": "64641.0",
+          "sz": "4.71005",
+          "n": 18
+        },
+        {
+          "px": "64640.0",
+          "sz": "1.71074",
+          "n": 7
+        },
+        {
+          "px": "64639.0",
+          "sz": "3.7208",
+          "n": 7
+        },
+        {
+          "px": "64638.0",
+          "sz": "3.32846",
+          "n": 2
+        },
+        {
+          "px": "64637.0",
+          "sz": "5.28872",
+          "n": 5
+        },
+        {
+          "px": "64636.0",
+          "sz": "4.92604",
+          "n": 9
+        },
+        {
+          "px": "64635.0",
+          "sz": "3.66421",
+          "n": 14
+        },
+        {
+          "px": "64634.0",
+          "sz": "2.84342",
+          "n": 10
+        },
+        {
+          "px": "64633.0",
+          "sz": "11.4001",
+          "n": 11
+        },
+        {
+          "px": "64632.0",
+          "sz": "1.41149",
+          "n": 5
+        },
+        {
+          "px": "64631.0",
+          "sz": "1.06222",
+          "n": 5
+        },
+        {
+          "px": "64630.0",
+          "sz": "2.34423",
+          "n": 3
+        },
+        {
+          "px": "64629.0",
+          "sz": "4.10913",
+          "n": 9
+        },
+        {
+          "px": "64628.0",
+          "sz": "7.05298",
+          "n": 7
+        },
+        {
+          "px": "64627.0",
+          "sz": "3.88778",
+          "n": 5
+        },
+        {
+          "px": "64626.0",
+          "sz": "4.4027",
+          "n": 10
+        },
+        {
+          "px": "64625.0",
+          "sz": "6.78244",
+          "n": 6
+        },
+        {
+          "px": "64624.0",
+          "sz": "16.08431",
+          "n": 5
+        },
+        {
+          "px": "64623.0",
+          "sz": "9.39964",
+          "n": 7
+        },
+        {
+          "px": "64622.0",
+          "sz": "19.22847",
+          "n": 5
+        }
+      ],
+      [
+        {
+          "px": "64642.0",
+          "sz": "10.13777",
+          "n": 23
+        },
+        {
+          "px": "64643.0",
+          "sz": "0.099",
+          "n": 2
+        },
+        {
+          "px": "64644.0",
+          "sz": "0.00773",
+          "n": 1
+        },
+        {
+          "px": "64645.0",
+          "sz": "0.38567",
+          "n": 4
+        },
+        {
+          "px": "64646.0",
+          "sz": "0.82247",
+          "n": 2
+        },
+        {
+          "px": "64647.0",
+          "sz": "2.90892",
+          "n": 6
+        },
+        {
+          "px": "64648.0",
+          "sz": "3.42732",
+          "n": 5
+        },
+        {
+          "px": "64649.0",
+          "sz": "2.36305",
+          "n": 9
+        },
+        {
+          "px": "64650.0",
+          "sz": "1.57894",
+          "n": 8
+        },
+        {
+          "px": "64651.0",
+          "sz": "1.09553",
+          "n": 2
+        },
+        {
+          "px": "64652.0",
+          "sz": "0.57143",
+          "n": 5
+        },
+        {
+          "px": "64653.0",
+          "sz": "4.4701",
+          "n": 7
+        },
+        {
+          "px": "64654.0",
+          "sz": "1.07478",
+          "n": 6
+        },
+        {
+          "px": "64655.0",
+          "sz": "3.20851",
+          "n": 7
+        },
+        {
+          "px": "64656.0",
+          "sz": "2.2384",
+          "n": 5
+        },
+        {
+          "px": "64657.0",
+          "sz": "6.31199",
+          "n": 7
+        },
+        {
+          "px": "64658.0",
+          "sz": "2.84768",
+          "n": 8
+        },
+        {
+          "px": "64659.0",
+          "sz": "3.2042",
+          "n": 8
+        },
+        {
+          "px": "64660.0",
+          "sz": "4.2033",
+          "n": 3
+        },
+        {
+          "px": "64661.0",
+          "sz": "0.19936",
+          "n": 2
+        }
+      ]
+    ]
+  }
+}

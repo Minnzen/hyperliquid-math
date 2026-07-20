@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "HL.LIVE.MAINNET.M2.2026-07-19",
+  "network": "mainnet",
+  "endpoint": "https://api.hyperliquid.xyz/info",
+  "capturedAt": "2026-07-19T04:44:05.799Z",
+  "subject": {
+    "kind": "public-hlp-child",
+    "address": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+  },
+  "requests": {
+    "clearinghouseState": {
+      "type": "clearinghouseState",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+    },
+    "userFills": {
+      "type": "userFills",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+    },
+    "userFunding": {
+      "type": "userFunding",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a",
+      "startTime": 1784394000000
+    },
+    "userFees": {
+      "type": "userFees",
+      "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a"
+    },
+    "metaAndAssetCtxs": {
+      "type": "metaAndAssetCtxs"
+    },
+    "fundingHistory": {
+      "type": "fundingHistory",
+      "coin": "BTC",
+      "startTime": 1784414645800
+    }
+  },
+  "responseHashes": {
+    "clearinghouseState": "224970f389aef2926725ccca5bbdd065e58d763df0e2d8ca9eec9b829c52bd1f",
+    "userFills": "00e9d148b7f393cc5a767dead62b16cd6f3e0b2c8aedf4af1ece8b47503bdb0d",
+    "userFunding": "8167f063e4f627d956df48ca299cacaf3da66482ff761d4f4dbc72dd189db88b",
+    "userFees": "eb73ff9964d4475173035188b4c62fd990eb7494a0c66620212d4e8533712c3e",
+    "metaAndAssetCtxs": "75d9cd3b42ceb2e57a3e8d4f70875c26d55f756c61b4e0140b269f0ffba24c07",
+    "fundingHistory": "e244d11ea155140cdb20208455b21c990caeed4e3be1d718b57beca8d7e62131"
+  },
+  "selection": {
+    "positions": [
+      {
+        "coin": "BTC",
+        "szi": "0.20717",
+        "entryPx": "64703.4",
+        "positionValue": "13415.50052",
+        "unrealizedPnl": "10.887339"
+      },
+      {
+        "coin": "ETH",
+        "szi": "22.9475",
+        "entryPx": "1864.61",
+        "positionValue": "42877.40375",
+        "unrealizedPnl": "89.226246"
+      },
+      {
+        "coin": "DYDX",
+        "szi": "-99328.5",
+        "entryPx": "0.12175",
+        "positionValue": "11954.184975",
+        "unrealizedPnl": "139.94153"
+      }
+    ],
+    "fills": [
+      {
+        "coin": "MORPHO",
+        "px": "1.9988",
+        "sz": "7.8",
+        "side": "A",
+        "time": 1784435536709,
+        "startPosition": "4.0",
+        "dir": "Long > Short",
+        "closedPnl": "0.02136",
+        "fee": "0.0",
+        "feeToken": "USDC",
+        "tid": 525358984972759,
+        "hash": "0xcd9b4a136a0a9f87cf150440407509018b0061f9050dbe597163f566290e7972"
+      },
+      {
+        "coin": "TRUMP",
+        "px": "1.6564",
+        "sz": "11.3",
+        "side": "B",
+        "time": 1784436238675,
+        "startPosition": "-22175.3",
+        "dir": "Close Short",
+        "closedPnl": "-0.249843",
+        "fee": "0.0",
+        "feeToken": "USDC",
+        "tid": 1078690601893423,
+        "hash": "0x885532ba0722534989ce0440409bba01f8004a9fa225721b2c1dde0cc6262d34"
+      },
+      {
+        "coin": "RUNE",
+        "px": "0.43646",
+        "sz": "39.3",
+        "side": "A",
+        "time": 1784436238477,
+        "startPosition": "44951.8",
+        "dir": "Close Long",
+        "closedPnl": "0.23973",
+        "fee": "0.0",
+        "feeToken": "USDC",
+        "tid": 301850730864099,
+        "hash": "0xd2dc6d25f799c19dd4560440409bb80201140101929ce06f76a51878b69d9b88"
+      },
+      {
+        "coin": "BTC",
+        "px": "64761.0",
+        "sz": "0.01009",
+        "side": "A",
+        "time": 1784436228838,
+        "startPosition": "0.21726",
+        "dir": "Close Long",
+        "closedPnl": "0.581184",
+        "fee": "0.0",
+        "feeToken": "USDC",
+        "tid": 1026382932656135,
+        "hash": "0x6f6b264a855510ea70e40440409b2b01de003e3020582fbc1333d19d4458ead5"
+      }
+    ],
+    "funding": [
+      {
+        "time": 1784394000035,
+        "delta": {
+          "type": "funding",
+          "coin": "BTC",
+          "usdc": "-0.179006",
+          "szi": "0.22273",
+          "fundingRate": "0.0000125",
+          "nSamples": null
+        }
+      },
+      {
+        "time": 1784394000035,
+        "delta": {
+          "type": "funding",
+          "coin": "ETH",
+          "usdc": "-0.430565",
+          "szi": "18.6604",
+          "fundingRate": "0.0000125",
+          "nSamples": null
+        }
+      },
+      {
+        "time": 1784394000035,
+        "delta": {
+          "type": "funding",
+          "coin": "DYDX",
+          "usdc": "0.186634",
+          "szi": "-123824.3",
+          "fundingRate": "0.0000125",
+          "nSamples": null
+        }
+      },
+      {
+        "time": 1784397600031,
+        "delta": {
+          "type": "funding",
+          "coin": "BTC",
+          "usdc": "-0.159583",
+          "szi": "0.19799",
+          "fundingRate": "0.0000125",
+          "nSamples": null
+        }
+      },
+      {
+        "time": 1784397600031,
+        "delta": {
+          "type": "funding",
+          "coin": "DYDX",
+          "usdc": "0.193688",
+          "szi": "-128622.1",
+          "fundingRate": "0.0000125",
+          "nSamples": null
+        }
+      }
+    ],
+    "userFees": {
+      "userAddRate": "0.00004",
+      "userCrossRate": "0.0003",
+      "userSpotAddRate": "0.0001",
+      "userSpotCrossRate": "0.0004",
+      "feeSchedule": {
+        "add": "0.00015",
+        "cross": "0.00045",
+        "spotAdd": "0.0004",
+        "spotCross": "0.0007",
+        "vip": [
+          {
+            "ntlCutoff": "5000000.0",
+            "cross": "0.0004",
+            "add": "0.00012",
+            "spotCross": "0.0006",
+            "spotAdd": "0.0003"
+          },
+          {
+            "ntlCutoff": "25000000.0",
+            "cross": "0.00035",
+            "add": "0.00008",
+            "spotCross": "0.0005",
+            "spotAdd": "0.0002"
+          },
+          {
+            "ntlCutoff": "100000000.0",
+            "cross": "0.0003",
+            "add": "0.00004",
+            "spotCross": "0.0004",
+            "spotAdd": "0.0001"
+          },
+          {
+            "ntlCutoff": "500000000.0",
+            "cross": "0.00028",
+            "add": "0.0",
+            "spotCross": "0.00035",
+            "spotAdd": "0.0"
+          },
+          {
+            "ntlCutoff": "2000000000.0",
+            "cross": "0.00026",
+            "add": "0.0",
+            "spotCross": "0.0003",
+            "spotAdd": "0.0"
+          },
+          {
+            "ntlCutoff": "7000000000.0",
+            "cross": "0.00024",
+            "add": "0.0",
+            "spotCross": "0.00025",
+            "spotAdd": "0.0"
+          }
+        ],
+        "mm": [
+          { "makerFractionCutoff": "0.005", "add": "-0.00001" },
+          { "makerFractionCutoff": "0.015", "add": "-0.00002" },
+          { "makerFractionCutoff": "0.03", "add": "-0.00003" }
+        ]
+      }
+    },
+    "btcAssetContext": {
+      "funding": "0.0000125",
+      "premium": "-0.0000787461",
+      "oraclePx": "64765.1",
+      "markPx": "64756.0",
+      "midPx": "64759.5",
+      "impactPxs": ["64759.0", "64760.0"]
+    },
+    "btcFundingHistory": [
+      {
+        "coin": "BTC",
+        "fundingRate": "0.0000125",
+        "premium": "-0.0001801475",
+        "time": 1784422800044
+      },
+      {
+        "coin": "BTC",
+        "fundingRate": "0.0000125",
+        "premium": "-0.0002153718",
+        "time": 1784426400055
+      },
+      {
+        "coin": "BTC",
+        "fundingRate": "0.0000125",
+        "premium": "-0.0001567777",
+        "time": 1784430000022
+      },
+      {
+        "coin": "BTC",
+        "fundingRate": "0.0000125",
+        "premium": "-0.0001787323",
+        "time": 1784433600031
+      }
+    ]
+  },
+  "oracleLimitations": [
+    "Captured public responses are replay evidence, not an independent implementation of Math formulas.",
+    "Server display fields may include undocumented precision or aggregation; exact formula equality is asserted only where all inputs are explicit.",
+    "The funding settlement snapshot does not expose the historical oracle price used for each payment."
+  ]
+}
