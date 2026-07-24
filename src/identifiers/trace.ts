@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type { CalculationTrace, JsonObject, MathReason, TraceStep } from '../model/index.js'
 
 interface IdentifierTraceInput {
@@ -17,7 +18,7 @@ export const assetIdSourceRefs = [
 export const officialAssetIdSourceRefs = ['HL.DOC.ASSET_IDS.2026-07-19'] as const
 
 export function createIdentifierTrace(input: IdentifierTraceInput): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: input.formulaId,
     formulaVersion: 1,
     authority: 'local-exact',
@@ -28,7 +29,7 @@ export function createIdentifierTrace(input: IdentifierTraceInput): CalculationT
     rounding: [],
     assumptions: [],
     sourceRefs: input.sourceRefs,
-  }
+  })
 }
 
 export function reason(code: string, path: string, sourceRefs?: readonly string[]): MathReason {

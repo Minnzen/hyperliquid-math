@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type { CalculationTrace, MathReason, RoundingDecision, TraceStep } from '../model/index.js'
 import type {
   NormalizedCalculateHip3FeeRatesInput,
@@ -16,7 +17,7 @@ export function collateralSourceTrace(
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.hip3.collateral-source.resolve',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -63,7 +64,7 @@ export function collateralSourceTrace(
       'HL.DOC.HIP3.2026-07-19',
       'HL.DOC.ACCOUNT_ABSTRACTION.2026-07-19',
     ],
-  }
+  })
 }
 
 export function marginModeTrace(
@@ -71,7 +72,7 @@ export function marginModeTrace(
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.hip3.margin-mode.evaluate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -106,7 +107,7 @@ export function marginModeTrace(
       'HL.DOC.HIP3.2026-07-19',
       'HL.DOC.MARGINING.2026-07-19',
     ],
-  }
+  })
 }
 
 export function feeRatesTrace(
@@ -115,7 +116,7 @@ export function feeRatesTrace(
   intermediates: readonly TraceStep[] = [],
   rounding: readonly RoundingDecision[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.hip3.fee-rates.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -175,5 +176,5 @@ export function feeRatesTrace(
       'HL.DOC.FEES.2026-07-19',
       decimalSource,
     ],
-  }
+  })
 }

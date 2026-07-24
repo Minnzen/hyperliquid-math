@@ -1,4 +1,5 @@
 import { type Decimal40, normalizeDecimalString } from '../core/decimal.js'
+import { finalizeTrace } from '../core/finalize-trace.js'
 import { describePlainValue } from '../core/plain-data.js'
 import { invalidInputResult, okResult } from '../core/result.js'
 import type {
@@ -191,7 +192,7 @@ function createTrace(input: {
   readonly intermediates?: readonly TraceStep[]
   readonly rounding?: readonly RoundingDecision[]
 }): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: input.formulaId,
     formulaVersion: 1,
     authority: 'local-exact',
@@ -202,7 +203,7 @@ function createTrace(input: {
     rounding: input.rounding ?? [],
     assumptions: [],
     sourceRefs: input.sourceRefs,
-  }
+  })
 }
 
 function incompleteTrace(

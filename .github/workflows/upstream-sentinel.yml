@@ -1,0 +1,85 @@
+name: Reliability - Upstream Sentinel
+
+on:
+  schedule:
+    - cron: '23 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reliability-upstream-sentinel-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sentinel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.15.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.18.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm actions:check
+      - name: Verify pinned official Python SDK commit is still reachable
+        run: |
+          mkdir -p .oracle/pinned-python-sdk
+          git -C .oracle/pinned-python-sdk init
+          git -C .oracle/pinned-python-sdk remote add origin \
+            https://github.com/hyperliquid-dex/hyperliquid-python-sdk.git
+          git -C .oracle/pinned-python-sdk fetch --depth=1 origin \
+            2fdb18f9517675ea03695a0962bd19eece9c83f0
+          test "$(git -C .oracle/pinned-python-sdk rev-parse FETCH_HEAD)" = \
+            "2fdb18f9517675ea03695a0962bd19eece9c83f0"
+      - name: Probe public Hyperliquid info shapes used by mapping docs
+        run: |
+          node --input-type=module <<'NODE'
+          const info = async (body) => {
+            const response = await fetch('https://api.hyperliquid.xyz/info', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body),
+            })
+            if (!response.ok) {
+              throw new Error(`${body.type} returned HTTP ${response.status}`)
+            }
+            return response.json()
+          }
+
+          const assert = (condition, message) => {
+            if (!condition) throw new Error(message)
+          }
+
+          const meta = await info({ type: 'meta' })
+          assert(Array.isArray(meta.universe) && meta.universe.length > 0, 'meta.universe is missing')
+          assert(Array.isArray(meta.marginTables), 'meta.marginTables is missing')
+          const firstPerp = meta.universe[0]
+          assert(typeof firstPerp.name === 'string', 'meta.universe[].name is missing')
+          assert(Number.isInteger(firstPerp.szDecimals), 'meta.universe[].szDecimals is missing')
+          assert(Number.isInteger(firstPerp.maxLeverage), 'meta.universe[].maxLeverage is missing')
+          assert(Number.isInteger(firstPerp.marginTableId), 'meta.universe[].marginTableId is missing')
+
+          const pair = await info({ type: 'metaAndAssetCtxs' })
+          assert(Array.isArray(pair) && pair.length === 2, 'metaAndAssetCtxs is not a [meta, ctxs] pair')
+          assert(Array.isArray(pair[0]?.universe), 'metaAndAssetCtxs[0].universe is missing')
+          assert(Array.isArray(pair[1]) && pair[1].length === pair[0].universe.length, 'asset ctx alignment changed')
+          assert(typeof pair[1][0]?.markPx === 'string', 'assetCtx.markPx is missing')
+          assert(typeof pair[1][0]?.oraclePx === 'string', 'assetCtx.oraclePx is missing')
+          assert(Array.isArray(pair[1][0]?.impactPxs), 'assetCtx.impactPxs is missing')
+
+          const spotMeta = await info({ type: 'spotMeta' })
+          assert(Array.isArray(spotMeta.universe), 'spotMeta.universe is missing')
+          assert(Array.isArray(spotMeta.tokens), 'spotMeta.tokens is missing')
+
+          const allMids = await info({ type: 'allMids' })
+          assert(allMids && typeof allMids === 'object' && !Array.isArray(allMids), 'allMids is not an object')
+
+          console.log(`validated ${meta.universe.length} perps, ${spotMeta.universe.length} spot pairs`)
+          NODE

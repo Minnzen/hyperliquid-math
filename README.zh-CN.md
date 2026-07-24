@@ -17,6 +17,7 @@
 <p align="center">
   <a href="README.md">English</a> ·
   <a href="https://minnzen.github.io/hyperliquid-math/">文档站</a> ·
+  <a href="spec/CONSUMER-INTEGRATION.md">消费者接入</a> ·
   <a href="spec/README.md">公式手册</a> ·
   <a href="SKILL.md">AI Agent 指南</a>
 </p>

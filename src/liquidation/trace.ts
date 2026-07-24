@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type { CalculationTrace, MathReason, TraceStep } from '../model/index.js'
 import type { LiquidationCandidateTrace, NormalizedLiquidationInput } from './types.js'
 
@@ -72,7 +73,7 @@ export function liquidationTrace(
         })
       : []
 
-  return {
+  return finalizeTrace({
     formulaId: 'hl.liquidation-price.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -83,7 +84,7 @@ export function liquidationTrace(
     rounding: [],
     assumptions,
     sourceRefs: liquidationSourceRefs,
-  }
+  })
 }
 
 export function candidateRootsStep(candidates: readonly LiquidationCandidateTrace[]): TraceStep {

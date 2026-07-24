@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type {
   Assumption,
   CalculationTrace,
@@ -74,7 +75,7 @@ export function hip1DeploymentTrace(input: {
   readonly intermediates?: readonly TraceStep[]
   readonly assumptions?: readonly Assumption[]
 }): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.hip1.deployment.validate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -85,7 +86,7 @@ export function hip1DeploymentTrace(input: {
     rounding: [],
     assumptions: input.assumptions ?? [],
     sourceRefs: hip1DeploymentSourceRefs,
-  }
+  })
 }
 
 export function hip1AnchorGenesisTrace(input: {
@@ -94,7 +95,7 @@ export function hip1AnchorGenesisTrace(input: {
   readonly intermediates?: readonly TraceStep[]
   readonly assumptions?: readonly Assumption[]
 }): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.hip1.anchor-genesis.evaluate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -105,5 +106,5 @@ export function hip1AnchorGenesisTrace(input: {
     rounding: [],
     assumptions: input.assumptions ?? [],
     sourceRefs: hip1AnchorGenesisSourceRefs,
-  }
+  })
 }

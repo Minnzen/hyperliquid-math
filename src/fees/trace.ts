@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type { CalculationTrace, MathReason, TraceStep } from '../model/index.js'
 import type {
   NormalizedSelectFeeTierInput,
@@ -16,7 +17,7 @@ export function tradeFeeTrace(
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.fees.trade-fee.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -42,7 +43,7 @@ export function tradeFeeTrace(
       'HL.DOC.INFO.USER_FEES.2026-07-19',
       decimalSource,
     ],
-  }
+  })
 }
 
 export function weightedFeeVolumeTrace(
@@ -50,7 +51,7 @@ export function weightedFeeVolumeTrace(
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.fees.weighted-volume.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -75,7 +76,7 @@ export function weightedFeeVolumeTrace(
       'HL.DOC.INFO.USER_FEES.2026-07-19',
       decimalSource,
     ],
-  }
+  })
 }
 
 export function feeTierTrace(
@@ -83,7 +84,7 @@ export function feeTierTrace(
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.fees.tier.select',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -112,5 +113,5 @@ export function feeTierTrace(
       'HL.DOC.INFO.USER_FEES.2026-07-19',
       decimalSource,
     ],
-  }
+  })
 }

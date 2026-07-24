@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type {
   Assumption,
   CalculationMaturity,
@@ -112,7 +113,7 @@ export function spotTrace(
   intermediates: readonly TraceStep[] = [],
   rounding: readonly RoundingDecision[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId,
     formulaVersion: 1,
     authority: 'local-exact',
@@ -123,7 +124,7 @@ export function spotTrace(
     rounding,
     assumptions: completion.status === 'complete' ? assumptions : [],
     sourceRefs: [...sourceRefs, decimalSource],
-  }
+  })
 }
 
 export function convertInputs(input: NormalizedConvertSpotTokenUnitsInput | undefined): JsonObject {

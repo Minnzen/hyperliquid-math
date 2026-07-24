@@ -115,6 +115,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:browser": "vitest run --config vitest.browser.config.ts",
+    "capabilities:generate": "node scripts/generate-capabilities.mjs",
+    "capabilities:check": "node scripts/generate-capabilities.mjs --check",
     "manifest:check": "pnpm build && node scripts/check-public-functions.mjs",
     "dependencies:check": "node scripts/check-runtime-dependencies.mjs",
     "boundaries:check": "node scripts/check-import-boundaries.mjs",
@@ -125,7 +127,7 @@
     "benchmark:record": "pnpm build && node scripts/benchmark.mjs --record",
     "benchmark:check": "pnpm build && node scripts/benchmark.mjs",
     "actions:check": "node scripts/check-action-pins.mjs",
-    "check": "pnpm lint && pnpm build && pnpm typecheck && pnpm test:coverage && pnpm manifest:check && pnpm dependencies:check && pnpm boundaries:check && pnpm api:check && pnpm publint && pnpm actions:check && pnpm benchmark:check",
+    "check": "pnpm lint && pnpm build && pnpm typecheck && pnpm test:coverage && pnpm capabilities:check && pnpm manifest:check && pnpm dependencies:check && pnpm boundaries:check && pnpm api:check && pnpm publint && pnpm actions:check && pnpm benchmark:check",
     "prepack": "pnpm build"
   },
   "dependencies": {

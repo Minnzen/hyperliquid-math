@@ -1,4 +1,5 @@
 import type { CalculationTrace, JsonObject, MathReason, TraceStep } from '../model/index.js'
+import { finalizeTrace } from './finalize-trace.js'
 
 interface TraceInput {
   readonly completion: CalculationTrace['completion']
@@ -9,7 +10,7 @@ interface TraceInput {
 const sourceRefs = ['HLM.SPEC.PRECISION.CANONICAL_DECIMAL.V1', 'DECIMALJS.10.6.0'] as const
 
 export function createCanonicalDecimalTrace(input: TraceInput): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.precision.decimal.canonicalize',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -20,7 +21,7 @@ export function createCanonicalDecimalTrace(input: TraceInput): CalculationTrace
     rounding: [],
     assumptions: [],
     sourceRefs,
-  }
+  })
 }
 
 export function incompleteReason(code: string, path: string): MathReason {
