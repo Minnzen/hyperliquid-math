@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type { CalculationTrace, MathReason, RoundingDecision, TraceStep } from '../model/index.js'
 import type { FillSide, NormalizedAmount, NormalizedBook } from './types.js'
 
@@ -27,7 +28,7 @@ export function metricsTrace(
 ): CalculationTrace {
   const bids = book?.levels[0] ?? []
   const asks = book?.levels[1] ?? []
-  return {
+  return finalizeTrace({
     formulaId: 'hl.orderbook.metrics',
     formulaVersion: 1,
     authority: 'local-exact' as const,
@@ -41,11 +42,12 @@ export function metricsTrace(
     },
     intermediates,
     rounding,
-    assumptions: [
-      { kind: 'frozen-input' as const, path: '/levels', value: 'caller-provided-l2-snapshot' },
-    ],
+    assumptions:
+      completion.status === 'complete'
+        ? [{ kind: 'frozen-input' as const, path: '/levels', value: 'caller-provided-l2-snapshot' }]
+        : [],
     sourceRefs,
-  }
+  })
 }
 
 export function fillTrace(
@@ -59,7 +61,7 @@ export function fillTrace(
 ): CalculationTrace {
   const bids = book?.levels[0] ?? []
   const asks = book?.levels[1] ?? []
-  return {
+  return finalizeTrace({
     formulaId: 'hl.orderbook.fill.simulate',
     formulaVersion: 1,
     authority: 'local-exact' as const,
@@ -74,14 +76,21 @@ export function fillTrace(
     },
     intermediates,
     rounding,
-    assumptions: [
-      { kind: 'frozen-input' as const, path: '/levels', value: 'caller-provided-l2-snapshot' },
-      {
-        kind: 'fill-model' as const,
-        model: 'book-vwap' as const,
-        parameters: { queue: 'ignored' },
-      },
-    ],
+    assumptions:
+      completion.status === 'complete'
+        ? [
+            {
+              kind: 'frozen-input' as const,
+              path: '/levels',
+              value: 'caller-provided-l2-snapshot',
+            },
+            {
+              kind: 'fill-model' as const,
+              model: 'book-vwap' as const,
+              parameters: { queue: 'ignored' },
+            },
+          ]
+        : [],
     sourceRefs: fillSourceRefs,
-  }
+  })
 }

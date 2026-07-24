@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type {
   Assumption,
   CalculationTrace,
@@ -96,7 +97,7 @@ export function initialMarginTrace(
   intermediates: readonly TraceStep[] = [],
   rounding: readonly RoundingDecision[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.margin.initial.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -107,7 +108,7 @@ export function initialMarginTrace(
     rounding,
     assumptions: marginAssumptions(input, completion),
     sourceRefs: ['HLM.SPEC.MARGIN.INITIAL.V1', ...officialSourceRefs, decimalSource],
-  }
+  })
 }
 
 export function maintenanceMarginTrace(
@@ -115,7 +116,7 @@ export function maintenanceMarginTrace(
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.margin.maintenance.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -126,7 +127,7 @@ export function maintenanceMarginTrace(
     rounding: [],
     assumptions: marginAssumptions(input, completion),
     sourceRefs: ['HLM.SPEC.MARGIN.MAINTENANCE.V1', ...officialSourceRefs, decimalSource],
-  }
+  })
 }
 
 export function accountMarginTrace(
@@ -134,7 +135,7 @@ export function accountMarginTrace(
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.margin.account.evaluate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -156,5 +157,5 @@ export function accountMarginTrace(
       'HL.DOC.LIQUIDATIONS.2026-07-19',
       decimalSource,
     ],
-  }
+  })
 }

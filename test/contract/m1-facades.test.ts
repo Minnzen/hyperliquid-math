@@ -37,6 +37,15 @@ describe('M1 public facade safety', () => {
     expect(result.value.status).toBe('invalid-input')
   })
 
+  it('keeps invalid orderbook traces assumption-free', () => {
+    const results = [calculateBookMetrics(null as never), simulateBookFill(null as never)]
+
+    for (const result of results) {
+      expect(result.trace.completion.status).toBe('incomplete')
+      expect(result.trace.assumptions).toEqual([])
+    }
+  })
+
   it('turns hostile enum/discriminator values into invalid input without coercing them', () => {
     expect(() =>
       quantizePrice({

@@ -1,0 +1,47 @@
+name: Reliability - Live Differential
+
+on:
+  schedule:
+    - cron: '7 6 * * 3'
+  workflow_dispatch:
+    inputs:
+      public_account:
+        description: Public 0x account with open perp positions. Overrides HYPERLIQUID_LIVE_ORACLE_ADDRESS.
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reliability-live-differential-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  live-differential:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      LIVE_ORACLE_ADDRESS: ${{ github.event.inputs.public_account || secrets.HYPERLIQUID_LIVE_ORACLE_ADDRESS }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.15.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.18.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm actions:check
+      - run: pnpm build
+      - name: Run live differential when a public account is configured
+        run: |
+          if [ -z "$LIVE_ORACLE_ADDRESS" ]; then
+            echo "not-supported: live differential requires workflow_dispatch input public_account or HYPERLIQUID_LIVE_ORACLE_ADDRESS."
+            echo "This networked check is scheduled/manual only and is not a pull-request gate."
+            exit 0
+          fi
+
+          node scripts/oracles/manual-live-verify.mjs "$LIVE_ORACLE_ADDRESS"

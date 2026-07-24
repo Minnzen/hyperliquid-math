@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type {
   Assumption,
   CalculationTrace,
@@ -56,7 +57,7 @@ interface ReconciliationTraceInput {
 }
 
 export function reconciliationTrace(input: ReconciliationTraceInput): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: input.formulaId,
     formulaVersion: 1,
     authority: input.authority,
@@ -67,5 +68,5 @@ export function reconciliationTrace(input: ReconciliationTraceInput): Calculatio
     rounding: [],
     assumptions: input.assumptions ?? [],
     sourceRefs: input.sourceRefs,
-  }
+  })
 }

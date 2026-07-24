@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import { invalidInputResult } from '../core/result.js'
 import type { ValidationIssue } from '../core/validation.js'
 import type {
@@ -23,7 +24,7 @@ export function scenarioTrace(
   normalizedInputs: JsonObject,
   assumptions: readonly Assumption[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: scenarioFormulaId,
     formulaVersion: 1,
     authority: 'local-exact',
@@ -34,7 +35,7 @@ export function scenarioTrace(
     rounding: [],
     assumptions,
     sourceRefs: scenarioSourceRefs,
-  }
+  })
 }
 
 export function invalidScenarioInput<T>(issueValue: ValidationIssue): MathResult<T> {

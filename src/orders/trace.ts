@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type {
   Assumption,
   CalculationTrace,
@@ -105,7 +106,7 @@ export function ordersTrace(input: {
   readonly assumptions?: readonly Assumption[]
   readonly maturity?: CalculationTrace['maturity']
 }): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: input.formulaId,
     formulaVersion: 1,
     authority: 'local-exact',
@@ -116,5 +117,5 @@ export function ordersTrace(input: {
     rounding: input.rounding ?? [],
     assumptions: input.assumptions ?? [],
     sourceRefs: ordersSourceRefs,
-  }
+  })
 }

@@ -1,3 +1,4 @@
+import { finalizeTrace } from '../core/finalize-trace.js'
 import type { CalculationTrace, MathReason, RoundingDecision, TraceStep } from '../model/index.js'
 import type {
   NormalizedAnnualizeFundingRateInput,
@@ -32,7 +33,7 @@ export function premiumIndexTrace(
   intermediates: readonly TraceStep[] = [],
   rounding: readonly RoundingDecision[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.funding.premium-index.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -53,7 +54,7 @@ export function premiumIndexTrace(
         ? [{ kind: 'frozen-input', path: '', value: 'caller-provided-impact-and-oracle-prices' }]
         : [],
     sourceRefs: ['HLM.SPEC.FUNDING.PREMIUM_INDEX.V1', 'HL.DOC.FUNDING.2026-07-19', decimalSource],
-  }
+  })
 }
 
 export function fundingRateTrace(
@@ -62,7 +63,7 @@ export function fundingRateTrace(
   intermediates: readonly TraceStep[] = [],
   rounding: readonly RoundingDecision[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.funding.rate.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -76,7 +77,7 @@ export function fundingRateTrace(
         ? [{ kind: 'frozen-input', path: '/rules', value: 'caller-provided-versioned-rate-rules' }]
         : [],
     sourceRefs: ['HLM.SPEC.FUNDING.RATE.V1', 'HL.DOC.FUNDING.2026-07-19', decimalSource],
-  }
+  })
 }
 
 export function fundingPaymentTrace(
@@ -84,7 +85,7 @@ export function fundingPaymentTrace(
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.funding.payment.calculate',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -110,7 +111,7 @@ export function fundingPaymentTrace(
       'HL.DOC.INFO.PERP.2026-07-19',
       decimalSource,
     ],
-  }
+  })
 }
 
 export function annualizeFundingRateTrace(
@@ -119,7 +120,7 @@ export function annualizeFundingRateTrace(
   intermediates: readonly TraceStep[] = [],
   rounding: readonly RoundingDecision[] = [],
 ): CalculationTrace {
-  return {
+  return finalizeTrace({
     formulaId: 'hl.funding.rate.annualize',
     formulaVersion: 1,
     authority: 'local-exact',
@@ -146,5 +147,5 @@ export function annualizeFundingRateTrace(
           ]
         : [],
     sourceRefs: ['HLM.SPEC.FUNDING.ANNUALIZE.V1', decimalSource],
-  }
+  })
 }
