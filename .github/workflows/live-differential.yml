@@ -6,9 +6,15 @@ on:
   workflow_dispatch:
     inputs:
       public_account:
-        description: Public 0x account with open perp positions. Overrides HYPERLIQUID_LIVE_ORACLE_ADDRESS.
+        description: Standard-mode public 0x account with open cross perp positions. Overrides the configured address.
         required: false
         type: string
+      account_mode:
+        description: Explicit assertion for the configured public account.
+        required: false
+        type: choice
+        options:
+          - standard
 
 permissions:
   contents: read
@@ -23,6 +29,7 @@ jobs:
     timeout-minutes: 20
     env:
       LIVE_ORACLE_ADDRESS: ${{ github.event.inputs.public_account || secrets.HYPERLIQUID_LIVE_ORACLE_ADDRESS }}
+      LIVE_ORACLE_ACCOUNT_MODE: ${{ github.event.inputs.account_mode || secrets.HYPERLIQUID_LIVE_ORACLE_ACCOUNT_MODE }}
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
@@ -43,5 +50,9 @@ jobs:
             echo "This networked check is scheduled/manual only and is not a pull-request gate."
             exit 0
           fi
+          if [ "$LIVE_ORACLE_ACCOUNT_MODE" != "standard" ]; then
+            echo "configuration error: set account_mode or HYPERLIQUID_LIVE_ORACLE_ACCOUNT_MODE to standard only after verifying the account mode."
+            exit 1
+          fi
 
-          node scripts/oracles/manual-live-verify.mjs "$LIVE_ORACLE_ADDRESS"
+          node scripts/oracles/manual-live-verify.mjs "$LIVE_ORACLE_ADDRESS" --standard-account

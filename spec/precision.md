@@ -13,6 +13,7 @@ Source ID: `HLM.SPEC.PRECISION.CANONICAL_DECIMAL.V1`
 
 - Input is exactly `{ value: string }`; unknown fields are invalid input.
 - Grammar is `^-?\d+(?:\.\d+)?$`.
+- The raw decimal spelling is limited to 256 characters by the package-wide resource budget.
 - Reject exponent notation, `+`, whitespace, non-finite tokens, `.5`, and `1.`.
 - Normalize leading integer zeroes, remove insignificant fractional zeroes, emit no exponent, and map every signed zero to `0`.
 - No protocol rounding occurs; `rounding` is empty.

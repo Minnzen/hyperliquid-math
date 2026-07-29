@@ -85,7 +85,10 @@ integer at most 100000 and convention is `simple` or `compound`.
 - compound: `annualizedRate = (1 + periodicRate) ^ periodsPerYear - 1`.
 
 Compound requires `1 + periodicRate > 0`. The convention is an explicit analytical assumption, not
-a claim that funding receipts are reinvested. Authority is `local-exact`; maturity is `stable`.
+a claim that funding receipts are reinvested. Compound results whose canonical fixed-point form would
+have more than 4096 integer digits are rejected as `annualized-output-too-large` before serialization.
+This is a local response-size budget, not a protocol rate limit. Authority is `local-exact`; maturity
+is `stable`.
 
 ## Trace and oracle boundary
 

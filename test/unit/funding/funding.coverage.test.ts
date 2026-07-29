@@ -417,6 +417,31 @@ describe('annualizeFundingRate validation coverage', () => {
       convention: 'compound',
     })
   })
+
+  it('rejects compound results that exceed the decimal output budget', () => {
+    const result = annualizeFundingRate({
+      periodicRate: '9999999999',
+      periodsPerYear: 100000,
+      convention: 'compound',
+    })
+
+    expect(result.value).toEqual({
+      status: 'invalid-input',
+      issues: [
+        {
+          code: 'annualized-output-too-large',
+          path: '/periodicRate',
+          actual: '1000001 integer digits',
+          expected: 'compound result with at most 4096 integer digits',
+        },
+      ],
+    })
+    expect(result.trace.completion).toEqual({
+      status: 'incomplete',
+      reason: { code: 'annualized-output-too-large', path: '/periodicRate' },
+    })
+    expect(JSON.stringify(result).length).toBeLessThan(2000)
+  })
 })
 
 describe('funding validation helpers', () => {

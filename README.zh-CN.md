@@ -29,50 +29,70 @@
 - **精确 decimal 运算。** 所有值都是 decimal 字符串，运算基于 40 位有效数字的 decimal；量化取整方向对用户保守——size 和买价向下、卖价向上。金额不经过浮点。
 - **每个结果带一条 trace。** 每个函数返回 `{ value, trace }`。trace 记录规范化输入、公式与来源 ID、每一次取整决策和每一条假设，任何一个输出都能追溯到它依据的规则。
 - **覆盖需要推导的公式。** 跨保证金 tier 的清算价求根（含 maintenance deduction 与 backstop 阈值）、账户保证金评估、PnL 归因、funding、费用、订单预览、TWAP/scale 排程、账本重放、spot 单位换算、HIP-1/HIP-3 约束。
-- **对过官方 SDK 和线上数据。** 1100+ 测试、运行时源码 100% 覆盖、CI 内 pin 死官方 Python SDK oracle、带日期的 live API fixtures，以及一个[可复跑的线上对拍脚本](scripts/oracles/manual-live-verify.mjs)：对一个持有 82 个仓位的公开账户，本地保证金合计与服务器一致到小数点后 10 位，50 个清算价里 48 个在 0.1% 内一致（另外 2 个是极端远端根，随快照时点漂移）。
+- **证据边界明确，不笼统声称完全一致。** 运行时源码保持 100% 测试覆盖；pin 住的官方 Python SDK 提供 4 个明确标为 partial 的 oracle slice，带日期的 live fixtures 提供 24 个 partial slice。其余 slice 均记录为 `not-supported`，没有任何一项被标成服务器公式完全一致。一个[定时/手动线上对拍脚本](scripts/oracles/manual-live-verify.mjs)会在 standard 模式 cross 保证金合计或清算价不一致时失败，不再只打印差异。
 
 ## 安装
 
+npm 包尚未发布。首次发布前，请在检出的仓库中安装依赖并构建：
+
 ```sh
-npm install hyperliquid-math    # 或 pnpm / yarn / bun
+pnpm install --frozen-lockfile
+pnpm build
 ```
+
+首次 npm 发布后可用：`npm install hyperliquid-math`（或 pnpm / yarn / bun）。
 
 纯 ESM。Node ≥ 22（也可在浏览器运行——CI 验证 Chromium 下字节级一致）。
 
 ## 示例：计算清算价
 
-这个包只负责计算；**取数和映射是你的代码**。逐字段映射规则见
-[`spec/KIT-MAPPING.md`](spec/KIT-MAPPING.md)——下面的例子是真实可跑、对过主网的：
+这个包只负责计算；**取数、确认账户抽象模式和映射是你的代码**。逐字段映射规则见
+[`spec/KIT-MAPPING.md`](spec/KIT-MAPPING.md)。下面的例子刻意只支持全部持仓均为 cross 的
+standard 模式账户；unified 和 portfolio margin 需要不同的账户聚合，isolated 仓位则需要
+独立证明的逐仓保证金值：
 
 ```ts
 import { calculatePerpLiquidationPrice } from 'hyperliquid-math/liquidation'
 import { quantizePrice } from 'hyperliquid-math/precision'
 
-const info = (body: object) =>
-  fetch('https://api.hyperliquid.xyz/info', {
+const info = async (body: object) => {
+  const response = await fetch('https://api.hyperliquid.xyz/info', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-  }).then((r) => r.json())
+  })
+  if (!response.ok) throw new Error(`Hyperliquid info 返回 HTTP ${response.status}`)
+  return response.json()
+}
 
-const user = '0x…' // 任意地址
+const user = '0x…' // standard 模式、持有 cross 仓位的地址
+const accountMode = getAccountModeFromYourConfiguration(user) // 由接入方维护，不能在这里猜
+if (accountMode !== 'standard') {
+  throw new Error('本示例不映射 unified 或 portfolio-margin 账户')
+}
 const [[meta, ctxs], state] = await Promise.all([
   info({ type: 'metaAndAssetCtxs' }),   // [meta, assetCtxs]，按 universe 下标对齐
   info({ type: 'clearinghouseState', user }),
 ])
 
 // 官方字段 → Math 输入（number 转字符串；对象逐字段重建）
-// cross 清算价取决于整个账户，所以要映射全部仓位
+// cross 清算价取决于整个单 DEX cross 账户
 const tables = new Map(meta.marginTables.map(([id, t]) => [id, t.marginTiers]))
 const indexByCoin = new Map(meta.universe.map((u, i) => [u.name, i]))
 const toPosition = ({ position: p }) => {
+  if (p.leverage.type !== 'cross') {
+    throw new Error('isolated 仓位需要独立证明的 isolatedMarginValue')
+  }
   const i = indexByCoin.get(p.coin)
+  if (i === undefined || meta.universe[i] === undefined || ctxs[i] === undefined) {
+    throw new Error(`缺少 ${p.coin} 的市场元数据`)
+  }
   return {
     asset: { network: 'mainnet', marketKind: 'perp', dex: null, index: i },
     signedSize: p.szi,                       // 自带符号；负数 = 空头
     entryPrice: p.entryPx,
     markPrice: ctxs[i].markPx,               // 官方标记价，本来就是 decimal 字符串
-    marginMode: { kind: 'cross' }, // isolated 仓位映射不同——见 KIT-MAPPING.md
+    marginMode: { kind: 'cross' },
     // 低编号 marginTableId 是隐式单层表，不出现在 marginTables 里
     marginTiers: (
       tables.get(meta.universe[i].marginTableId) ??
@@ -83,6 +103,9 @@ const toPosition = ({ position: p }) => {
 
 const coin = 'BTC'
 const i = indexByCoin.get(coin)
+if (i === undefined || meta.universe[i] === undefined) {
+  throw new Error(`缺少 ${coin} 的市场元数据`)
+}
 const result = calculatePerpLiquidationPrice({
   targetAsset: { network: 'mainnet', marketKind: 'perp', dex: null, index: i },
   crossAccountValue: state.crossMarginSummary.accountValue,

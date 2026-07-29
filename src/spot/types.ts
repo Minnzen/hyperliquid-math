@@ -8,7 +8,10 @@ export type SpotSide = 'buy' | 'sell'
 
 /** @public */
 export interface ConvertSpotTokenUnitsInput {
-  /** `minimal-to-human`: non-negative integer decimal string of minimal units; `human-to-minimal`: human token amount. */
+  /**
+   * At most 256 characters. `minimal-to-human`: non-negative integer decimal string of minimal
+   * units; `human-to-minimal`: human token amount.
+   */
   readonly value: string
   /** Official token metadata `weiDecimals` — the decimal scale of the token's minimal unit, as a plain number. */
   readonly weiDecimals: number

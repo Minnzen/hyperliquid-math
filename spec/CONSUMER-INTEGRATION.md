@@ -35,13 +35,34 @@ Common public reads that consumers map into Math inputs:
 | `{ type: 'spotMeta' }` / `{ type: 'spotMetaAndAssetCtxs' }` | Spot token metadata, spot pair metadata, marks | Spot units, portfolio value, and dust math |
 
 Networked live comparisons are diagnostics, not package behavior. The scheduled
-`Reliability - Live Differential` workflow runs only outside pull requests and skips with
-`not-supported` when no public account is configured.
+`Reliability - Live Differential` workflow runs only outside pull requests, requires the configured
+address to be explicitly asserted as standard mode through the workflow input or
+`HYPERLIQUID_LIVE_ORACLE_ACCOUNT_MODE`, requires at least one cross position, compares cross-margin
+aggregates and liquidation prices, fails on differences beyond its declared tolerances, and skips
+with `not-supported` when no public account is configured.
 
 ## Map Boundary
 
 Math validates exact plain-data input shapes. Rebuild objects instead of passing official
 responses through.
+
+Establish the user's
+[account abstraction mode](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes)
+before mapping margin or liquidation inputs. The official modes have materially different collateral
+boundaries:
+
+- **Standard:** perp and spot balances are separate, and cross margin applies to each DEX separately.
+  A single DEX `clearinghouseState` can be mapped to the per-DEX cross formulas below.
+- **Unified:** spot and perps share balances by collateral asset across DEXs. The official API documents
+  balances and holds in `spotClearinghouseState`; individual perp-DEX user states are not meaningful.
+  Do not pass one DEX's `crossMarginSummary.accountValue` to the standard-account example.
+- **Portfolio margin:** eligible spot balances, borrows, and cross positions are collectively margined
+  with a [separate portfolio-maintenance formula](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/portfolio-margin).
+  The current per-DEX liquidation API does not implement that model.
+
+The Hyperliquid app defaults to unified mode, so an arbitrary public address is not a safe
+standard-account fixture. Consumers own the authoritative account-mode configuration; do not infer it
+from the presence or shape of one `clearinghouseState` response.
 
 Important rules:
 
@@ -78,8 +99,9 @@ liquidation execution, ADL, actual fills, deployment acceptance, or future gover
 
 ### Liquidation and Margin
 
-Map every open perp position from one account snapshot. Cross liquidation depends on the whole
-cross account, not only the target market.
+The following mapping is only for one standard-mode DEX account. Map every open cross perp position
+from the same snapshot: cross liquidation depends on the whole per-DEX cross account, not only the
+target market.
 
 ```ts
 const tables = new Map(meta.marginTables.map(([id, table]) => [id, table.marginTiers]))
@@ -95,7 +117,14 @@ const mapMarginTiers = (market) =>
 
 const mapPerpPosition = ({ position }) => {
   const index = indexByCoin.get(position.coin)
+  if (index === undefined) {
+    throw new Error(`missing market metadata for ${position.coin}`)
+  }
   const market = meta.universe[index]
+  const assetCtx = assetCtxs[index]
+  if (market === undefined || assetCtx === undefined) {
+    throw new Error(`incomplete market context for ${position.coin}`)
+  }
   if (position.leverage.type !== 'cross') {
     throw new Error('isolated positions require independently proven isolatedMarginValue evidence')
   }
@@ -103,7 +132,7 @@ const mapPerpPosition = ({ position }) => {
     asset: { network: 'mainnet', marketKind: 'perp', dex: null, index },
     signedSize: position.szi,
     entryPrice: position.entryPx,
-    markPrice: assetCtxs[index].markPx,
+    markPrice: assetCtx.markPx,
     leverage: String(position.leverage.value),
     marginMode: { kind: 'cross' },
     marginTiers: mapMarginTiers(market),
@@ -113,6 +142,8 @@ const mapPerpPosition = ({ position }) => {
 
 For isolated margin, do not invent per-position equity allocation when an account has multiple
 isolated positions. Keep that slice unmapped until your source evidence proves the allocation.
+For unified or portfolio-margin accounts, do not reuse this standard-account mapping; first implement
+and independently verify the documented cross-DEX/spot or portfolio aggregation.
 
 ### Fees
 

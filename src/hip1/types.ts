@@ -11,11 +11,11 @@ export interface ValidateHip1DeploymentInput {
   readonly weiDecimals: number
   /** Official token metadata `szDecimals` (number) — minimum tradable size precision. */
   readonly szDecimals: number
-  /** Non-negative integer decimal string of minimal units; positive supply is an objective constraint. */
+  /** Non-negative integer decimal string, at most 256 characters and 40 significant digits. */
   readonly maxSupplyWei: string
-  /** Sum of `UserGenesis` `userAndWei` allocations, aggregated by the caller. */
+  /** Sum of `UserGenesis` `userAndWei` allocations; same integer-string limits as `maxSupplyWei`. */
   readonly userGenesisWei: string
-  /** Sum of `UserGenesis` `existingTokenAndWei` (anchor) allocations, aggregated by the caller. */
+  /** Sum of `existingTokenAndWei` allocations; same integer-string limits as `maxSupplyWei`. */
   readonly anchorGenesisWei: string
 }
 
@@ -31,9 +31,9 @@ export interface ValidatedHip1Deployment {
 
 /** @public */
 export interface EvaluateHip1AnchorGenesisEligibilityInput {
-  /** Holder's anchor-token balance in minimal units, non-negative integer decimal string. */
+  /** Holder balance in minimal units; non-negative, at most 256 characters and 40 significant digits. */
   readonly holderBalanceWei: string
-  /** Anchor token's max supply in minimal units, non-negative integer decimal string. */
+  /** Anchor max supply; non-negative, at most 256 characters and 40 significant digits. */
   readonly anchorTokenMaxSupplyWei: string
 }
 

@@ -20,6 +20,25 @@ function expectInvalidInput(result: ReturnType<typeof validateHip1Deployment>, p
 }
 
 describe('validateHip1Deployment', () => {
+  it('rejects an over-budget integer spelling without echoing the payload', () => {
+    const maxSupplyWei = '0'.repeat(257)
+    const result = validateHip1Deployment({ ...validDeploymentInput, maxSupplyWei })
+
+    expect(result.value).toEqual({
+      status: 'invalid-input',
+      issues: [
+        {
+          code: 'decimal-string-too-long',
+          path: '/maxSupplyWei',
+          actual: 'string-length:257',
+          expected: 'plain decimal string no longer than 256 characters',
+        },
+      ],
+    })
+    expect(result.trace.normalizedInputs).toEqual({})
+    expect(JSON.stringify(result)).not.toContain(maxSupplyWei)
+  })
+
   it('returns satisfied objective checks and lot-size derivation for a valid deployment', () => {
     const result = validateHip1Deployment(validDeploymentInput)
 
@@ -267,6 +286,7 @@ describe('validateHip1Deployment', () => {
     ],
     ['negative szDecimals', { ...validDeploymentInput, szDecimals: -1 }, '/szDecimals'],
     ['decimal weiDecimals', { ...validDeploymentInput, weiDecimals: 1.5 }, '/weiDecimals'],
+    ['non-string max supply', { ...validDeploymentInput, maxSupplyWei: 1 }, '/maxSupplyWei'],
     ['negative integer string', { ...validDeploymentInput, maxSupplyWei: '-1' }, '/maxSupplyWei'],
     [
       'fractional integer string',
@@ -349,6 +369,28 @@ describe('validateHip1Deployment', () => {
 })
 
 describe('evaluateHip1AnchorGenesisEligibility', () => {
+  it('rejects an over-budget integer spelling without echoing the payload', () => {
+    const holderBalanceWei = '0'.repeat(257)
+    const result = evaluateHip1AnchorGenesisEligibility({
+      holderBalanceWei,
+      anchorTokenMaxSupplyWei: '1',
+    })
+
+    expect(result.value).toEqual({
+      status: 'invalid-input',
+      issues: [
+        {
+          code: 'decimal-string-too-long',
+          path: '/holderBalanceWei',
+          actual: 'string-length:257',
+          expected: 'plain decimal string no longer than 256 characters',
+        },
+      ],
+    })
+    expect(result.trace.normalizedInputs).toEqual({})
+    expect(JSON.stringify(result)).not.toContain(holderBalanceWei)
+  })
+
   it('returns exact rational threshold, positive weight, and trace metadata above threshold', () => {
     const result = evaluateHip1AnchorGenesisEligibility({
       holderBalanceWei: '2',

@@ -37,6 +37,52 @@ describe('M2 public facade safety', () => {
     expect(result.value.status).toBe('invalid-input')
   })
 
+  it('snapshots validated data fields before a stateful proxy can change behavior', () => {
+    let descriptorReads = 0
+    const input = new Proxy(
+      { price: '100', size: '2', rate: '0.001' },
+      {
+        getOwnPropertyDescriptor(target, key) {
+          descriptorReads += 1
+          if (descriptorReads > 3) throw new Error('descriptor changed after shape validation')
+          return Reflect.getOwnPropertyDescriptor(target, key)
+        },
+      },
+    )
+
+    let result: ReturnType<typeof calculateTradeFee> | undefined
+    expect(() => {
+      result = calculateTradeFee(input)
+    }).not.toThrow()
+    expect(result?.value).toEqual({
+      status: 'ok',
+      data: {
+        notional: '200',
+        feeAmount: '0.2',
+        accountValueDelta: '-0.2',
+      },
+    })
+  })
+
+  it('applies the shared decimal budget without echoing an overlong value', () => {
+    const price = '1'.repeat(257)
+    const result = calculateTradeFee({ price, size: '2', rate: '0.001' })
+
+    expect(result.value).toEqual({
+      status: 'invalid-input',
+      issues: [
+        {
+          code: 'decimal-string-too-long',
+          path: '/price',
+          actual: 'string-length:257',
+          expected: 'plain decimal string no longer than 256 characters',
+        },
+      ],
+    })
+    expect(result.trace.normalizedInputs).toEqual({})
+    expect(JSON.stringify(result)).not.toContain(price)
+  })
+
   it('does not invoke nested accessors or hostile discriminator coercion', () => {
     let reads = 0
     const position = Object.defineProperties(

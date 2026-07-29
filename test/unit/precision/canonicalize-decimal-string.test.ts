@@ -46,6 +46,35 @@ describe('canonicalizeDecimalString', () => {
     expect(() => JSON.stringify(result)).not.toThrow()
   })
 
+  it('accepts the decimal input budget boundary', () => {
+    const value = '1'.repeat(256)
+
+    expect(canonicalizeDecimalString({ value }).value).toEqual({ status: 'ok', data: value })
+  })
+
+  it('rejects over-budget decimal strings without echoing the payload into the trace', () => {
+    const value = '1'.repeat(257)
+    const result = canonicalizeDecimalString({ value })
+
+    expect(result.value).toEqual({
+      status: 'invalid-input',
+      issues: [
+        {
+          code: 'decimal-string-too-long',
+          path: '/value',
+          actual: 'string-length:257',
+          expected: 'plain decimal string no longer than 256 characters',
+        },
+      ],
+    })
+    expect(result.trace.completion).toEqual({
+      status: 'incomplete',
+      reason: { code: 'decimal-string-too-long', path: '/value' },
+    })
+    expect(result.trace.normalizedInputs).toEqual({})
+    expect(JSON.stringify(result)).not.toContain(value)
+  })
+
   it.each([null, [], {}, { value: 1 }, { value: '1', extra: true }])(
     'rejects an invalid plain-data shape: %j',
     (input) => {

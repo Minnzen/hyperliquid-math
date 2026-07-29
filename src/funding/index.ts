@@ -1,4 +1,4 @@
-import { Decimal40 } from '../core/decimal.js'
+import { Decimal40, MAX_DECIMAL_OUTPUT_INTEGER_DIGITS } from '../core/decimal.js'
 import type { MathIssue, MathResult, RoundingDecision } from '../model/index.js'
 import {
   annualizeFundingRateTrace,
@@ -314,6 +314,26 @@ export function annualizeFundingRate(
       }
     }
     annualizedRate = growthBase.pow(normalized.value.periodsPerYear).minus(1)
+    const integerDigits = annualizedRate.e + 1
+    if (integerDigits > MAX_DECIMAL_OUTPUT_INTEGER_DIGITS) {
+      return {
+        value: {
+          status: 'invalid-input',
+          issues: [
+            {
+              code: 'annualized-output-too-large',
+              path: '/periodicRate',
+              actual: `${integerDigits} integer digits`,
+              expected: `compound result with at most ${MAX_DECIMAL_OUTPUT_INTEGER_DIGITS} integer digits`,
+            },
+          ],
+        },
+        trace: annualizeFundingRateTrace(normalized.value, {
+          status: 'incomplete',
+          reason: reason('annualized-output-too-large', '/periodicRate'),
+        }),
+      }
+    }
     rounding.push({
       path: '/value/data/annualizedRate',
       input: `pow(1+${normalized.value.periodicRate},${normalized.value.periodsPerYear})-1`,

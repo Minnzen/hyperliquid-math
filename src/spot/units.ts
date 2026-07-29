@@ -1,7 +1,18 @@
+import { MAX_DECIMAL_STRING_LENGTH } from '../core/decimal.js'
 import { issue, type ValidationIssue } from '../core/validation.js'
 
 const nonNegativePlainDecimal = /^\d+(?:\.\d+)?$/
 const nonNegativeInteger = /^\d+$/
+
+function decimalLengthIssue(value: string): ValidationIssue | undefined {
+  if (value.length <= MAX_DECIMAL_STRING_LENGTH) return undefined
+  return issue(
+    'decimal-string-too-long',
+    '/value',
+    `string-length:${value.length}`,
+    `plain decimal string no longer than ${MAX_DECIMAL_STRING_LENGTH} characters`,
+  )
+}
 
 function trimLeadingZeros(value: string): string {
   return value.replace(/^0+(?=\d)/, '')
@@ -20,6 +31,9 @@ export function humanToMinimalString(
 ):
   | { readonly ok: true; readonly value: string }
   | { readonly ok: false; readonly issue: ValidationIssue } {
+  const lengthIssue = decimalLengthIssue(value)
+  if (lengthIssue !== undefined) return { ok: false, issue: lengthIssue }
+
   if (!nonNegativePlainDecimal.test(value)) {
     return {
       ok: false,
@@ -46,6 +60,9 @@ export function minimalToHumanString(
 ):
   | { readonly ok: true; readonly value: string }
   | { readonly ok: false; readonly issue: ValidationIssue } {
+  const lengthIssue = decimalLengthIssue(value)
+  if (lengthIssue !== undefined) return { ok: false, issue: lengthIssue }
+
   if (!nonNegativeInteger.test(value)) {
     return {
       ok: false,

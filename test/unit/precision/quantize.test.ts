@@ -169,6 +169,34 @@ describe('quantizePrice', () => {
     expect(reads).toBe(0)
   })
 
+  it('uses the descriptor snapshot when a proxy changes after shape validation', () => {
+    let descriptorReads = 0
+    const input = new Proxy(
+      {
+        value: '12345.67891',
+        marketKind: 'perp' as const,
+        szDecimals: 2,
+        rounding: 'down' as const,
+      },
+      {
+        getOwnPropertyDescriptor(target, key) {
+          descriptorReads += 1
+          if (descriptorReads > 4) throw new Error('descriptor changed after shape validation')
+          return Reflect.getOwnPropertyDescriptor(target, key)
+        },
+      },
+    )
+
+    let result: ReturnType<typeof quantizePrice> | undefined
+    expect(() => {
+      result = quantizePrice(input)
+    }).not.toThrow()
+    expect(result?.value).toEqual({
+      status: 'ok',
+      data: { value: '12345', precisionChanged: true },
+    })
+  })
+
   it('rejects invalid rounding directions', () => {
     const result = quantizePrice({
       value: '1',

@@ -40,7 +40,8 @@ Rules:
   `0..255`; `szDecimals + 5 <= weiDecimals` is an objective deployment constraint.
 - `lotSizeWei = 10 ** (weiDecimals - szDecimals)`.
 - `maxSupplyWei`, `userGenesisWei`, and `anchorGenesisWei` are non-negative integer decimal strings;
-  positive maximum supply is an objective constraint.
+  each raw spelling is at most 256 characters and each canonical value is at most 40 significant
+  digits; positive maximum supply is an objective constraint.
 - `userGenesisWei + anchorGenesisWei == maxSupplyWei`. This is the documented `Genesis.maxSupply`
   checksum over preceding `UserGenesis` calls: `userGenesisWei` aggregates `userAndWei`, while
   `anchorGenesisWei` aggregates `existingTokenAndWei`.

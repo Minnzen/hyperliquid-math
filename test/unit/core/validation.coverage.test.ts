@@ -63,13 +63,15 @@ describe('ownDataValue', () => {
 })
 
 describe('exactPlainObject', () => {
-  it('returns the original object when it has exactly enumerable data fields', () => {
+  it('returns a data snapshot when the input has exactly enumerable data fields', () => {
     const input = { price: '100', size: '2' }
+    const result = exactPlainObject(input, ['price', 'size'], '/order')
 
-    expect(exactPlainObject(input, ['price', 'size'], '/order')).toEqual({
+    expect(result).toEqual({
       ok: true,
       object: input,
     })
+    if (result.ok) expect(result.object).not.toBe(input)
   })
 
   it('rejects primitive inputs with the expected key list', () => {

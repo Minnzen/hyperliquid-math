@@ -46,6 +46,26 @@ describe('M1 public facade safety', () => {
     }
   })
 
+  it('uses a validated orderbook snapshot when a proxy changes afterward', () => {
+    let descriptorReads = 0
+    const input = new Proxy(
+      { levels: [[], []] as [never[], never[]] },
+      {
+        getOwnPropertyDescriptor(target, key) {
+          descriptorReads += 1
+          if (descriptorReads > 1) throw new Error('descriptor changed after shape validation')
+          return Reflect.getOwnPropertyDescriptor(target, key)
+        },
+      },
+    )
+
+    let result: ReturnType<typeof calculateBookMetrics> | undefined
+    expect(() => {
+      result = calculateBookMetrics(input)
+    }).not.toThrow()
+    expect(result?.value.status).toBe('indeterminate')
+  })
+
   it('turns hostile enum/discriminator values into invalid input without coercing them', () => {
     expect(() =>
       quantizePrice({

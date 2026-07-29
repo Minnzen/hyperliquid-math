@@ -6,6 +6,9 @@ export const Decimal40 = Decimal.clone({
   rounding: Decimal.ROUND_HALF_EVEN,
 })
 
+export const MAX_DECIMAL_STRING_LENGTH = 256
+export const MAX_DECIMAL_OUTPUT_INTEGER_DIGITS = 4096
+
 declare const normalizedDecimalStringBrand: unique symbol
 
 export type NormalizedDecimalString = string & {
@@ -23,6 +26,18 @@ export type NormalizeDecimalStringResult =
 const plainDecimalPattern = /^-?\d+(?:\.\d+)?$/
 
 export function normalizeDecimalString(input: string): NormalizeDecimalStringResult {
+  if (input.length > MAX_DECIMAL_STRING_LENGTH) {
+    return {
+      ok: false,
+      issue: {
+        code: 'decimal-string-too-long',
+        path: '/value',
+        actual: `string-length:${input.length}`,
+        expected: `plain decimal string no longer than ${MAX_DECIMAL_STRING_LENGTH} characters`,
+      },
+    }
+  }
+
   if (!plainDecimalPattern.test(input)) {
     return {
       ok: false,

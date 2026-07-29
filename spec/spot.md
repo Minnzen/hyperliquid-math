@@ -22,9 +22,10 @@ Spot token units use the official token metadata:
 - one tradable lot is `10 ** (weiDecimals - szDecimals)` minimal units;
 - `szDecimals + 5 <= weiDecimals` is an official HIP-1 deployment constraint.
 
-All public values are plain decimal strings. Minimal-unit inputs are non-negative integer decimal
-strings. Human token sizes are non-negative plain decimal strings. Prices and marks are positive plain
-decimal strings unless the function explicitly accepts zero.
+All public values are plain decimal strings subject to the package-wide 256-character input budget.
+Minimal-unit inputs are non-negative integer decimal strings. Human token sizes are non-negative
+plain decimal strings. Prices and marks are positive plain decimal strings unless the function
+explicitly accepts zero.
 
 ## `hl.spot.units.convert` v1
 
@@ -35,6 +36,8 @@ Input is exactly `{ value, weiDecimals, direction }`, where `direction` is `huma
 
 - `weiDecimals` is a non-negative safe integer in the local defensive range `0..255`; this is an
   input-size guard, not a claim about the server's deployment limit.
+- `value` is rejected as `decimal-string-too-long` before conversion when its raw spelling exceeds
+  256 characters.
 - `minimal-to-human` requires `value` to be a non-negative integer decimal string and returns
   `value / 10 ** weiDecimals`.
 - `human-to-minimal` requires `value * 10 ** weiDecimals` to be an integer. Fractional minimal units

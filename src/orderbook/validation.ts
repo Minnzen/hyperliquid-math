@@ -95,8 +95,10 @@ function exactPlainObject(
       }
     }
 
+    const object: Record<PropertyKey, unknown> = {}
     for (const key of keys) {
-      if (!ownDataField(input, key).ok) {
+      const field = ownDataField(input, key)
+      if (!field.ok) {
         return {
           ok: false,
           issue: issue(
@@ -107,9 +109,15 @@ function exactPlainObject(
           ),
         }
       }
+      Object.defineProperty(object, key, {
+        value: field.value,
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      })
     }
 
-    return { ok: true, object: input }
+    return { ok: true, object }
   } catch {
     return {
       ok: false,

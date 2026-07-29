@@ -14,7 +14,7 @@ import { quantizeProtocolPrice, quantizeProtocolSize } from './internal.js'
 
 /** @public */
 export interface QuantizePriceInput {
-  /** Positive plain decimal string; JSON numbers are rejected (`invalid-decimal-string`). */
+  /** Positive plain decimal string, at most 256 characters; JSON numbers are rejected. */
   readonly value: string
   readonly marketKind: 'perp' | 'spot'
   /** Official `meta.universe[].szDecimals` (spot: token metadata), as a plain number. */
@@ -25,7 +25,7 @@ export interface QuantizePriceInput {
 
 /** @public */
 export interface QuantizeSizeInput {
-  /** Positive unsigned plain decimal string (size carries no sign; direction is separate). */
+  /** Positive unsigned plain decimal string, at most 256 characters. */
   readonly value: string
   /** Official `meta.universe[].szDecimals` (spot: token metadata), as a plain number. */
   readonly szDecimals: number
@@ -130,16 +130,24 @@ function normalizeObjectShape(input: unknown, keys: readonly string[]): object |
       )
     }
 
+    const snapshot: Record<string, unknown> = {}
     for (const key of keys) {
-      if (ownDataDescriptor(input, key) === undefined) {
+      const descriptor = ownDataDescriptor(input, key)
+      if (descriptor === undefined) {
         return invalidInputShapeIssue(
           `plain object with exactly these own enumerable data fields: ${expectedKeys.join(', ')}`,
           key,
         )
       }
+      Object.defineProperty(snapshot, key, {
+        value: descriptor.value,
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      })
     }
 
-    return input
+    return snapshot
   } catch {
     return invalidInputShapeIssue(
       `plain object with exactly ${keys.length} own data fields`,

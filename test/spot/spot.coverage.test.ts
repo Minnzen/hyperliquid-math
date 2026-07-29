@@ -26,6 +26,28 @@ function expectInvalid(
 }
 
 describe('spot coverage hardening', () => {
+  it.each(['human-to-minimal', 'minimal-to-human'] as const)(
+    'rejects over-budget %s unit strings without echoing the payload',
+    (direction) => {
+      const value = '1'.repeat(257)
+      const result = convertSpotTokenUnits({ value, weiDecimals: 6, direction })
+
+      expect(result.value).toEqual({
+        status: 'invalid-input',
+        issues: [
+          {
+            code: 'decimal-string-too-long',
+            path: '/value',
+            actual: 'string-length:257',
+            expected: 'plain decimal string no longer than 256 characters',
+          },
+        ],
+      })
+      expect(result.trace.normalizedInputs).toEqual({})
+      expect(JSON.stringify(result)).not.toContain(value)
+    },
+  )
+
   it.each([
     [
       'rejects a non-string unit value before conversion',

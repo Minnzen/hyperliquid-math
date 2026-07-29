@@ -20,6 +20,13 @@ parity. A type, request, response, or metadata schema by itself is `not-supporte
 coverage. `test/oracle/oracle-coverage.test.ts` rejects schema-only partial descriptions, while the
 domain replay and adapter tests execute the retained slices.
 
+The scheduled/manual live differential is additional diagnostic evidence, not a promotion to `full`.
+It accepts only an independently established standard-mode account, evaluates cross positions, uses
+official `markPx` values with Decimal40 comparison math, and exits nonzero when cross-margin
+aggregates or liquidation prices exceed the declared tolerances. It also exits nonzero rather than
+reporting a vacuous pass when no cross position is available. Unified, portfolio-margin, and
+isolated-position comparisons remain unsupported by that script.
+
 ## Pinned implementations
 
 - official Python SDK: `hyperliquid-python-sdk==0.24.0`, commit

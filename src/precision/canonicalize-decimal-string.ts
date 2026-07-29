@@ -6,7 +6,10 @@ import type { MathIssue, MathResult } from '../model/index.js'
 
 /** @public */
 export interface CanonicalizeDecimalStringInput {
-  /** Plain decimal string matching `^-?\d+(?:\.\d+)?$`; exponent notation, `+`, `.5`, `1.` rejected. */
+  /**
+   * Plain decimal string matching `^-?\d+(?:\.\d+)?$`, at most 256 characters;
+   * exponent notation, `+`, `.5`, and `1.` are rejected.
+   */
   readonly value: string
 }
 
@@ -92,6 +95,8 @@ export function canonicalizeDecimalString(
   const rawValue = shape.value
   const normalized = normalizeDecimalString(rawValue)
   if (!normalized.ok) {
+    const normalizedInputs =
+      normalized.issue.code === 'decimal-string-too-long' ? {} : { value: rawValue }
     return invalidInputResult(
       [normalized.issue],
       createCanonicalDecimalTrace({
@@ -99,7 +104,7 @@ export function canonicalizeDecimalString(
           status: 'incomplete',
           reason: incompleteReason(normalized.issue.code, '/value'),
         },
-        normalizedInputs: { value: rawValue },
+        normalizedInputs,
       }),
     )
   }

@@ -57,10 +57,23 @@ transport, identity resolution, freshness, policy, and execution. The split is i
 
 ### Account snapshots (`clearinghouseState`)
 
+- Establish the user's official
+  [account abstraction mode](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes)
+  before mapping the snapshot. The direct mappings below are for **standard mode**, where each DEX
+  has separate cross collateral.
+- The official app defaults to unified mode. In unified and portfolio-margin modes, balances and holds
+  are reported through spot clearinghouse state and individual perp-DEX user states are not meaningful.
+  Unified mode requires collateral-token aggregation across DEXs;
+  [portfolio margin](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/portfolio-margin)
+  uses a separate portfolio-maintenance and liquidation-value formula. Neither mode may be represented
+  by passing one DEX's `crossMarginSummary.accountValue` into the standard per-DEX formulas.
+- Account mode is consumer-owned configuration and is not safely inferred from a
+  `clearinghouseState` shape. An arbitrary public address is therefore not a valid standard-account
+  oracle unless its mode is independently established.
 - `position.szi` → `signedSize` (already signed; negative is short). `position.entryPx` →
   `entryPrice`. `position.leverage.value` → `leverage` via `String()`.
 - `crossAccountValue` ← `crossMarginSummary.accountValue` — **not** `marginSummary.accountValue`;
-  the two differ whenever isolated positions exist.
+  for a standard-mode DEX the two differ whenever isolated positions exist.
 - `isolatedMarginValue`: dated fixture evidence (`fixtures/live/2026-07-19-mainnet-m3.json`
   `mappingAssertions`) proves that with one isolated position it equals
   `marginSummary.accountValue − crossMarginSummary.accountValue`, unrealized PnL included. Official

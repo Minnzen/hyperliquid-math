@@ -86,7 +86,7 @@ export type FundingAnnualizationConvention = 'simple' | 'compound'
 
 /** @public */
 export interface AnnualizeFundingRateInput {
-  /** Rate for one settlement period as a decimal fraction (`0.0000125` = 0.00125%). */
+  /** Periodic decimal fraction; compound fixed-point output is limited to 4096 integer digits. */
   readonly periodicRate: string
   /** Settlement periods per year (hourly funding: 8760), positive integer `<= 100000`. */
   readonly periodsPerYear: number

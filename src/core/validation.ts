@@ -33,13 +33,6 @@ export function ownDataValue(input: object, key: string): unknown {
   return Reflect.getOwnPropertyDescriptor(input, key)?.value
 }
 
-function ownEnumerableDataField(input: object, key: string): boolean {
-  const descriptor = Reflect.getOwnPropertyDescriptor(input, key)
-  return (
-    descriptor !== undefined && Object.hasOwn(descriptor, 'value') && descriptor.enumerable === true
-  )
-}
-
 export function exactPlainObject(
   input: unknown,
   keys: readonly string[],
@@ -77,8 +70,14 @@ export function exactPlainObject(
       }
     }
 
+    const object: Record<PropertyKey, unknown> = {}
     for (const key of keys) {
-      if (!ownEnumerableDataField(input, key)) {
+      const descriptor = Reflect.getOwnPropertyDescriptor(input, key)
+      if (
+        descriptor === undefined ||
+        !Object.hasOwn(descriptor, 'value') ||
+        descriptor.enumerable !== true
+      ) {
         return {
           ok: false,
           issue: issue(
@@ -89,9 +88,15 @@ export function exactPlainObject(
           ),
         }
       }
+      Object.defineProperty(object, key, {
+        value: descriptor.value,
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      })
     }
 
-    return { ok: true, object: input }
+    return { ok: true, object }
   } catch {
     return {
       ok: false,
@@ -218,8 +223,14 @@ export function optionalPlainObject(
         ),
       }
     }
+    const object: Record<PropertyKey, unknown> = {}
     for (const key of ownKeys) {
-      if (!ownEnumerableDataField(input, String(key))) {
+      const descriptor = Reflect.getOwnPropertyDescriptor(input, key)
+      if (
+        descriptor === undefined ||
+        !Object.hasOwn(descriptor, 'value') ||
+        descriptor.enumerable !== true
+      ) {
         return {
           ok: false,
           issue: issue(
@@ -230,8 +241,14 @@ export function optionalPlainObject(
           ),
         }
       }
+      Object.defineProperty(object, key, {
+        value: descriptor.value,
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      })
     }
-    return { ok: true, object: input }
+    return { ok: true, object }
   } catch {
     return {
       ok: false,

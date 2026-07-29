@@ -1,4 +1,4 @@
-import { Decimal40 } from '../core/decimal.js'
+import { Decimal40, MAX_DECIMAL_STRING_LENGTH } from '../core/decimal.js'
 import { exactPlainObject, issue, ownDataValue, type ValidationIssue } from '../core/validation.js'
 import type {
   DecimalValue,
@@ -25,7 +25,24 @@ function canonicalizeIntegerString(
   input: unknown,
   path: string,
 ): NormalizeResult<{ value: string; decimal: DecimalValue }> {
-  if (typeof input !== 'string' || !/^\d+$/.test(input)) {
+  if (typeof input !== 'string') {
+    return {
+      ok: false,
+      issue: issue('invalid-integer-string', path, input, 'non-negative integer decimal string'),
+    }
+  }
+  if (input.length > MAX_DECIMAL_STRING_LENGTH) {
+    return {
+      ok: false,
+      issue: issue(
+        'decimal-string-too-long',
+        path,
+        `string-length:${input.length}`,
+        `plain decimal string no longer than ${MAX_DECIMAL_STRING_LENGTH} characters`,
+      ),
+    }
+  }
+  if (!/^\d+$/.test(input)) {
     return {
       ok: false,
       issue: issue('invalid-integer-string', path, input, 'non-negative integer decimal string'),

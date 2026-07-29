@@ -35,56 +35,76 @@
 - **Covers the derived formulas.** Liquidation-price root solving across margin tiers (with maintenance
   deductions and backstop thresholds), account margin evaluation, PnL attribution, funding, fees, order
   previews, TWAP/scale schedules, ledger replay, spot units, and HIP-1/HIP-3 constraints.
-- **Checked against the official SDK and live data.** 1,100+ tests at 100% coverage of the runtime source,
-  a pinned official Python SDK oracle in CI, and dated live-API fixtures. A
-  [replayable live comparison](scripts/oracles/manual-live-verify.mjs) runs against a public account with 82
-  open positions: computed margin totals matched the server to 10 decimal places, and 48 of 50 liquidation
-  prices matched within 0.1% (the remaining two are far-out-of-the-money roots that shift with snapshot
-  timing).
+- **Evidence is explicit, not blanket parity.** The runtime source is held at 100% test coverage. A pinned
+  official Python SDK supplies four declared partial oracle slices; dated live fixtures supply 24 partial
+  slices. The remaining slices are recorded as `not-supported`, and none is labeled full server-formula
+  parity. A [scheduled/manual live comparison](scripts/oracles/manual-live-verify.mjs) fails on standard-mode
+  cross-margin aggregate or liquidation-price differences instead of silently reporting them.
 
 ## Install
 
+The npm release has not been published yet. Until the first release, install and build from a checked-out
+repository:
+
 ```sh
-npm install hyperliquid-math    # or pnpm / yarn / bun
+pnpm install --frozen-lockfile
+pnpm build
 ```
+
+After the first npm release: `npm install hyperliquid-math` (or pnpm / yarn / bun).
 
 ESM-only. Node ≥ 22 (also runs in browsers — CI verifies byte-identical results in Chromium).
 
 ## Example: computing a liquidation price
 
-The package computes; **you** fetch and map. Field-by-field mapping is documented in
-[`spec/KIT-MAPPING.md`](spec/KIT-MAPPING.md) — this example is the real thing, verified against
-mainnet:
+The package computes; **you** fetch, establish the account abstraction mode, and map. Field-by-field
+mapping is documented in [`spec/KIT-MAPPING.md`](spec/KIT-MAPPING.md). This example is deliberately
+limited to a standard-mode account whose open positions are all cross margin. Unified and portfolio
+margin require different account aggregation; isolated positions require independently proven
+per-position isolated margin:
 
 ```ts
 import { calculatePerpLiquidationPrice } from 'hyperliquid-math/liquidation'
 import { quantizePrice } from 'hyperliquid-math/precision'
 
-const info = (body: object) =>
-  fetch('https://api.hyperliquid.xyz/info', {
+const info = async (body: object) => {
+  const response = await fetch('https://api.hyperliquid.xyz/info', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-  }).then((r) => r.json())
+  })
+  if (!response.ok) throw new Error(`Hyperliquid info returned HTTP ${response.status}`)
+  return response.json()
+}
 
-const user = '0x…' // any address
+const user = '0x…' // a standard-mode address with cross positions
+const accountMode = getAccountModeFromYourConfiguration(user) // consumer-owned, not inferred here
+if (accountMode !== 'standard') {
+  throw new Error('this example does not map unified or portfolio-margin accounts')
+}
 const [[meta, ctxs], state] = await Promise.all([
   info({ type: 'metaAndAssetCtxs' }),   // [meta, assetCtxs] aligned by universe index
   info({ type: 'clearinghouseState', user }),
 ])
 
 // Map official fields -> Math inputs (numbers become strings; objects are rebuilt exactly).
-// A cross liquidation price depends on the WHOLE account, so map every position.
+// A cross liquidation price depends on the WHOLE per-DEX cross account.
 const tables = new Map(meta.marginTables.map(([id, t]) => [id, t.marginTiers]))
 const indexByCoin = new Map(meta.universe.map((u, i) => [u.name, i]))
 const toPosition = ({ position: p }) => {
+  if (p.leverage.type !== 'cross') {
+    throw new Error('isolated positions require independently proven isolatedMarginValue')
+  }
   const i = indexByCoin.get(p.coin)
+  if (i === undefined || meta.universe[i] === undefined || ctxs[i] === undefined) {
+    throw new Error(`missing market metadata for ${p.coin}`)
+  }
   return {
     asset: { network: 'mainnet', marketKind: 'perp', dex: null, index: i },
     signedSize: p.szi,                       // already signed; negative = short
     entryPrice: p.entryPx,
     markPrice: ctxs[i].markPx,               // official mark, already a decimal string
-    marginMode: { kind: 'cross' }, // isolated positions map differently — see KIT-MAPPING.md
+    marginMode: { kind: 'cross' },
     // Low-numbered marginTableIds are implicit single-tier tables absent from marginTables.
     marginTiers: (
       tables.get(meta.universe[i].marginTableId) ??
@@ -95,6 +115,9 @@ const toPosition = ({ position: p }) => {
 
 const coin = 'BTC'
 const i = indexByCoin.get(coin)
+if (i === undefined || meta.universe[i] === undefined) {
+  throw new Error(`missing market metadata for ${coin}`)
+}
 const result = calculatePerpLiquidationPrice({
   targetAsset: { network: 'mainnet', marketKind: 'perp', dex: null, index: i },
   crossAccountValue: state.crossMarginSummary.accountValue,

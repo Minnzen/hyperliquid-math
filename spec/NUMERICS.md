@@ -8,9 +8,15 @@ All financial values enter and leave Math as plain decimal strings. Runtime arit
 `decimal.js` constructor with 40 significant digits and `ROUND_HALF_EVEN`. JavaScript `number` is
 restricted to guarded structural integers such as indexes, counts, and millisecond durations.
 
-Accepted decimal grammar is `^-?\d+(?:\.\d+)?$`. Exponents, leading `+`, whitespace, `.5`, `1.`,
-`NaN`, and infinity are invalid. Canonical output has no exponent, redundant leading zeroes,
-trailing fractional zeroes, or signed zero.
+Accepted decimal grammar is `^-?\d+(?:\.\d+)?$`. Every caller-supplied decimal or integer-decimal
+spelling is limited to 256 characters before regex evaluation or Decimal construction. Exponents,
+leading `+`, whitespace, `.5`, `1.`, `NaN`, infinity, and over-budget spellings are invalid.
+Canonical output has no exponent, redundant leading zeroes, trailing fractional zeroes, or signed
+zero.
+
+The 256-character ceiling is a local resource budget, not a protocol precision claim. An over-budget
+input returns `decimal-string-too-long`; its issue records `string-length:N` rather than echoing the
+payload into the result or trace. Formula-specific expansion budgets are stated in the domain spec.
 
 ## Exactness and operation boundaries
 
