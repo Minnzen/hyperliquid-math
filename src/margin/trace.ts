@@ -8,6 +8,7 @@ import type {
   TraceStep,
 } from '../model/index.js'
 import type {
+  NormalizedCalculateUnifiedAccountRatioInput,
   NormalizedEvaluatePerpAccountMarginInput,
   NormalizedPerpMarginPosition,
 } from './types.js'
@@ -91,6 +92,25 @@ function accountAssumptions(
   ]
 }
 
+function unifiedAccountAssumptions(
+  input: NormalizedCalculateUnifiedAccountRatioInput | undefined,
+  completion: TraceCompletion,
+): readonly Assumption[] {
+  if (completion.status !== 'complete' || input === undefined) return []
+  return [
+    {
+      kind: 'frozen-input',
+      path: '/dexes',
+      value: 'same-snapshot-per-dex-margin-usage',
+    },
+    {
+      kind: 'frozen-input',
+      path: '/spotBalances',
+      value: 'same-snapshot-spot-trading-balances',
+    },
+  ]
+}
+
 export function initialMarginTrace(
   input: NormalizedPerpMarginPosition | undefined,
   completion: TraceCompletion,
@@ -155,6 +175,46 @@ export function accountMarginTrace(
       'HLM.SPEC.MARGIN.ACCOUNT_EVALUATE.V1',
       ...officialSourceRefs,
       'HL.DOC.LIQUIDATIONS.2026-07-19',
+      decimalSource,
+    ],
+  })
+}
+
+export function unifiedAccountRatioTrace(
+  input: NormalizedCalculateUnifiedAccountRatioInput | undefined,
+  completion: TraceCompletion,
+  intermediates: readonly TraceStep[] = [],
+): CalculationTrace {
+  return finalizeTrace({
+    formulaId: 'hl.margin.unified-account-ratio.calculate',
+    formulaVersion: 1,
+    authority: 'local-exact',
+    maturity: 'experimental',
+    completion,
+    normalizedInputs:
+      input === undefined
+        ? {}
+        : {
+            dexes: input.dexes.map((dex) => ({
+              dexIndex: dex.dexIndex,
+              collateralToken: dex.collateralToken,
+              crossMaintenanceMarginUsed: dex.crossMaintenanceMarginUsed,
+              isolatedMarginUsed: dex.isolatedMarginUsed,
+            })),
+            spotBalances: input.spotBalances.map((spot) => ({
+              token: spot.token,
+              total: spot.total,
+            })),
+          },
+    intermediates,
+    rounding: [],
+    assumptions: unifiedAccountAssumptions(input, completion),
+    sourceRefs: [
+      'HLM.SPEC.MARGIN.UNIFIED_ACCOUNT_RATIO.V1',
+      'HL.DOC.ACCOUNT_ABSTRACTION.2026-07-30',
+      'HL.DOC.INFO.PERP_META.2026-07-30',
+      'HL.DOC.INFO.PERP_ACCOUNT.2026-07-30',
+      'HL.DOC.INFO.SPOT_BALANCES.2026-07-30',
       decimalSource,
     ],
   })
