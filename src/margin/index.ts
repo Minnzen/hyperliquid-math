@@ -1,5 +1,5 @@
 import { Decimal40 } from '../core/decimal.js'
-import type { MathIssue, MathResult } from '../model/index.js'
+import type { MathIssue, MathResult, RoundingDecision } from '../model/index.js'
 import {
   computePerpInitialMarginNormalized,
   computePerpMaintenanceMarginNormalized,
@@ -416,6 +416,7 @@ export function calculateUnifiedAccountRatio(
 
   let accountRatio = decimalZero
   const tokens: UnifiedAccountTokenRatio[] = []
+  const rounding: RoundingDecision[] = []
   const intermediates: {
     stepId: string
     inputs: {
@@ -456,6 +457,15 @@ export function calculateUnifiedAccountRatio(
       available: available.toFixed(),
       ratio: ratio.toFixed(),
     }
+    if (occupied) {
+      rounding.push({
+        path: `/value/data/tokens/${tokens.length}/ratio`,
+        input: `${token.crossMaintenanceMarginUsed}/${token.available}`,
+        output: token.ratio,
+        mode: 'half-even',
+        reasonCode: 'decimal40-division',
+      })
+    }
     tokens.push(token)
     intermediates.push({
       stepId: 'collateral-token-ratio',
@@ -474,6 +484,11 @@ export function calculateUnifiedAccountRatio(
       status: 'ok',
       data: { tokens, accountRatio: accountRatio.toFixed() },
     },
-    trace: unifiedAccountRatioTrace(normalized.value, { status: 'complete' }, intermediates),
+    trace: unifiedAccountRatioTrace(
+      normalized.value,
+      { status: 'complete' },
+      intermediates,
+      rounding,
+    ),
   }
 }

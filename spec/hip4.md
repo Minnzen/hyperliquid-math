@@ -111,7 +111,8 @@ type EvaluateRecurringOutcomeInput =
 ```
 
 Prices and thresholds are positive plain decimal strings. Times are safe integers, `t0 < t1`, and
-`t0 <= settlementTime <= t1`. A bucket input has exactly two dense thresholds with `P1 < P2`.
+`t0 <= settlementTime <= t1`. Equality at an interval endpoint uses that endpoint mark exactly. A
+bucket input has exactly two dense thresholds with `P1 < P2`.
 
 Both branches use:
 
@@ -151,9 +152,10 @@ Authority is `local-exact`; maturity is `experimental`. Valid input returns `ok`
 class, price, time, interval, threshold order, sparse array, or array length returns `invalid-input`.
 `not-applicable` and `indeterminate` are not used.
 
-The caller must choose mark updates immediately before and after the settlement timestamp. The
-function does not validate their provenance or decide server settlement. Bucket index to outcome ID
-is metadata mapping owned by Kit. Multi-outcome questions are outside this contract.
+The caller must choose mark updates that bracket the settlement timestamp, or coincide with it at an
+accepted interval endpoint. The function does not validate their provenance or decide server
+settlement. Bucket index to outcome ID is metadata mapping owned by Kit. Multi-outcome questions are
+outside this contract.
 
 ## Trace and oracle boundary
 

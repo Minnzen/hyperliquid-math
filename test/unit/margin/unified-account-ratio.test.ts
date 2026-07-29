@@ -26,7 +26,7 @@ describe('calculateUnifiedAccountRatio', () => {
       ],
       spotBalances: [
         { token: 0, total: '11.5' },
-        { token: 1, total: '4' },
+        { token: 1, total: '3' },
       ],
     })
 
@@ -44,11 +44,11 @@ describe('calculateUnifiedAccountRatio', () => {
           },
           {
             collateralToken: 1,
-            spotTotal: '4',
+            spotTotal: '3',
             crossMaintenanceMarginUsed: '1',
             isolatedMarginUsed: '0',
-            available: '4',
-            ratio: '0.25',
+            available: '3',
+            ratio: '0.3333333333333333333333333333333333333333',
           },
         ],
         accountRatio: '0.5',
@@ -65,6 +65,27 @@ describe('calculateUnifiedAccountRatio', () => {
         'HL.DOC.ACCOUNT_ABSTRACTION.2026-07-30',
         'DECIMALJS.10.6.0',
       ]),
+    })
+    expect(result.trace.rounding).toEqual([
+      {
+        path: '/value/data/tokens/0/ratio',
+        input: '5/10',
+        output: '0.5',
+        mode: 'half-even',
+        reasonCode: 'decimal40-division',
+      },
+      {
+        path: '/value/data/tokens/1/ratio',
+        input: '1/3',
+        output: '0.3333333333333333333333333333333333333333',
+        mode: 'half-even',
+        reasonCode: 'decimal40-division',
+      },
+    ])
+    expect(result.trace.assumptions).toContainEqual({
+      kind: 'frozen-input',
+      path: '/dexes',
+      value: 'caller-established-unified-mode-and-complete-relevant-dex-set',
     })
   })
 

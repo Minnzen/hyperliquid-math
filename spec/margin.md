@@ -283,6 +283,9 @@ These are two deliberate normative divergences from the official TypeScript refe
 Authority is `local-exact` on the valid domain; maturity is `experimental`. This function monitors
 the documented unified account ratio only. It is not a portfolio margin ratio and does not define a
 liquidation threshold, LTV, borrowing, caps, interest, eligibility, or liquidation execution.
+Successful traces explicitly assume that the caller established unified mode and supplied the
+complete relevant DEX set from the same snapshot. Each occupied-token division emits a HALF_EVEN
+operation-audit record in `trace.rounding`, including when the operands divide exactly.
 
 ## Trace and oracle boundary
 

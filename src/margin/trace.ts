@@ -101,6 +101,11 @@ function unifiedAccountAssumptions(
     {
       kind: 'frozen-input',
       path: '/dexes',
+      value: 'caller-established-unified-mode-and-complete-relevant-dex-set',
+    },
+    {
+      kind: 'frozen-input',
+      path: '/dexes',
       value: 'same-snapshot-per-dex-margin-usage',
     },
     {
@@ -184,6 +189,7 @@ export function unifiedAccountRatioTrace(
   input: NormalizedCalculateUnifiedAccountRatioInput | undefined,
   completion: TraceCompletion,
   intermediates: readonly TraceStep[] = [],
+  rounding: readonly RoundingDecision[] = [],
 ): CalculationTrace {
   return finalizeTrace({
     formulaId: 'hl.margin.unified-account-ratio.calculate',
@@ -207,7 +213,7 @@ export function unifiedAccountRatioTrace(
             })),
           },
     intermediates,
-    rounding: [],
+    rounding,
     assumptions: unifiedAccountAssumptions(input, completion),
     sourceRefs: [
       'HLM.SPEC.MARGIN.UNIFIED_ACCOUNT_RATIO.V1',
