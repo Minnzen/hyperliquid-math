@@ -1,10 +1,10 @@
 # Identifier Contract
 
-Status: M1 verified
-Last verified: 2026-07-19
+Status: M1 verified; M6 outcome v2 API/spec frozen
+Last verified: 2026-07-30
 
-Official sources: `HL.DOC.ASSET_IDS.2026-07-19`, `HL.DOC.INFO.PERP.2026-07-19`,
-`HL.DOC.INFO.SPOT.2026-07-19`
+Official sources: `HL.DOC.ASSET_IDS.2026-07-30`, `HL.DOC.INFO.PERP.2026-07-19`,
+`HL.DOC.INFO.SPOT.2026-07-19`, `HL.DOC.INFO.OUTCOME_META.2026-07-30`
 
 ## `hl.identifiers.asset-key.derive` v1
 
@@ -32,30 +32,34 @@ Source ID: `HLM.SPEC.IDENTIFIERS.CANONICAL_KEY.V1`
   used. Trace formula ID is `hl.identifiers.asset-key.derive` v1, sourceRefs contain this spec source,
   and rounding/assumptions are empty.
 
-## `hl.identifiers.asset-id.encode` v1
+## `hl.identifiers.asset-id.encode` v2
 
-Source ID: `HLM.SPEC.IDENTIFIERS.ASSET_ID.V1`
+Source ID: `HLM.SPEC.IDENTIFIERS.ASSET_ID.V2`
 
 Input is exactly one of:
 
 - `{ kind: "perp", index }` -> `index`;
 - `{ kind: "spot", index }` -> `10000 + index`;
-- `{ kind: "hip3-perp", dexIndex, index }` -> `100000 + dexIndex * 10000 + index`.
+- `{ kind: "hip3-perp", dexIndex, index }` -> `100000 + dexIndex * 10000 + index`;
+- `{ kind: "outcome", outcome, side }` -> `100000000 + 10 * outcome + side`.
 
 All indexes are non-negative safe integers. Perp and HIP-3 `index` must be below `10000`, matching
 the protocol's 10,000-ID blocks. Spot `index` must produce an ID below `100000`. HIP-3 `dexIndex`
-starts at `1`, and the result must remain below the outcome-asset range at `100000000`.
+starts at `1`, and the result must remain below the outcome-asset range at `100000000`. Outcome is a
+non-negative safe integer, side is the number `0` or `1`, and the encoded asset ID must remain a safe
+integer.
 
 The output is a JSON safe integer. Network metadata determines which indexes exist; this formula
 only encodes an explicitly supplied metadata index. The public result is `MathResult<number>`: a
 valid supported-range input returns `ok`; invalid shape, discriminator, integer, or range returns
 `invalid-input`; `not-applicable` and `indeterminate` are not used. Trace formula ID is
 `hl.identifiers.asset-id.encode` v1, sourceRefs contain the spec plus official asset-ID source, and
-rounding/assumptions are empty.
+rounding/assumptions are empty. Existing perp, spot, and HIP-3 valid inputs preserve their v1 output
+bytes. Outcome results use `maturity: "experimental"`; existing supported ranges remain `stable`.
 
-## `hl.identifiers.asset-id.decode` v1
+## `hl.identifiers.asset-id.decode` v2
 
-Source ID: `HLM.SPEC.IDENTIFIERS.ASSET_ID.V1`
+Source ID: `HLM.SPEC.IDENTIFIERS.ASSET_ID.V2`
 
 - Input is exactly `{ assetId }`, a non-negative safe integer wrapped in a plain object.
 - `0..9999` decodes to `{ kind: "perp", index: assetId }`.
@@ -65,23 +69,28 @@ Source ID: `HLM.SPEC.IDENTIFIERS.ASSET_ID.V1`
   name this range as reserved; v1 rejects it rather than fabricating a main-DEX builder decode.
 - `110000..99999999` decodes by `dexIndex = floor((assetId - 100000) / 10000)` and
   `index = (assetId - 100000) mod 10000`.
-- IDs at or above `100000000` belong to the outcome domain, which is experimental and outside M1;
-  the function returns `indeterminate`, not a fabricated decode.
+- For IDs at or above `100000000`, `encoding = assetId - 100000000`,
+  `side = encoding mod 10`, and `outcome = floor(encoding / 10)`.
+- Outcome side `0` or `1` returns `{ kind: "outcome", outcome, side }`.
+- Outcome side digits `2..9` return `invalid-input` with reason
+  `invalid-outcome-side-encoding` at `/assetId`; the function never guesses.
 
-Encode/decode authority is `local-exact`; maturity is `stable` for perp, spot, and HIP-3 ranges.
+Encode/decode authority is `local-exact`; maturity is `stable` for perp, spot, and HIP-3 ranges and
+`experimental` for outcome ranges.
 
 The public result is
-`MathResult<{ kind: "perp" | "spot"; index: number } | { kind: "hip3-perp"; dexIndex: number; index: number }>`:
+`MathResult<{ kind: "perp" | "spot"; index: number } | { kind: "hip3-perp"; dexIndex: number; index: number } | { kind: "outcome"; outcome: number; side: 0 | 1 }>`:
 
 - a supported-range safe integer returns `ok` with the exact decoded discriminated union;
 - invalid shape/integer and the locally unsupported `100000..109999` gap return `invalid-input`;
-- IDs at or above `100000000` return `indeterminate` with code `outcome-asset-id-not-supported`,
-  path `/assetId`, `missing: ["/outcomeDexIndex", "/marketIndex"]`, and the official asset-ID source;
+- a valid outcome side digit returns `ok`; an invalid side digit returns `invalid-input`;
 - `not-applicable` is not used.
 
-Trace formula ID is `hl.identifiers.asset-id.decode` v1, sourceRefs contain the spec plus official
-asset-ID source, and rounding/assumptions are empty. The outcome result is incomplete and experimental;
-supported results are complete and stable.
+Trace formula ID is `hl.identifiers.asset-id.decode` v2, sourceRefs contain the v2 spec plus official
+asset-ID source, and rounding/assumptions are empty. Outcome results are complete and experimental;
+existing supported results are complete and stable. The v1 outcome `indeterminate` result and its
+`/outcomeDexIndex`/`/marketIndex` missing hints are removed because they do not describe the official
+encoding.
 
 ## Oracle boundary
 

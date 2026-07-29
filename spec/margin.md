@@ -1,7 +1,7 @@
 # Perpetual Margin Contract
 
-Status: M3 complete (independently reviewed)
-Last verified: 2026-07-19
+Status: M3 complete; M6 unified ratio API/spec frozen
+Last verified: 2026-07-30
 
 Official formula sources: `HL.DOC.MARGINING.2026-07-19`,
 `HL.DOC.MARGIN_TIERS.2026-07-19`
@@ -204,6 +204,85 @@ funding the isolated position.
 Authority is `local-exact` for the counterfactual arithmetic. Protocol support for real
 `updateLeverage` mode switches or margin reallocations remains `unverified` until a dated testnet
 fixture proves the acceptance matrix.
+
+## `hl.margin.unified-account-ratio.calculate` v1
+
+Source ID: `HLM.SPEC.MARGIN.UNIFIED_ACCOUNT_RATIO.V1`
+
+Public function: `calculateUnifiedAccountRatio`.
+
+Input is exactly:
+
+```ts
+{
+  readonly dexes: readonly {
+    readonly dexIndex: number;
+    readonly collateralToken: number;
+    readonly crossMaintenanceMarginUsed: string;
+    readonly isolatedMarginUsed: string;
+  }[];
+  readonly spotBalances: readonly {
+    readonly token: number;
+    readonly total: string;
+  }[];
+}
+```
+
+Both arrays must be dense and contain at most 1024 rows. Indexes are non-negative safe integers.
+`dexIndex` values are unique, spot `token` values are unique, cross and isolated amounts are
+non-negative decimal strings, and spot totals are signed decimal strings. Every collateral token
+referenced by a DEX row must have a spot balance row. Unreferenced spot rows are validated but do
+not appear in output.
+
+Rows are grouped by collateral token:
+
+```text
+crossMaintenanceMarginUsed = sum(dex.crossMaintenanceMarginUsed)
+isolatedMarginUsed = sum(dex.isolatedMarginUsed)
+available = spotBalance.total - isolatedMarginUsed
+```
+
+For a token with `crossMaintenanceMarginUsed = 0` and `isolatedMarginUsed = 0`, `ratio = 0` without
+division, regardless of the sign of `available`. Otherwise `available` must be positive:
+
+```text
+ratio = crossMaintenanceMarginUsed / available
+accountRatio = max(token.ratio)
+```
+
+The result is:
+
+```ts
+{
+  readonly tokens: readonly {
+    readonly collateralToken: number;
+    readonly spotTotal: string;
+    readonly crossMaintenanceMarginUsed: string;
+    readonly isolatedMarginUsed: string;
+    readonly available: string;
+    readonly ratio: string;
+  }[];
+  readonly accountRatio: string;
+}
+```
+
+Tokens are sorted by `collateralToken`. Empty `dexes` returns
+`{ tokens: [], accountRatio: "0" }`. Missing referenced spot rows return `invalid-input`. A token
+with any margin occupation and `available <= 0` makes the whole call `indeterminate` with reason
+`non-positive-unified-available-balance`; no partial value, non-positive division, `Infinity`, or
+`NaN` is returned.
+
+These are two deliberate normative divergences from the official TypeScript reference:
+
+1. The official reference defaults a missing spot row to zero; this contract requires an explicit
+   row and returns `invalid-input` when it is absent.
+2. The official reference silently skips `available <= 0`; this contract returns `indeterminate`
+   when the token has cross or isolated occupation. Zero-occupation tokens retain the official
+   maximum-contribution semantics of zero without division.
+
+Authority is `local-exact` on the valid domain; maturity is `experimental`. This function monitors
+the documented unified account ratio only. It is not a portfolio margin ratio and does not define a
+liquidation threshold, LTV, borrowing, caps, interest, eligibility, or liquidation execution.
 
 ## Trace and oracle boundary
 
