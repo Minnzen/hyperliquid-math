@@ -8,7 +8,10 @@
 | `HLM.SPEC.PRECISION.PRICE.V1` | internal normative spec | `spec/precision.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.PRECISION.SIZE.V1` | internal normative spec | `spec/precision.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.IDENTIFIERS.CANONICAL_KEY.V1` | internal normative spec | `spec/identifiers.md` | 2026-07-19 | git-tracked |
-| `HLM.SPEC.IDENTIFIERS.ASSET_ID.V1` | internal normative spec | `spec/identifiers.md` | 2026-07-19 | git-tracked |
+| `HLM.SPEC.IDENTIFIERS.ASSET_ID.V2` | internal normative spec | `spec/identifiers.md` | 2026-07-30 | git-tracked |
+| `HLM.SPEC.HIP4.DUAL_PRICE.V1` | internal normative spec | `spec/hip4.md` | 2026-07-30 | git-tracked |
+| `HLM.SPEC.HIP4.SETTLEMENT.V1` | internal normative spec | `spec/hip4.md` | 2026-07-30 | git-tracked |
+| `HLM.SPEC.HIP4.RECURRING_OUTCOME.V1` | internal normative spec | `spec/hip4.md` | 2026-07-30 | git-tracked |
 | `HLM.SPEC.ORDERBOOK.METRICS.V1` | internal normative spec | `spec/orderbook.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.ORDERBOOK.FILL.V1` | internal normative spec | `spec/orderbook.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.FEES.TRADE_FEE.V1` | internal normative spec | `spec/fees.md` | 2026-07-19 | git-tracked |
@@ -26,6 +29,7 @@
 | `HLM.SPEC.MARGIN.MAINTENANCE.V1` | internal normative spec | `spec/margin.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.MARGIN.ACCOUNT_EVALUATE.V1` | internal normative spec | `spec/margin.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.MARGIN.AUTO_FROM_LEVERAGE.V1` | internal normative spec | `spec/margin.md` | 2026-07-19 | git-tracked |
+| `HLM.SPEC.MARGIN.UNIFIED_ACCOUNT_RATIO.V1` | internal normative spec | `spec/margin.md` | 2026-07-30 | git-tracked |
 | `HLM.SPEC.LIQUIDATION.PRICE.V1` | internal normative spec | `spec/liquidation.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.SCENARIOS.PERP_ACCOUNT.V1` | internal normative spec | `spec/scenarios.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.ORDERS.VALIDATE.V1` | internal normative spec | `spec/orders.md` | 2026-07-19 | git-tracked |

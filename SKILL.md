@@ -1,6 +1,6 @@
 ---
 name: hyperliquid-math
-description: Use when computing Hyperliquid values locally — margin, liquidation price, PnL, funding, fees, order previews, spot/HIP-3 math — from official API responses. Covers input construction rules, official-field mapping, and error recovery for the hyperliquid-math npm package.
+description: Use when computing Hyperliquid values locally — margin, liquidation price, PnL, funding, fees, order previews, spot/HIP-3/HIP-4 math, and unified-account ratios — from official API responses. Covers input construction rules, official-field mapping, and error recovery for the hyperliquid-math npm package.
 ---
 
 # hyperliquid-math — agent guide
@@ -51,6 +51,11 @@ if (value.status === 'ok') use(value.data.liquidationPrice)
 | `position.leverage.value` | `leverage: String(value)` |
 | `crossMarginSummary.accountValue` (NOT `marginSummary`) | `crossAccountValue` |
 | `marginSummary.accountValue − crossMarginSummary.accountValue` (single isolated position) | `isolatedMarginValue` |
+| per-DEX `meta.collateralToken` | unified `collateralToken` |
+| per-DEX top-level `crossMaintenanceMarginUsed` | unified `crossMaintenanceMarginUsed` |
+| sum of isolated `position.marginUsed` strings | unified `isolatedMarginUsed` |
+| `spotClearinghouseState.balances[].token` / `.total` | unified `spotBalances[].token` / `.total` |
+| outcome ID plus numeric side from one `outcomeMeta` snapshot | `{ kind: 'outcome', outcome, side }`; resolve semantic Yes/No separately from `sideSpecs` |
 | `assetCtxs[i].funding` (already hourly, decimal fraction) | `fundingRate` — do NOT multiply/divide by 8 |
 | `assetCtxs[i].impactPxs[0]` / `[1]` | `impactBidPrice` / `impactAskPrice` |
 | `feeSchedule` `cross` / `add` / `ntlCutoff` | `takerRate` / `makerRate` / `minimumWeightedVolume` (`cross`=taker, `add`=maker) |
@@ -62,12 +67,20 @@ if (value.status === 'ok') use(value.data.liquidationPrice)
 Coin-string routing before replay: bare `"BTC"` = first-party perp, `"@N"` = spot pair index N,
 `"xyz:COIN"` = HIP-3 perp on dex `xyz`. Perp functions accept perp rows only.
 
+For unified ratio inputs, aggregate strings with decimal arithmetic, never JavaScript numbers. Missing
+referenced Spot rows are `invalid-input`; occupied collateral with non-positive available balance is
+`indeterminate`; zero-occupation collateral has ratio `"0"` without division. These fail-closed rules
+are deliberate and differ from the official float reference.
+
 The full mapping contract with evidence citations is `spec/KIT-MAPPING.md` in the installed package.
 
 ## Function index (by subpath)
 
 - `hyperliquid-math/precision` — `canonicalizeDecimalString`, `quantizePrice`, `quantizeSize`
 - `hyperliquid-math/identifiers` — `deriveCanonicalAssetKey`, `encodeAssetId`, `decodeAssetId`
+  (including outcome asset IDs; numeric side does not imply a Yes/No label)
+- `hyperliquid-math/hip4` — `calculateOutcomeDualPrice`, `calculateOutcomeSettlement`,
+  `evaluateRecurringOutcome` (`priceBinary` and three-bucket `priceBucket`)
 - `hyperliquid-math/orderbook` — `calculateBookMetrics`, `simulateBookFill` (frozen snapshot only)
 - `hyperliquid-math/fees` — `calculateTradeFee`, `calculateWeightedFeeVolume`, `selectFeeTier`
 - `hyperliquid-math/positions` — `calculatePerpUnrealizedPnl`, `projectPerpFill`,
@@ -75,7 +88,7 @@ The full mapping contract with evidence citations is `spec/KIT-MAPPING.md` in th
 - `hyperliquid-math/funding` — `calculateFundingPremiumIndex`, `calculateFundingRate`,
   `calculateFundingPayment`, `annualizeFundingRate`
 - `hyperliquid-math/margin` — `calculatePerpInitialMargin`, `calculatePerpMaintenanceMargin`,
-  `evaluatePerpAccountMargin`
+  `evaluatePerpAccountMargin`, `calculateUnifiedAccountRatio`
 - `hyperliquid-math/liquidation` — `calculatePerpLiquidationPrice` (tier-consistent root solving,
   cross and isolated, backstop price)
 - `hyperliquid-math/scenarios` — `simulatePerpAccountScenario` (what-if fills / leverage / margin
@@ -94,7 +107,7 @@ The full mapping contract with evidence citations is `spec/KIT-MAPPING.md` in th
   premium/rate formulas are deliberately excluded; exact list in spec/hip3.md)
 
 Per-function formulas, worked examples, and oracle coverage: `spec/README.md` (shipped in the
-package) — 45 hand-checkable examples in `spec/WORKED-EXAMPLES.md`.
+package) — 49 hand-checkable examples in `spec/WORKED-EXAMPLES.md`.
 
 ## Unit conventions
 

@@ -1,6 +1,6 @@
 # Identifier Contract
 
-Status: M1 verified; M6 outcome v2 API/spec frozen
+Status: M1 verified; M6 outcome v2 complete
 Last verified: 2026-07-30
 
 Official sources: `HL.DOC.ASSET_IDS.2026-07-30`, `HL.DOC.INFO.PERP.2026-07-19`,
@@ -53,7 +53,7 @@ The output is a JSON safe integer. Network metadata determines which indexes exi
 only encodes an explicitly supplied metadata index. The public result is `MathResult<number>`: a
 valid supported-range input returns `ok`; invalid shape, discriminator, integer, or range returns
 `invalid-input`; `not-applicable` and `indeterminate` are not used. Trace formula ID is
-`hl.identifiers.asset-id.encode` v1, sourceRefs contain the spec plus official asset-ID source, and
+`hl.identifiers.asset-id.encode` v2, sourceRefs contain the spec plus official asset-ID source, and
 rounding/assumptions are empty. Existing perp, spot, and HIP-3 valid inputs preserve their v1 output
 bytes. Outcome results use `maturity: "experimental"`; existing supported ranges remain `stable`.
 
@@ -94,8 +94,8 @@ encoding.
 
 ## Oracle boundary
 
-- The official Python SDK is a full oracle for main-perp and spot metadata mapping and partial for
-  HIP-3/reverse decoding.
+- The official Python SDK is a partial oracle for main-perp/spot metadata mapping and one HIP-3
+  fixture row. It is not an outcome v2 formula oracle.
 - Live metadata fixtures prove index alignment and network-specific existence, but the documented
   arithmetic remains the normative source. Fixture coverage is partial unless an ID is returned by
   an official endpoint in the same schema.

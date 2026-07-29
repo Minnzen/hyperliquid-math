@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "scope": "M6",
+  "inherits": "fixtures/oracles/m5-oracle-coverage.json",
+  "lastVerified": "2026-07-30",
+  "pinnedImplementations": {
+    "officialPythonSdk": {
+      "package": "hyperliquid-python-sdk",
+      "version": "0.24.0",
+      "commit": "2fdb18f9517675ea03695a0962bd19eece9c83f0",
+      "license": "MIT",
+      "usage": "test-only schema oracle; no standalone M6 formula implementation"
+    },
+    "officialDocumentation": {
+      "sourceRefs": [
+        "HL.DOC.HIP4.2026-07-30",
+        "HL.DOC.CONTRACT_SPECIFICATIONS.2026-07-30",
+        "HL.DOC.ACCOUNT_ABSTRACTION.2026-07-30"
+      ],
+      "usage": "normative formula authority plus a test-only float differential reference for the unified common domain"
+    },
+    "liveFixtures": {
+      "usage": "no M6 outcome or suitable unified-account fixture was captured; live coverage remains explicitly not-supported"
+    }
+  },
+  "functions": [
+    {
+      "exportName": "calculateOutcomeDualPrice",
+      "formulaId": "hl.hip4.dual-price.calculate",
+      "evidenceGroup": "m6-hip4",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned SDK does not expose an independent HIP-4 dual-price calculator."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No dated outcome-book fixture was captured for executable dual-price comparison."
+        }
+      }
+    },
+    {
+      "exportName": "calculateOutcomeSettlement",
+      "formulaId": "hl.hip4.settlement.calculate",
+      "evidenceGroup": "m6-hip4",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned SDK does not expose an independent HIP-4 settlement projection."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No settled outcome fixture with a complete size and entry-price basis was captured."
+        }
+      }
+    },
+    {
+      "exportName": "evaluateRecurringOutcome",
+      "formulaId": "hl.hip4.recurring-outcome.evaluate",
+      "evidenceGroup": "m6-hip4",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned SDK does not expose an independent recurring-outcome interpolation evaluator."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No paired mark updates and authoritative recurring settlement were captured."
+        }
+      }
+    },
+    {
+      "exportName": "calculateUnifiedAccountRatio",
+      "formulaId": "hl.margin.unified-account-ratio.calculate",
+      "evidenceGroup": "m6-unified",
+      "oracles": {
+        "official-python-sdk": {
+          "coverage": "not-supported",
+          "reason": "The pinned Python SDK does not expose an independent unified-account ratio calculator."
+        },
+        "live-fixtures": {
+          "coverage": "not-supported",
+          "reason": "No suitable public unified account with complete cross-DEX maintenance and spot balances was captured."
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Official documentation is the M6 formula authority; the SDK and live fixtures provide no independent formula parity.",
+    "The official unified TypeScript snippet is float-based differential evidence only and is not a normative decimal oracle.",
+    "HIP-4 server settlement, outcome side labels, and live account-mode selection remain caller-owned evidence boundaries."
+  ]
+}

@@ -102,6 +102,10 @@ describe('HIP-4 directed mutation-kill vectors', () => {
     expect(base.value.status).toBe('ok')
     expect(shifted.value.status).toBe('ok')
     if (base.value.status !== 'ok' || shifted.value.status !== 'ok') return
+    expect(base.value.data.class).toBe('priceBinary')
+    expect(shifted.value.data.class).toBe('priceBinary')
+    if (base.value.data.class !== 'priceBinary' || shifted.value.data.class !== 'priceBinary')
+      return
     expect(base.value.data.settlesTo).toBe('no')
     expect(shifted.value.data.settlesTo).toBe(base.value.data.settlesTo)
     expect(

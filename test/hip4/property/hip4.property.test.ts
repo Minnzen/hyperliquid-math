@@ -112,6 +112,8 @@ describe('HIP-4 properties', () => {
 
         expect(result.value.status).toBe('ok')
         if (result.value.status !== 'ok') return
+        expect(result.value.data.class).toBe('priceBucket')
+        if (result.value.data.class !== 'priceBucket') return
         expect(result.value.data.settleFractions).toHaveLength(3)
         expect(
           result.value.data.settleFractions.filter((fraction: string) => fraction === '1'),

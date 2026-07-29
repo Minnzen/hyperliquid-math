@@ -110,4 +110,76 @@ describe('HIP-4 validation boundaries', () => {
       } as never),
     )
   })
+
+  it.each([
+    Object.create({}),
+    Object.assign(Object.create(null), { class: 'other' }),
+    { class: 'other' },
+  ])('rejects unsupported recurring input shapes and classes', (input) => {
+    expectInvalid(evaluateRecurringOutcome(input as never))
+  })
+
+  it('rejects recurring class accessors and non-enumerable class fields', () => {
+    const accessor = {}
+    Object.defineProperty(accessor, 'class', {
+      enumerable: true,
+      get() {
+        return 'priceBinary'
+      },
+    })
+    const nonEnumerable = {}
+    Object.defineProperty(nonEnumerable, 'class', {
+      enumerable: false,
+      value: 'priceBinary',
+    })
+
+    expectInvalid(evaluateRecurringOutcome(accessor as never))
+    expectInvalid(evaluateRecurringOutcome(nonEnumerable as never))
+  })
+
+  it('rejects uninspectable recurring inputs without throwing', () => {
+    const { proxy, revoke } = Proxy.revocable({ class: 'priceBinary' }, {})
+    revoke()
+
+    expectInvalid(evaluateRecurringOutcome(proxy as never))
+  })
+
+  const binary = {
+    class: 'priceBinary',
+    markPrice0: '1',
+    t0: 0,
+    markPrice1: '2',
+    t1: 2,
+    settlementTime: 1,
+    targetPrice: '1.5',
+  } as const
+
+  it.each([
+    { ...binary, extra: true },
+    { ...binary, markPrice1: '0' },
+    { ...binary, t1: 1.5 },
+    { ...binary, settlementTime: 1.5 },
+    { ...binary, targetPrice: '0' },
+  ])('rejects every remaining binary normalization boundary for %j', (input) => {
+    expectInvalid(evaluateRecurringOutcome(input as never))
+  })
+
+  const bucket = {
+    class: 'priceBucket',
+    markPrice0: '1',
+    t0: 0,
+    markPrice1: '2',
+    t1: 2,
+    settlementTime: 1,
+    priceThresholds: ['1', '2'],
+  } as const
+
+  it.each([
+    { ...bucket, extra: true },
+    { ...bucket, markPrice0: '0' },
+    { ...bucket, priceThresholds: ['0', '2'] },
+    { ...bucket, priceThresholds: ['1', '0'] },
+  ])('rejects every remaining bucket normalization boundary for %j', (input) => {
+    expectInvalid(evaluateRecurringOutcome(input as never))
+  })
 })

@@ -1,6 +1,6 @@
 # Perpetual Margin Contract
 
-Status: M3 complete; M6 unified ratio API/spec frozen
+Status: M3 complete; M6 unified ratio complete
 Last verified: 2026-07-30
 
 Official formula sources: `HL.DOC.MARGINING.2026-07-19`,

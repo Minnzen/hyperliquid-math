@@ -19,6 +19,7 @@ export {
   evaluateHip3MarginMode,
   resolveHip3CollateralSource,
 } from './hip3/index.js'
+export * from './hip4/index.js'
 export * from './identifiers/index.js'
 export * from './liquidation/index.js'
 export * from './margin/index.js'

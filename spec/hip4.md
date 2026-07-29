@@ -1,6 +1,6 @@
 # HIP-4 Outcome Math Contract
 
-Status: M6 API/spec frozen; implementation pending
+Status: M6 complete
 Last verified: 2026-07-30
 
 Official sources: `HL.DOC.HIP4.2026-07-30`,

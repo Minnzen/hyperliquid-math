@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "scope": "M1",
-  "lastVerified": "2026-07-19",
+  "lastVerified": "2026-07-30",
   "pinnedImplementations": {
     "officialPythonSdk": {
       "package": "hyperliquid-python-sdk",
@@ -79,11 +79,11 @@
       "oracles": {
         "official-python-sdk": {
           "coverage": "partial",
-          "slice": "main perp and spot metadata mapping plus one testnet HIP-3 fixture row"
+          "slice": "main perp and spot metadata mapping plus one testnet HIP-3 fixture row; outcome v2 is documentation-backed and not attributed to the SDK"
         },
         "live-fixtures": {
           "coverage": "partial",
-          "slice": "captured metadata index alignment"
+          "slice": "captured perp, spot, and HIP-3 metadata index alignment; no outcome market fixture is claimed"
         }
       }
     },
@@ -93,11 +93,11 @@
       "oracles": {
         "official-python-sdk": {
           "coverage": "partial",
-          "slice": "main perp and spot metadata reverse mapping only"
+          "slice": "main perp and spot metadata reverse mapping only; outcome v2 is documentation-backed and not attributed to the SDK"
         },
         "live-fixtures": {
           "coverage": "partial",
-          "slice": "captured metadata index alignment"
+          "slice": "captured perp, spot, and HIP-3 metadata index alignment; no outcome market fixture is claimed"
         }
       }
     },

@@ -18,7 +18,13 @@ import type {
   evaluateHip3MarginMode,
   resolveHip3CollateralSource,
 } from 'hyperliquid-math/hip3'
+import type {
+  calculateOutcomeDualPrice,
+  calculateOutcomeSettlement,
+  evaluateRecurringOutcome,
+} from 'hyperliquid-math/hip4'
 import type { AssetIdDecodeOutput } from 'hyperliquid-math/identifiers'
+import type { calculateUnifiedAccountRatio } from 'hyperliquid-math/margin'
 import type { MathResult } from 'hyperliquid-math/model'
 import type { SimulatedBookFill } from 'hyperliquid-math/orderbook'
 import type {
@@ -89,6 +95,10 @@ declare const hip1AnchorGenesisResult: ReturnType<typeof evaluateHip1AnchorGenes
 declare const hip3CollateralResult: ReturnType<typeof resolveHip3CollateralSource>
 declare const hip3MarginModeResult: ReturnType<typeof evaluateHip3MarginMode>
 declare const hip3FeeRatesResult: ReturnType<typeof calculateHip3FeeRates>
+declare const outcomeDualPriceResult: ReturnType<typeof calculateOutcomeDualPrice>
+declare const outcomeSettlementResult: ReturnType<typeof calculateOutcomeSettlement>
+declare const recurringOutcomeResult: ReturnType<typeof evaluateRecurringOutcome>
+declare const unifiedAccountRatioResult: ReturnType<typeof calculateUnifiedAccountRatio>
 precisionResult satisfies MathResult<QuantizedDecimal>
 assetResult satisfies MathResult<AssetIdDecodeOutput>
 fillResult satisfies MathResult<SimulatedBookFill>
@@ -124,3 +134,7 @@ hip1AnchorGenesisResult satisfies MathResult<unknown>
 hip3CollateralResult satisfies MathResult<unknown>
 hip3MarginModeResult satisfies MathResult<unknown>
 hip3FeeRatesResult satisfies MathResult<unknown>
+outcomeDualPriceResult satisfies MathResult<unknown>
+outcomeSettlementResult satisfies MathResult<unknown>
+recurringOutcomeResult satisfies MathResult<unknown>
+unifiedAccountRatioResult satisfies MathResult<unknown>

@@ -3,9 +3,9 @@
 These compact vectors are for hand audit. Inputs are abbreviated but use the exact public semantics;
 domain specs define the full plain-data shapes and trace fields.
 
-Eight representative cross-domain vectors are also stored as plain data in
+Twelve representative cross-domain vectors are also stored as plain data in
 [`WORKED-EXAMPLES.json`](WORKED-EXAMPLES.json) and executed by the formula-manual contract test. The
-table remains the complete 45-function human index; the JSON set protects high-risk arithmetic examples
+table remains the complete 49-function human index; the JSON set protects high-risk arithmetic examples
 from documentation drift.
 
 | Public function | Hand-checkable example |
@@ -14,8 +14,11 @@ from documentation drift.
 | `quantizePrice` | Perp `103436.7`, `szDecimals=0`, down: the normal candidate is `103430`, integer candidate is `103436`, so the tight result is `103436`. |
 | `quantizeSize` | `1.239` at two size decimals becomes `floor(123.9)/100 = 1.23`. |
 | `deriveCanonicalAssetKey` | mainnet perp first-party dex (`null`), index `0` becomes `hl:mainnet:perp::0`. |
-| `encodeAssetId` | HIP-3 DEX index `1`, market index `0`: `100000 + 1×10000 + 0 = 110000`. |
-| `decodeAssetId` | `10042 − 10000 = 42`, so asset ID `10042` is Spot index `42`. |
+| `encodeAssetId` | Outcome `1`, side `1`: `100000000 + 10×1 + 1 = 100000011`. |
+| `decodeAssetId` | `100000011 − 100000000 = 11`, so outcome is `floor(11/10)=1` and side is `1`. |
+| `calculateOutcomeDualPrice` | Price `0.37` has merged-book dual `1−0.37 = 0.63`. |
+| `calculateOutcomeSettlement` | No token, settle fraction `0.8`, size `10`, entry `0.63`: payout fraction `0.2`, value `2`, notional `6.3`, gross PnL `-4.3`. |
+| `evaluateRecurringOutcome` | Marks `100@t0` and `110@t1`, settled halfway: interpolated mark `105`; binary target equality settles Yes. |
 | `calculateBookMetrics` | bid `99`, ask `101`: mid `100`, spread `2`, spread bps `2/100×10000 = 200`. |
 | `simulateBookFill` | Buy `1.5` from asks `1@100, 1@110`: fills `1@100 + 0.5@110`, total notional `155`, VWAP `155/1.5`. |
 | `calculateTradeFee` | `price=100`, `size=2`, `rate=0.001`: notional `200`, fee `0.2`, account delta `-0.2`. |
@@ -32,6 +35,7 @@ from documentation drift.
 | `calculatePerpInitialMargin` | `2×100=200` notional at `5×`: initial `40`; transfer requirement `max(40,20)=40`. |
 | `calculatePerpMaintenanceMargin` | Notional `200`, max leverage `10`: rate `1/(2×10)=0.05`, maintenance `10`, backstop threshold `20/3`. |
 | `evaluatePerpAccountMargin` | Cross account value `1000` with the preceding position: maintenance availability `990`, initial availability `960`. |
+| `calculateUnifiedAccountRatio` | Cross maintenance `5`, isolated usage `1.5`, spot total `11.5`: available `10`, token and account ratio `0.5`. |
 | `calculatePerpLiquidationPrice` | Isolated long `q=1`, mark `100`, value `20`, rate `0.05`, deduction `0`: `x=(−20+100)/(1−0.05)=80/0.95`. |
 | `simulatePerpAccountScenario` | A complete `fill buy 1@100` action from flat is folded first; margin and liquidation are then recomputed from that projected state, never from a prefix after failure. |
 | `validatePerpOrder` | `price=100`, `size=0.1`, minimum notional `10`, band `90..110`: notional `10`; both inclusive constraints pass. |

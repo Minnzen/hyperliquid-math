@@ -51,7 +51,7 @@ function refGroups(prefix: string, zh: boolean): Group[] {
     },
     {
       text: zh ? 'Spot 与 HIP' : 'Spot & HIP',
-      items: [L('spot', 'Spot'), L('hip1', 'HIP-1'), L('hip3', 'HIP-3')],
+      items: [L('spot', 'Spot'), L('hip1', 'HIP-1'), L('hip3', 'HIP-3'), L('hip4', 'HIP-4')],
     },
     {
       text: zh ? '附录' : 'Appendix',

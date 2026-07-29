@@ -2,9 +2,13 @@ import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 import {
   calculateHip3FeeRates,
+  calculateOutcomeDualPrice,
+  calculateOutcomeSettlement,
   calculatePerpInitialMargin,
   calculatePerpLiquidationPrice,
+  calculateUnifiedAccountRatio,
   canonicalizeDecimalString,
+  evaluateRecurringOutcome,
   projectPerpFill,
   projectSpotPositionEvent,
   quantizePrice,
@@ -31,7 +35,7 @@ describe('formula manual', () => {
       readFile('spec/WORKED-EXAMPLES.md', 'utf8'),
     ])
 
-    expect(manifest.functions).toHaveLength(45)
+    expect(manifest.functions).toHaveLength(49)
     for (const entry of manifest.functions) {
       expect(index, entry.exportName).toContain(`\`${entry.exportName}\``)
       expect(index, entry.formulaId).toContain(`\`${entry.formulaId}\``)
@@ -66,6 +70,10 @@ describe('formula manual', () => {
       calculatePerpLiquidationPrice,
       projectSpotPositionEvent,
       calculateHip3FeeRates,
+      calculateOutcomeDualPrice,
+      calculateOutcomeSettlement,
+      evaluateRecurringOutcome,
+      calculateUnifiedAccountRatio,
     }
 
     expect(vectors.map((vector) => vector.function)).toEqual(Object.keys(runners))

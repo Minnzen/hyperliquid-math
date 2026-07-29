@@ -109,4 +109,16 @@ describe('unified account ratio validation boundaries', () => {
       } as never),
     )
   })
+
+  it.each([
+    { token: -1, total: '2' },
+    { token: 0, total: 'not-a-decimal' },
+  ])('rejects invalid Spot row %j', (spot) => {
+    expectInvalid(
+      calculateUnifiedAccountRatio({
+        dexes: [validDex],
+        spotBalances: [spot],
+      }),
+    )
+  })
 })

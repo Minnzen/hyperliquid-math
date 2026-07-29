@@ -28,7 +28,7 @@
 
 - **精确 decimal 运算。** 所有值都是 decimal 字符串，运算基于 40 位有效数字的 decimal；量化取整方向对用户保守——size 和买价向下、卖价向上。金额不经过浮点。
 - **每个结果带一条 trace。** 每个函数返回 `{ value, trace }`。trace 记录规范化输入、公式与来源 ID、每一次取整决策和每一条假设，任何一个输出都能追溯到它依据的规则。
-- **覆盖需要推导的公式。** 跨保证金 tier 的清算价求根（含 maintenance deduction 与 backstop 阈值）、账户保证金评估、PnL 归因、funding、费用、订单预览、TWAP/scale 排程、账本重放、spot 单位换算、HIP-1/HIP-3 约束。
+- **覆盖需要推导的公式。** 跨保证金 tier 的清算价求根（含 maintenance deduction 与 backstop 阈值）、账户保证金评估、PnL 归因、funding、费用、订单预览、TWAP/scale 排程、账本重放、spot 单位换算、HIP-1/HIP-3 约束、HIP-4 outcome 投影和统一账户监控比率。
 - **证据边界明确，不笼统声称完全一致。** 运行时源码保持 100% 测试覆盖；pin 住的官方 Python SDK 提供 4 个明确标为 partial 的 oracle slice，带日期的 live fixtures 提供 24 个 partial slice。其余 slice 均记录为 `not-supported`，没有任何一项被标成服务器公式完全一致。一个[定时/手动线上对拍脚本](scripts/oracles/manual-live-verify.mjs)会在 standard 模式 cross 保证金合计或清算价不一致时失败，不再只打印差异。
 
 ## 安装
@@ -138,12 +138,13 @@ value.status === 'indeterminate'   // → 声明的规则不完整
 | 子路径 | 函数 |
 | --- | --- |
 | `/precision` | `canonicalizeDecimalString` · `quantizePrice` · `quantizeSize` |
-| `/identifiers` | `deriveCanonicalAssetKey` · `encodeAssetId` · `decodeAssetId` |
+| `/identifiers` | `deriveCanonicalAssetKey` · `encodeAssetId` · `decodeAssetId`（含 outcome asset ID） |
+| `/hip4` | `calculateOutcomeDualPrice` · `calculateOutcomeSettlement` · `evaluateRecurringOutcome` |
 | `/orderbook` | `calculateBookMetrics` · `simulateBookFill` |
 | `/fees` | `calculateTradeFee` · `calculateWeightedFeeVolume` · `selectFeeTier` |
 | `/positions` | `calculatePerpUnrealizedPnl` · `projectPerpFill` · `projectPerpFillSequence` · `calculatePerpBreakEvenPrice` |
 | `/funding` | `calculateFundingPremiumIndex` · `calculateFundingRate` · `calculateFundingPayment` · `annualizeFundingRate` |
-| `/margin` | `calculatePerpInitialMargin` · `calculatePerpMaintenanceMargin` · `evaluatePerpAccountMargin` |
+| `/margin` | `calculatePerpInitialMargin` · `calculatePerpMaintenanceMargin` · `evaluatePerpAccountMargin` · `calculateUnifiedAccountRatio` |
 | `/liquidation` | `calculatePerpLiquidationPrice` |
 | `/scenarios` | `simulatePerpAccountScenario` |
 | `/orders` | `validatePerpOrder` · `calculatePerpMaxOrderSize` · `evaluatePerpReduceOnly` · `calculatePerpSlippagePrice` · `classifyPerpTrigger` · `derivePerpTriggerPrice` · `buildPerpScaleLadder` · `calculatePerpTwapSchedule` |
@@ -152,7 +153,7 @@ value.status === 'indeterminate'   // → 声明的规则不完整
 | `/hip1` | `validateHip1Deployment` · `evaluateHip1AnchorGenesisEligibility` |
 | `/hip3` | `resolveHip3CollateralSource` · `evaluateHip3MarginMode` · `calculateHip3FeeRates` |
 
-公式推导、45 个可手算的 worked examples、每个函数的 oracle 覆盖状态都在
+公式推导、49 个可手算的 worked examples、每个函数的 oracle 覆盖状态都在
 [spec 手册](spec/README.md)里，随包分发。
 
 ## 边界

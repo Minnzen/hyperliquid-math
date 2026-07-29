@@ -38,7 +38,7 @@ function invalid<T>(
 ): MathResult<T> {
   return {
     value: { status: 'invalid-input', issues: [issue] },
-    trace: traceFactory(reason(issue.code, issue.path ?? '')),
+    trace: traceFactory(reason(issue.code, issue.path as string)),
   }
 }
 

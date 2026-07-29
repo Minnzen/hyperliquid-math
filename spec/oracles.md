@@ -1,7 +1,7 @@
 # Oracle Coverage Contract
 
-Status: M5 complete (independently reviewed)
-Last verified: 2026-07-19
+Status: M6 complete
+Last verified: 2026-07-30
 
 Each public runtime function records `full`, `partial`, or `not-supported` independently for the
 official Python SDK and live fixtures. `partial` must name the supported slice; a fixture replay
@@ -39,8 +39,8 @@ isolated-position comparisons remain unsupported by that script.
 | price quantize | partial: valid fixture wire canonicalization | partial: meta/response precision |
 | size quantize | partial: valid fixture wire canonicalization | partial: meta/response precision |
 | canonical asset key | not-supported | not-supported |
-| asset ID encode | partial: main perp/spot plus one HIP-3 fixture | partial metadata alignment |
-| asset ID decode | partial | partial metadata alignment |
+| asset ID encode | partial: main perp/spot plus one HIP-3 fixture; outcome v2 is docs-backed | partial legacy metadata alignment; no outcome fixture |
+| asset ID decode | partial legacy reverse mapping; outcome v2 is docs-backed | partial legacy metadata alignment; no outcome fixture |
 | book metrics | not-supported | partial fixture replay |
 | book fill simulation | not-supported | partial fixture replay only |
 
@@ -92,3 +92,19 @@ domain without an applicable oracle remains explicitly `not-supported`.
   action acceptance or formula parity.
 - No signed Spot, HIP-1, or HIP-3 action is executed. Actual matching, dust conversion/allocation,
   deployment acceptance, cross eligibility, settlement, and server rounding remain unsupported.
+
+## M6 support slices
+
+- M6 coverage is recorded in `fixtures/oracles/m6-oracle-coverage.json` and inherits the M5 coverage
+  contract. Entries are separated into `m6-hip4` and `m6-unified` evidence groups.
+- HIP-4 dual price, settlement projection, and recurring-outcome interpolation are
+  `not-supported` by both the pinned Python SDK and dated live fixtures. Official documentation is
+  formula authority; hand-derived tests do not upgrade oracle coverage.
+- The official account-abstraction documentation includes a float-based TypeScript unified-ratio
+  reference. Tests use it only as differential evidence on the shared positive-available domain;
+  Decimal40 specs and hand-derived vectors remain normative.
+- Two unified differences are intentional: a missing referenced Spot row is `invalid-input` rather
+  than implicit zero, and occupied collateral with non-positive available balance is
+  `indeterminate` rather than skipped. A zero-occupation token returns ratio `"0"` without division.
+- No suitable public unified account or outcome settlement fixture was captured. The absence is
+  recorded as `not-supported`; it is not treated as a vacuous pass.

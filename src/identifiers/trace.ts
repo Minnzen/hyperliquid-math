@@ -32,6 +32,6 @@ export function createIdentifierTrace(input: IdentifierTraceInput): CalculationT
   })
 }
 
-export function reason(code: string, path: string, sourceRefs?: readonly string[]): MathReason {
-  return sourceRefs === undefined ? { code, path } : { code, path, sourceRefs }
+export function reason(code: string, path: string): MathReason {
+  return { code, path }
 }
