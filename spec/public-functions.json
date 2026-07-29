@@ -53,7 +53,7 @@
       "exportName": "encodeAssetId",
       "subpaths": [".", "./identifiers"],
       "formulaId": "hl.identifiers.asset-id.encode",
-      "formulaVersion": 1,
+      "formulaVersion": 2,
       "specPath": "spec/identifiers.md",
       "testKinds": ["unit", "property", "differential", "contract", "cross-runtime"],
       "oracles": {
@@ -65,12 +65,48 @@
       "exportName": "decodeAssetId",
       "subpaths": [".", "./identifiers"],
       "formulaId": "hl.identifiers.asset-id.decode",
-      "formulaVersion": 1,
+      "formulaVersion": 2,
       "specPath": "spec/identifiers.md",
       "testKinds": ["unit", "property", "differential", "contract", "cross-runtime"],
       "oracles": {
         "official-python-sdk": "partial",
         "live-fixtures": "partial"
+      }
+    },
+    {
+      "exportName": "calculateOutcomeDualPrice",
+      "subpaths": [".", "./hip4"],
+      "formulaId": "hl.hip4.dual-price.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/hip4.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculateOutcomeSettlement",
+      "subpaths": [".", "./hip4"],
+      "formulaId": "hl.hip4.settlement.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/hip4.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "evaluateRecurringOutcome",
+      "subpaths": [".", "./hip4"],
+      "formulaId": "hl.hip4.recurring-outcome.evaluate",
+      "formulaVersion": 1,
+      "specPath": "spec/hip4.md",
+      "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
       }
     },
     {
@@ -260,6 +296,26 @@
       "formulaVersion": 1,
       "specPath": "spec/margin.md",
       "testKinds": ["unit", "property", "metamorphic", "replay", "contract", "cross-runtime"],
+      "oracles": {
+        "official-python-sdk": "not-supported",
+        "live-fixtures": "not-supported"
+      }
+    },
+    {
+      "exportName": "calculateUnifiedAccountRatio",
+      "subpaths": [".", "./margin"],
+      "formulaId": "hl.margin.unified-account-ratio.calculate",
+      "formulaVersion": 1,
+      "specPath": "spec/margin.md",
+      "testKinds": [
+        "unit",
+        "property",
+        "metamorphic",
+        "differential",
+        "replay",
+        "contract",
+        "cross-runtime"
+      ],
       "oracles": {
         "official-python-sdk": "not-supported",
         "live-fixtures": "not-supported"

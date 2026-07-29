@@ -37,6 +37,7 @@ const ROUTES = {
   'spot.md': 'reference/spot.md',
   'hip1.md': 'reference/hip1.md',
   'hip3.md': 'reference/hip3.md',
+  'hip4.md': 'reference/hip4.md',
   'NUMERICS.md': 'reference/numerics.md',
   'WORKED-EXAMPLES.md': 'reference/worked-examples.md',
   'oracles.md': 'reference/oracles.md',

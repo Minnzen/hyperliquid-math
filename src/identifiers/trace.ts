@@ -3,6 +3,7 @@ import type { CalculationTrace, JsonObject, MathReason, TraceStep } from '../mod
 
 interface IdentifierTraceInput {
   readonly formulaId: string
+  readonly formulaVersion?: number
   readonly completion: CalculationTrace['completion']
   readonly normalizedInputs: JsonObject
   readonly sourceRefs: readonly string[]
@@ -12,15 +13,14 @@ interface IdentifierTraceInput {
 
 export const assetKeySourceRefs = ['HLM.SPEC.IDENTIFIERS.CANONICAL_KEY.V1'] as const
 export const assetIdSourceRefs = [
-  'HLM.SPEC.IDENTIFIERS.ASSET_ID.V1',
-  'HL.DOC.ASSET_IDS.2026-07-19',
+  'HLM.SPEC.IDENTIFIERS.ASSET_ID.V2',
+  'HL.DOC.ASSET_IDS.2026-07-30',
 ] as const
-export const officialAssetIdSourceRefs = ['HL.DOC.ASSET_IDS.2026-07-19'] as const
 
 export function createIdentifierTrace(input: IdentifierTraceInput): CalculationTrace {
   return finalizeTrace({
     formulaId: input.formulaId,
-    formulaVersion: 1,
+    formulaVersion: input.formulaVersion ?? 1,
     authority: 'local-exact',
     maturity: input.maturity ?? 'stable',
     completion: input.completion,
@@ -32,6 +32,6 @@ export function createIdentifierTrace(input: IdentifierTraceInput): CalculationT
   })
 }
 
-export function reason(code: string, path: string, sourceRefs?: readonly string[]): MathReason {
-  return sourceRefs === undefined ? { code, path } : { code, path, sourceRefs }
+export function reason(code: string, path: string): MathReason {
+  return { code, path }
 }

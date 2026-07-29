@@ -158,5 +158,88 @@
         "deployerShare": "0.3333333333333333333333333333333333333333"
       }
     }
+  },
+  {
+    "function": "calculateOutcomeDualPrice",
+    "input": { "price": "0.37" },
+    "expectedValue": {
+      "status": "ok",
+      "data": { "dualPrice": "0.63" }
+    }
+  },
+  {
+    "function": "calculateOutcomeSettlement",
+    "input": {
+      "tokenSide": "no",
+      "settleFraction": "0.8",
+      "size": "10",
+      "entryPrice": "0.63"
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "payoutFraction": "0.2",
+        "settlementValue": "2",
+        "entryNotional": "6.3",
+        "grossPnl": "-4.3"
+      }
+    }
+  },
+  {
+    "function": "evaluateRecurringOutcome",
+    "input": {
+      "class": "priceBinary",
+      "markPrice0": "100",
+      "t0": 1000,
+      "markPrice1": "110",
+      "t1": 2000,
+      "settlementTime": 1500,
+      "targetPrice": "105"
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "class": "priceBinary",
+        "interpolatedMarkPrice": "105",
+        "settlesTo": "yes",
+        "settleFraction": "1"
+      }
+    }
+  },
+  {
+    "function": "calculateUnifiedAccountRatio",
+    "input": {
+      "dexes": [
+        {
+          "dexIndex": 0,
+          "collateralToken": 0,
+          "crossMaintenanceMarginUsed": "2",
+          "isolatedMarginUsed": "1"
+        },
+        {
+          "dexIndex": 1,
+          "collateralToken": 0,
+          "crossMaintenanceMarginUsed": "3",
+          "isolatedMarginUsed": "0.5"
+        }
+      ],
+      "spotBalances": [{ "token": 0, "total": "11.5" }]
+    },
+    "expectedValue": {
+      "status": "ok",
+      "data": {
+        "tokens": [
+          {
+            "collateralToken": 0,
+            "spotTotal": "11.5",
+            "crossMaintenanceMarginUsed": "5",
+            "isolatedMarginUsed": "1.5",
+            "available": "10",
+            "ratio": "0.5"
+          }
+        ],
+        "accountRatio": "0.5"
+      }
+    }
   }
 ]

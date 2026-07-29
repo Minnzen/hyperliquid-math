@@ -68,6 +68,10 @@ export type AssetIdDecodeOutput = {
     readonly kind: 'hip3-perp';
     readonly dexIndex: number;
     readonly index: number;
+} | {
+    readonly kind: 'outcome';
+    readonly outcome: number;
+    readonly side: 0 | 1;
 };
 
 // @public
@@ -81,6 +85,10 @@ export type AssetIdEncodeInput = {
     readonly kind: 'hip3-perp';
     readonly dexIndex: number;
     readonly index: number;
+} | {
+    readonly kind: 'outcome';
+    readonly outcome: number;
+    readonly side: 0 | 1;
 };
 
 // @public (undocumented)
@@ -176,6 +184,30 @@ export interface CalculateHip3FeeRatesInput {
     readonly isAlignedQuoteToken: boolean;
     readonly makerRate: string;
     readonly takerRate: string;
+}
+
+// @public
+export function calculateOutcomeDualPrice(input: CalculateOutcomeDualPriceInput): MathResult<OutcomeDualPrice>;
+
+// @public (undocumented)
+export interface CalculateOutcomeDualPriceInput {
+    // (undocumented)
+    readonly price: string;
+}
+
+// @public
+export function calculateOutcomeSettlement(input: CalculateOutcomeSettlementInput): MathResult<OutcomeSettlement>;
+
+// @public (undocumented)
+export interface CalculateOutcomeSettlementInput {
+    // (undocumented)
+    readonly entryPrice: string;
+    // (undocumented)
+    readonly settleFraction: string;
+    // (undocumented)
+    readonly size: string;
+    // (undocumented)
+    readonly tokenSide: OutcomeTokenSide;
 }
 
 // @public
@@ -294,6 +326,17 @@ export interface CalculateTradeFeeInput {
     readonly rate: string;
     // (undocumented)
     readonly size: string;
+}
+
+// @public
+export function calculateUnifiedAccountRatio(input: CalculateUnifiedAccountRatioInput): MathResult<UnifiedAccountRatio>;
+
+// @public (undocumented)
+export interface CalculateUnifiedAccountRatioInput {
+    // (undocumented)
+    readonly dexes: readonly UnifiedAccountDexMargin[];
+    // (undocumented)
+    readonly spotBalances: readonly UnifiedAccountSpotBalance[];
 }
 
 // @public
@@ -442,6 +485,33 @@ export interface DerivePerpTriggerPriceInput {
 // @public
 export function encodeAssetId(input: AssetIdEncodeInput): MathResult<number>;
 
+// @public (undocumented)
+export interface EvaluatedPriceBinaryOutcome {
+    // (undocumented)
+    readonly class: 'priceBinary';
+    // (undocumented)
+    readonly interpolatedMarkPrice: string;
+    // (undocumented)
+    readonly settleFraction: '0' | '1';
+    // (undocumented)
+    readonly settlesTo: OutcomeTokenSide;
+}
+
+// @public (undocumented)
+export interface EvaluatedPriceBucketOutcome {
+    // (undocumented)
+    readonly class: 'priceBucket';
+    // (undocumented)
+    readonly interpolatedMarkPrice: string;
+    // (undocumented)
+    readonly settledBucket: 0 | 1 | 2;
+    // (undocumented)
+    readonly settleFractions: readonly ['0' | '1', '0' | '1', '0' | '1'];
+}
+
+// @public (undocumented)
+export type EvaluatedRecurringOutcome = EvaluatedPriceBinaryOutcome | EvaluatedPriceBucketOutcome;
+
 // @public
 export function evaluateHip1AnchorGenesisEligibility(input: EvaluateHip1AnchorGenesisEligibilityInput): MathResult<Hip1AnchorGenesisEligibility>;
 
@@ -481,6 +551,48 @@ export interface EvaluatePerpReduceOnlyInput {
     // (undocumented)
     readonly side: PerpOrderSide;
 }
+
+// @public (undocumented)
+export interface EvaluatePriceBinaryOutcomeInput {
+    // (undocumented)
+    readonly class: 'priceBinary';
+    // (undocumented)
+    readonly markPrice0: string;
+    // (undocumented)
+    readonly markPrice1: string;
+    // (undocumented)
+    readonly settlementTime: number;
+    // (undocumented)
+    readonly t0: number;
+    // (undocumented)
+    readonly t1: number;
+    // (undocumented)
+    readonly targetPrice: string;
+}
+
+// @public (undocumented)
+export interface EvaluatePriceBucketOutcomeInput {
+    // (undocumented)
+    readonly class: 'priceBucket';
+    // (undocumented)
+    readonly markPrice0: string;
+    // (undocumented)
+    readonly markPrice1: string;
+    // (undocumented)
+    readonly priceThresholds: readonly [string, string];
+    // (undocumented)
+    readonly settlementTime: number;
+    // (undocumented)
+    readonly t0: number;
+    // (undocumented)
+    readonly t1: number;
+}
+
+// @public
+export function evaluateRecurringOutcome(input: EvaluateRecurringOutcomeInput): MathResult<EvaluatedRecurringOutcome>;
+
+// @public (undocumented)
+export type EvaluateRecurringOutcomeInput = EvaluatePriceBinaryOutcomeInput | EvaluatePriceBucketOutcomeInput;
 
 // @public
 export function evaluateSpotDustEligibility(input: EvaluateSpotDustEligibilityInput): MathResult<SpotDustEligibility>;
@@ -797,6 +909,27 @@ export type OpenPerpTriggerPosition = {
     readonly signedSize: string;
     readonly entryPrice: string;
 };
+
+// @public (undocumented)
+export interface OutcomeDualPrice {
+    // (undocumented)
+    readonly dualPrice: string;
+}
+
+// @public (undocumented)
+export interface OutcomeSettlement {
+    // (undocumented)
+    readonly entryNotional: string;
+    // (undocumented)
+    readonly grossPnl: string;
+    // (undocumented)
+    readonly payoutFraction: string;
+    // (undocumented)
+    readonly settlementValue: string;
+}
+
+// @public (undocumented)
+export type OutcomeTokenSide = 'yes' | 'no';
 
 // @public (undocumented)
 export type PerpAccountLedgerLine = {
@@ -1973,6 +2106,50 @@ export interface TradeFee {
     readonly accountValueDelta: string;
     readonly feeAmount: string;
     readonly notional: string;
+}
+
+// @public
+export interface UnifiedAccountDexMargin {
+    // (undocumented)
+    readonly collateralToken: number;
+    // (undocumented)
+    readonly crossMaintenanceMarginUsed: string;
+    // (undocumented)
+    readonly dexIndex: number;
+    // (undocumented)
+    readonly isolatedMarginUsed: string;
+}
+
+// @public (undocumented)
+export interface UnifiedAccountRatio {
+    // (undocumented)
+    readonly accountRatio: string;
+    // (undocumented)
+    readonly tokens: readonly UnifiedAccountTokenRatio[];
+}
+
+// @public
+export interface UnifiedAccountSpotBalance {
+    // (undocumented)
+    readonly token: number;
+    // (undocumented)
+    readonly total: string;
+}
+
+// @public (undocumented)
+export interface UnifiedAccountTokenRatio {
+    // (undocumented)
+    readonly available: string;
+    // (undocumented)
+    readonly collateralToken: number;
+    // (undocumented)
+    readonly crossMaintenanceMarginUsed: string;
+    // (undocumented)
+    readonly isolatedMarginUsed: string;
+    // (undocumented)
+    readonly ratio: string;
+    // (undocumented)
+    readonly spotTotal: string;
 }
 
 // @public (undocumented)

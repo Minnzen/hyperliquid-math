@@ -12,14 +12,34 @@ describe('encodeAssetId', () => {
     expect(result.value).toEqual({ status: 'ok', data: expected })
     expect(result.trace).toMatchObject({
       formulaId: 'hl.identifiers.asset-id.encode',
-      formulaVersion: 1,
+      formulaVersion: 2,
       authority: 'local-exact',
       maturity: 'stable',
       completion: { status: 'complete' },
       normalizedInputs: input,
       rounding: [],
       assumptions: [],
-      sourceRefs: ['HLM.SPEC.IDENTIFIERS.ASSET_ID.V1', 'HL.DOC.ASSET_IDS.2026-07-19'],
+      sourceRefs: ['HLM.SPEC.IDENTIFIERS.ASSET_ID.V2', 'HL.DOC.ASSET_IDS.2026-07-30'],
+    })
+  })
+
+  it.each([
+    [{ kind: 'outcome', outcome: 0, side: 0 }, 100_000_000],
+    [{ kind: 'outcome', outcome: 1, side: 0 }, 100_000_010],
+    [{ kind: 'outcome', outcome: 1, side: 1 }, 100_000_011],
+    [{ kind: 'outcome', outcome: 900_719_915_474_099, side: 1 }, Number.MAX_SAFE_INTEGER],
+  ])('encodes documented outcome input %j as %i', (input, expected) => {
+    const result = encodeAssetId(input as never)
+
+    expect(result.value).toEqual({ status: 'ok', data: expected })
+    expect(result.trace).toMatchObject({
+      formulaId: 'hl.identifiers.asset-id.encode',
+      formulaVersion: 2,
+      authority: 'local-exact',
+      maturity: 'experimental',
+      completion: { status: 'complete' },
+      normalizedInputs: input,
+      sourceRefs: ['HLM.SPEC.IDENTIFIERS.ASSET_ID.V2', 'HL.DOC.ASSET_IDS.2026-07-30'],
     })
   })
 
@@ -38,7 +58,13 @@ describe('encodeAssetId', () => {
     [{ kind: 'hip3-perp', dexIndex: 0, index: 0 }, '/dexIndex'],
     [{ kind: 'hip3-perp', dexIndex: 9_990, index: 0 }, '/dexIndex'],
     [{ kind: 'hip3-perp', dexIndex: 1, index: 10_000 }, '/index'],
-    [{ kind: 'outcome', index: 0 }, '/kind'],
+    [{ kind: 'outcome', outcome: 0 }, ''],
+    [{ kind: 'outcome', outcome: 0, side: -1 }, '/side'],
+    [{ kind: 'outcome', outcome: 0, side: 1.5 }, '/side'],
+    [{ kind: 'outcome', outcome: 0, side: 2 }, '/side'],
+    [{ kind: 'outcome', outcome: 0, side: Number.NaN }, '/side'],
+    [{ kind: 'outcome', outcome: 0, side: '1' }, '/side'],
+    [{ kind: 'outcome', outcome: 900_719_915_474_100, side: 0 }, '/outcome'],
   ])('rejects unsupported encode input: %j', (input, path) => {
     const result = encodeAssetId(input as unknown as Parameters<typeof encodeAssetId>[0])
 
@@ -83,14 +109,14 @@ describe('decodeAssetId', () => {
     expect(result.value).toEqual({ status: 'ok', data: expected })
     expect(result.trace).toMatchObject({
       formulaId: 'hl.identifiers.asset-id.decode',
-      formulaVersion: 1,
+      formulaVersion: 2,
       authority: 'local-exact',
       maturity: 'stable',
       completion: { status: 'complete' },
       normalizedInputs: { assetId },
       rounding: [],
       assumptions: [],
-      sourceRefs: ['HLM.SPEC.IDENTIFIERS.ASSET_ID.V1', 'HL.DOC.ASSET_IDS.2026-07-19'],
+      sourceRefs: ['HLM.SPEC.IDENTIFIERS.ASSET_ID.V2', 'HL.DOC.ASSET_IDS.2026-07-30'],
     })
   })
 
@@ -104,36 +130,35 @@ describe('decodeAssetId', () => {
     })
   })
 
-  it('returns indeterminate for outcome asset IDs', () => {
-    expect(decodeAssetId({ assetId: 100_000_000 })).toEqual({
-      value: {
-        status: 'indeterminate',
-        reason: {
-          code: 'outcome-asset-id-not-supported',
-          path: '/assetId',
-          sourceRefs: ['HL.DOC.ASSET_IDS.2026-07-19'],
-        },
-        missing: ['/outcomeDexIndex', '/marketIndex'],
-      },
+  it.each([
+    [100_000_000, { kind: 'outcome', outcome: 0, side: 0 }],
+    [100_000_010, { kind: 'outcome', outcome: 1, side: 0 }],
+    [100_000_011, { kind: 'outcome', outcome: 1, side: 1 }],
+    [Number.MAX_SAFE_INTEGER, { kind: 'outcome', outcome: 900_719_915_474_099, side: 1 }],
+  ])('decodes documented outcome asset ID %i', (assetId, expected) => {
+    expect(decodeAssetId({ assetId })).toMatchObject({
+      value: { status: 'ok', data: expected },
       trace: {
         formulaId: 'hl.identifiers.asset-id.decode',
-        formulaVersion: 1,
+        formulaVersion: 2,
         authority: 'local-exact',
         maturity: 'experimental',
-        completion: {
-          status: 'incomplete',
-          reason: {
-            code: 'outcome-asset-id-not-supported',
-            path: '/assetId',
-            sourceRefs: ['HL.DOC.ASSET_IDS.2026-07-19'],
-          },
-        },
-        normalizedInputs: { assetId: 100_000_000 },
-        intermediates: [],
+        completion: { status: 'complete' },
+        normalizedInputs: { assetId },
         rounding: [],
         assumptions: [],
-        sourceRefs: ['HLM.SPEC.IDENTIFIERS.ASSET_ID.V1', 'HL.DOC.ASSET_IDS.2026-07-19'],
+        sourceRefs: ['HLM.SPEC.IDENTIFIERS.ASSET_ID.V2', 'HL.DOC.ASSET_IDS.2026-07-30'],
       },
+    })
+  })
+
+  it('rejects outcome asset IDs whose encoding ends in side digit 2 through 9', () => {
+    const result = decodeAssetId({ assetId: 100_000_012 })
+
+    expect(result.value.status).toBe('invalid-input')
+    expect(result.trace.completion).toEqual({
+      status: 'incomplete',
+      reason: { code: 'invalid-outcome-side-encoding', path: '/assetId' },
     })
   })
 

@@ -148,6 +148,42 @@ export interface PerpAccountMargin {
   readonly totals: PerpAccountMarginTotals
 }
 
+/** One normalized per-DEX contribution to the unified account ratio. @public */
+export interface UnifiedAccountDexMargin {
+  readonly dexIndex: number
+  readonly collateralToken: number
+  readonly crossMaintenanceMarginUsed: string
+  readonly isolatedMarginUsed: string
+}
+
+/** One spot trading balance used as unified collateral. @public */
+export interface UnifiedAccountSpotBalance {
+  readonly token: number
+  readonly total: string
+}
+
+/** @public */
+export interface CalculateUnifiedAccountRatioInput {
+  readonly dexes: readonly UnifiedAccountDexMargin[]
+  readonly spotBalances: readonly UnifiedAccountSpotBalance[]
+}
+
+/** @public */
+export interface UnifiedAccountTokenRatio {
+  readonly collateralToken: number
+  readonly spotTotal: string
+  readonly crossMaintenanceMarginUsed: string
+  readonly isolatedMarginUsed: string
+  readonly available: string
+  readonly ratio: string
+}
+
+/** @public */
+export interface UnifiedAccountRatio {
+  readonly tokens: readonly UnifiedAccountTokenRatio[]
+  readonly accountRatio: string
+}
+
 export interface NormalizedPerpMarginTier {
   readonly lowerBound: NormalizedDecimalString
   readonly lowerBoundDecimal: Decimal40Value
@@ -192,6 +228,27 @@ export interface NormalizedEvaluatePerpAccountMarginInput {
   readonly crossAccountValue: NormalizedDecimalString
   readonly crossAccountValueDecimal: Decimal40Value
   readonly positions: readonly NormalizedPerpMarginPosition[]
+}
+
+export interface NormalizedUnifiedAccountDexMargin {
+  readonly dexIndex: number
+  readonly collateralToken: number
+  readonly crossMaintenanceMarginUsed: NormalizedDecimalString
+  readonly crossMaintenanceMarginUsedDecimal: Decimal40Value
+  readonly isolatedMarginUsed: NormalizedDecimalString
+  readonly isolatedMarginUsedDecimal: Decimal40Value
+}
+
+export interface NormalizedUnifiedAccountSpotBalance {
+  readonly inputIndex: number
+  readonly token: number
+  readonly total: NormalizedDecimalString
+  readonly totalDecimal: Decimal40Value
+}
+
+export interface NormalizedCalculateUnifiedAccountRatioInput {
+  readonly dexes: readonly NormalizedUnifiedAccountDexMargin[]
+  readonly spotBalances: readonly NormalizedUnifiedAccountSpotBalance[]
 }
 
 export interface InitialMarginComputation {

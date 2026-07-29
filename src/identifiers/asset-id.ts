@@ -1,12 +1,7 @@
 import { invalidInputResult, okResult } from '../core/result.js'
 import type { MathIssue, MathResult } from '../model/index.js'
 import { issue, normalizePlainShape } from './plain-data.js'
-import {
-  assetIdSourceRefs,
-  createIdentifierTrace,
-  officialAssetIdSourceRefs,
-  reason,
-} from './trace.js'
+import { assetIdSourceRefs, createIdentifierTrace, reason } from './trace.js'
 
 /**
  * Metadata index to encode: `index` is the position in the owning dex's `meta.universe`
@@ -18,6 +13,7 @@ export type AssetIdEncodeInput =
   | { readonly kind: 'perp'; readonly index: number }
   | { readonly kind: 'spot'; readonly index: number }
   | { readonly kind: 'hip3-perp'; readonly dexIndex: number; readonly index: number }
+  | { readonly kind: 'outcome'; readonly outcome: number; readonly side: 0 | 1 }
 
 /** @public */
 export interface AssetIdDecodeInput {
@@ -30,6 +26,7 @@ export type AssetIdDecodeOutput =
   | { readonly kind: 'perp'; readonly index: number }
   | { readonly kind: 'spot'; readonly index: number }
   | { readonly kind: 'hip3-perp'; readonly dexIndex: number; readonly index: number }
+  | { readonly kind: 'outcome'; readonly outcome: number; readonly side: 0 | 1 }
 
 const encodeFormulaId = 'hl.identifiers.asset-id.encode'
 const decodeFormulaId = 'hl.identifiers.asset-id.decode'
@@ -40,11 +37,14 @@ function invalidResult<T>(
   formulaId: string,
   issue: MathIssue,
   normalizedInputs = {},
+  maturity: 'stable' | 'experimental' = 'stable',
 ): MathResult<T> {
   return invalidInputResult(
     [issue],
     createIdentifierTrace({
       formulaId,
+      formulaVersion: 2,
+      maturity,
       completion: { status: 'incomplete', reason: reason(issue.code, issue.path as string) },
       normalizedInputs,
       sourceRefs: assetIdSourceRefs,
@@ -187,12 +187,58 @@ function validateEncodeInput(
     return { ok: true, value: { kind, dexIndex: dexIndex.value, index: index.value } }
   }
 
-  return { ok: false, issue: issue('invalid-kind', '/kind', kind, 'perp, spot, or hip3-perp') }
+  if (kind === 'outcome') {
+    const shape = normalizePlainShape<{
+      readonly kind: unknown
+      readonly outcome: unknown
+      readonly side: unknown
+    }>(
+      input,
+      ['kind', 'outcome', 'side'],
+      'plain object with exactly kind, outcome, and side own data fields',
+    )
+    if (!shape.ok) return shape
+
+    const outcome = validateSafeInteger(shape.descriptors.outcome.value, '/outcome')
+    if (!outcome.ok) return outcome
+    const side = validateSafeInteger(shape.descriptors.side.value, '/side')
+    if (!side.ok) return side
+    if (side.value !== 0 && side.value !== 1) {
+      return {
+        ok: false,
+        issue: issue('invalid-outcome-side', '/side', side.value, '0 or 1'),
+      }
+    }
+
+    const encoded = 100_000_000n + BigInt(outcome.value) * 10n + BigInt(side.value)
+    if (encoded > BigInt(Number.MAX_SAFE_INTEGER)) {
+      return {
+        ok: false,
+        issue: issue(
+          'outcome-index-out-of-range',
+          '/outcome',
+          outcome.value,
+          'encoded asset ID must be a safe integer',
+        ),
+      }
+    }
+
+    return {
+      ok: true,
+      value: { kind, outcome: outcome.value, side: side.value as 0 | 1 },
+    }
+  }
+
+  return {
+    ok: false,
+    issue: issue('invalid-kind', '/kind', kind, 'perp, spot, hip3-perp, or outcome'),
+  }
 }
 
 /**
  * Encodes a metadata index into the numeric protocol asset ID: perp `index`, spot
- * `10000 + index`, HIP-3 perp `100000 + dexIndex * 10000 + index` (dexIndex starts at 1).
+ * `10000 + index`, HIP-3 perp `100000 + dexIndex * 10000 + index` (dexIndex starts at 1), and
+ * outcome `100000000 + 10 * outcome + side`.
  * Range-checks against the protocol's 10,000-ID blocks; it does not check the index exists.
  *
  * @public
@@ -207,12 +253,16 @@ export function encodeAssetId(input: AssetIdEncodeInput): MathResult<number> {
       ? normalized.index
       : normalized.kind === 'spot'
         ? 10_000 + normalized.index
-        : 100_000 + normalized.dexIndex * 10_000 + normalized.index
+        : normalized.kind === 'hip3-perp'
+          ? 100_000 + normalized.dexIndex * 10_000 + normalized.index
+          : Number(100_000_000n + BigInt(normalized.outcome) * 10n + BigInt(normalized.side))
 
   return okResult(
     encoded,
     createIdentifierTrace({
       formulaId: encodeFormulaId,
+      formulaVersion: 2,
+      maturity: normalized.kind === 'outcome' ? 'experimental' : 'stable',
       completion: { status: 'complete' },
       normalizedInputs: normalized,
       intermediates: [{ stepId: 'encode-asset-id', inputs: normalized, output: encoded }],
@@ -238,8 +288,8 @@ function validateDecodeInput(
 /**
  * Decodes `{ assetId }` back to its market kind and metadata index: `0..9999` perp,
  * `10000..99999` spot, `110000..99999999` HIP-3 perp via `dexIndex = floor((id - 100000) / 10000)`.
- * The undocumented `100000..109999` gap is `invalid-input`; outcome IDs (100000000 and above) return
- * `indeterminate` rather than a fabricated decode.
+ * The undocumented `100000..109999` gap is `invalid-input`; outcome IDs decode by
+ * `encoding = assetId - 100000000`, `side = encoding mod 10`, and `outcome = floor(encoding / 10)`.
  *
  * @public
  */
@@ -249,25 +299,41 @@ export function decodeAssetId(input: AssetIdDecodeInput): MathResult<AssetIdDeco
 
   const { assetId } = validated
   if (assetId >= 100_000_000) {
-    const outcomeReason = reason(
-      'outcome-asset-id-not-supported',
-      '/assetId',
-      officialAssetIdSourceRefs,
-    )
-    return {
-      value: {
-        status: 'indeterminate',
-        reason: outcomeReason,
-        missing: ['/outcomeDexIndex', '/marketIndex'],
-      },
-      trace: createIdentifierTrace({
+    const encoding = BigInt(assetId) - 100_000_000n
+    const side = Number(encoding % 10n)
+    if (side !== 0 && side !== 1) {
+      return invalidResult(
+        decodeFormulaId,
+        issue(
+          'invalid-outcome-side-encoding',
+          '/assetId',
+          assetId,
+          'outcome encoding ending in side digit 0 or 1',
+        ),
+        { assetId },
+        'experimental',
+      )
+    }
+
+    const decoded: AssetIdDecodeOutput = {
+      kind: 'outcome',
+      outcome: Number(encoding / 10n),
+      side: side as 0 | 1,
+    }
+    return okResult(
+      decoded,
+      createIdentifierTrace({
         formulaId: decodeFormulaId,
+        formulaVersion: 2,
         maturity: 'experimental',
-        completion: { status: 'incomplete', reason: outcomeReason },
+        completion: { status: 'complete' },
         normalizedInputs: { assetId },
+        intermediates: [
+          { stepId: 'decode-outcome-asset-id', inputs: { assetId }, output: decoded },
+        ],
         sourceRefs: assetIdSourceRefs,
       }),
-    }
+    )
   }
 
   if (assetId >= 100_000 && assetId <= 109_999) {
@@ -293,6 +359,7 @@ export function decodeAssetId(input: AssetIdDecodeInput): MathResult<AssetIdDeco
     decoded,
     createIdentifierTrace({
       formulaId: decodeFormulaId,
+      formulaVersion: 2,
       completion: { status: 'complete' },
       normalizedInputs: { assetId },
       intermediates: [{ stepId: 'decode-asset-id', inputs: { assetId }, output: decoded }],

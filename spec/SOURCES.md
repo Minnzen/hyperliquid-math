@@ -8,7 +8,10 @@
 | `HLM.SPEC.PRECISION.PRICE.V1` | internal normative spec | `spec/precision.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.PRECISION.SIZE.V1` | internal normative spec | `spec/precision.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.IDENTIFIERS.CANONICAL_KEY.V1` | internal normative spec | `spec/identifiers.md` | 2026-07-19 | git-tracked |
-| `HLM.SPEC.IDENTIFIERS.ASSET_ID.V1` | internal normative spec | `spec/identifiers.md` | 2026-07-19 | git-tracked |
+| `HLM.SPEC.IDENTIFIERS.ASSET_ID.V2` | internal normative spec | `spec/identifiers.md` | 2026-07-30 | git-tracked |
+| `HLM.SPEC.HIP4.DUAL_PRICE.V1` | internal normative spec | `spec/hip4.md` | 2026-07-30 | git-tracked |
+| `HLM.SPEC.HIP4.SETTLEMENT.V1` | internal normative spec | `spec/hip4.md` | 2026-07-30 | git-tracked |
+| `HLM.SPEC.HIP4.RECURRING_OUTCOME.V1` | internal normative spec | `spec/hip4.md` | 2026-07-30 | git-tracked |
 | `HLM.SPEC.ORDERBOOK.METRICS.V1` | internal normative spec | `spec/orderbook.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.ORDERBOOK.FILL.V1` | internal normative spec | `spec/orderbook.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.FEES.TRADE_FEE.V1` | internal normative spec | `spec/fees.md` | 2026-07-19 | git-tracked |
@@ -26,6 +29,7 @@
 | `HLM.SPEC.MARGIN.MAINTENANCE.V1` | internal normative spec | `spec/margin.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.MARGIN.ACCOUNT_EVALUATE.V1` | internal normative spec | `spec/margin.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.MARGIN.AUTO_FROM_LEVERAGE.V1` | internal normative spec | `spec/margin.md` | 2026-07-19 | git-tracked |
+| `HLM.SPEC.MARGIN.UNIFIED_ACCOUNT_RATIO.V1` | internal normative spec | `spec/margin.md` | 2026-07-30 | git-tracked |
 | `HLM.SPEC.LIQUIDATION.PRICE.V1` | internal normative spec | `spec/liquidation.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.SCENARIOS.PERP_ACCOUNT.V1` | internal normative spec | `spec/scenarios.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.ORDERS.VALIDATE.V1` | internal normative spec | `spec/orders.md` | 2026-07-19 | git-tracked |
@@ -51,6 +55,15 @@
 | `HLM.SPEC.HIP3.FEE_RATES.V1` | internal normative spec | `spec/hip3.md` | 2026-07-19 | git-tracked |
 | `HL.DOC.TICK_LOT.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/tick-and-lot-size` | 2026-07-19 | versionless GitBook; footer updated 10 months ago |
 | `HL.DOC.ASSET_IDS.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/asset-ids` | 2026-07-19 | versionless GitBook; footer updated 24 days ago |
+| `HL.DOC.HIP4.2026-07-30` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-4-outcome-markets#mechanics` | 2026-07-30 | Markdown SHA-256 `087859f228fc6d64d8cec8d43d3e544d054c144f4343cf4cf1cba58e44f64fa6` |
+| `HL.DOC.ASSET_IDS.2026-07-30` | official API mapping | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/asset-ids#outcomes` | 2026-07-30 | Markdown SHA-256 `eec6b95ef1bf184fef4e29effb3f23e6297757c899aa77110d108686011ae0ae` |
+| `HL.DOC.CONTRACT_SPECIFICATIONS.2026-07-30` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications#recurring-outcomes` | 2026-07-30 | Markdown SHA-256 `59ef08be4b7e3d7cc0f4245abd4f133d743a983820df5b2ef0ce1ceb6af50ea3` |
+| `HL.DOC.ACCOUNT_ABSTRACTION.2026-07-30` | official protocol docs and differential reference | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes#unified-account-ratio` | 2026-07-30 | Markdown SHA-256 `456d4902355576304837404a897a43cae75ff06279add2ddd948a5a676b83f23` |
+| `HL.DOC.INFO.SPOT_BALANCES.2026-07-30` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot#retrieve-a-users-token-balances` | 2026-07-30 | Markdown SHA-256 `13b48c5779603271b27f791b644f208a9ec57b04137beccebb9bf5cb4f45dc4c` |
+| `HL.DOC.INFO.OUTCOME_META.2026-07-30` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot#retrieve-outcome-metadata` | 2026-07-30 | Markdown SHA-256 `13b48c5779603271b27f791b644f208a9ec57b04137beccebb9bf5cb4f45dc4c` |
+| `HL.DOC.INFO.SETTLED_OUTCOME.2026-07-30` | official API comparison schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot#retrieve-information-about-a-settled-outcome` | 2026-07-30 | Markdown SHA-256 `13b48c5779603271b27f791b644f208a9ec57b04137beccebb9bf5cb4f45dc4c` |
+| `HL.DOC.INFO.PERP_META.2026-07-30` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-perpetuals-metadata-universe-and-margin-tables` | 2026-07-30 | Markdown SHA-256 `d253ee0aaf3d56c9bbb926d76aafc7a001379a3bf57d5911c825983c893a8c85` |
+| `HL.DOC.INFO.PERP_ACCOUNT.2026-07-30` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-users-perpetuals-account-summary` | 2026-07-30 | Markdown SHA-256 `d253ee0aaf3d56c9bbb926d76aafc7a001379a3bf57d5911c825983c893a8c85` |
 | `HL.DOC.INFO.L2BOOK.2026-07-19` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#l2-book-snapshot` | 2026-07-19 | versionless GitBook; at most 20 levels per side |
 | `HL.DOC.INFO.PERP.2026-07-19` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals` | 2026-07-19 | Markdown SHA-256 `d253ee0aaf3d56c9bbb926d76aafc7a001379a3bf57d5911c825983c893a8c85` |
 | `HL.DOC.INFO.SPOT.2026-07-19` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot` | 2026-07-19 | Markdown SHA-256 `13b48c5779603271b27f791b644f208a9ec57b04137beccebb9bf5cb4f45dc4c` |

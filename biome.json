@@ -14,7 +14,8 @@
       "!!test/fixtures/m2-results.json",
       "!!test/fixtures/m3-results.json",
       "!!test/fixtures/m4-results.json",
-      "!!test/fixtures/m5-results.json"
+      "!!test/fixtures/m5-results.json",
+      "!!test/fixtures/m6-results.json"
     ]
   },
   "formatter": {

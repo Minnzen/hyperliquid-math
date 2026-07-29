@@ -1,21 +1,30 @@
 import { Decimal40 } from '../core/decimal.js'
-import type { MathIssue, MathResult } from '../model/index.js'
+import type { MathIssue, MathResult, RoundingDecision } from '../model/index.js'
 import {
   computePerpInitialMarginNormalized,
   computePerpMaintenanceMarginNormalized,
   computePerpTransferRequirement,
 } from './internal.js'
-import { accountMarginTrace, initialMarginTrace, maintenanceMarginTrace } from './trace.js'
+import {
+  accountMarginTrace,
+  initialMarginTrace,
+  maintenanceMarginTrace,
+  unifiedAccountRatioTrace,
+} from './trace.js'
 import type {
   CalculatePerpInitialMarginInput,
   CalculatePerpMaintenanceMarginInput,
+  CalculateUnifiedAccountRatioInput,
   EvaluatePerpAccountMarginInput,
   PerpAccountMargin,
   PerpAccountMarginPosition,
   PerpInitialMargin,
   PerpMaintenanceMargin,
+  UnifiedAccountRatio,
+  UnifiedAccountTokenRatio,
 } from './types.js'
 import {
+  normalizeCalculateUnifiedAccountRatioInput,
   normalizeEvaluatePerpAccountMarginInput,
   normalizeInitialMarginInput,
   normalizeMaintenanceMarginInput,
@@ -26,6 +35,7 @@ import {
 export type {
   CalculatePerpInitialMarginInput,
   CalculatePerpMaintenanceMarginInput,
+  CalculateUnifiedAccountRatioInput,
   CanonicalAssetRef,
   EvaluatePerpAccountMarginInput,
   PerpAccountMargin,
@@ -37,6 +47,10 @@ export type {
   PerpMarginMode,
   PerpMarginPosition,
   PerpMarginTier,
+  UnifiedAccountDexMargin,
+  UnifiedAccountRatio,
+  UnifiedAccountSpotBalance,
+  UnifiedAccountTokenRatio,
 } from './types.js'
 
 const decimalZero = new Decimal40(0)
@@ -68,6 +82,16 @@ function invalidAccount<T>(issue: MathIssue): MathResult<T> {
   return {
     value: { status: 'invalid-input', issues: [issue] },
     trace: accountMarginTrace(undefined, {
+      status: 'incomplete',
+      reason: reason(issue.code, issue.path as string),
+    }),
+  }
+}
+
+function invalidUnifiedAccountRatio<T>(issue: MathIssue): MathResult<T> {
+  return {
+    value: { status: 'invalid-input', issues: [issue] },
+    trace: unifiedAccountRatioTrace(undefined, {
       status: 'incomplete',
       reason: reason(issue.code, issue.path as string),
     }),
@@ -344,5 +368,127 @@ export function evaluatePerpAccountMargin(
         output: cross.maintenanceMarginAvailable,
       },
     ]),
+  }
+}
+
+/**
+ * Aggregates per-DEX cross maintenance and isolated margin usage by collateral token, then returns
+ * the maximum `crossMaintenanceMarginUsed / (spotTotal - isolatedMarginUsed)` ratio. A referenced
+ * spot balance is mandatory. Occupied collateral with non-positive available balance is
+ * indeterminate; zero-occupation collateral contributes exactly zero without division.
+ *
+ * @public
+ */
+export function calculateUnifiedAccountRatio(
+  input: CalculateUnifiedAccountRatioInput,
+): MathResult<UnifiedAccountRatio> {
+  const normalized = normalizeCalculateUnifiedAccountRatioInput(input)
+  if (!normalized.ok) return invalidUnifiedAccountRatio(normalized.issue)
+
+  const usageByToken = new Map<
+    number,
+    {
+      crossMaintenanceMarginUsed: InstanceType<typeof Decimal40>
+      isolatedMarginUsed: InstanceType<typeof Decimal40>
+    }
+  >()
+
+  for (const dex of [...normalized.value.dexes].sort(
+    (left, right) => left.dexIndex - right.dexIndex,
+  )) {
+    const existing = usageByToken.get(dex.collateralToken)
+    usageByToken.set(dex.collateralToken, {
+      crossMaintenanceMarginUsed: (existing?.crossMaintenanceMarginUsed ?? decimalZero).plus(
+        dex.crossMaintenanceMarginUsedDecimal,
+      ),
+      isolatedMarginUsed: (existing?.isolatedMarginUsed ?? decimalZero).plus(
+        dex.isolatedMarginUsedDecimal,
+      ),
+    })
+  }
+
+  const tokenGroups = normalized.value.spotBalances
+    .flatMap((spot) => {
+      const usage = usageByToken.get(spot.token)
+      return usage === undefined ? [] : [{ collateralToken: spot.token, spot, usage }]
+    })
+    .sort((left, right) => left.collateralToken - right.collateralToken)
+
+  let accountRatio = decimalZero
+  const tokens: UnifiedAccountTokenRatio[] = []
+  const rounding: RoundingDecision[] = []
+  const intermediates: {
+    stepId: string
+    inputs: {
+      collateralToken: number
+      spotTotal: string
+      crossMaintenanceMarginUsed: string
+      isolatedMarginUsed: string
+    }
+    output: { available: string; ratio: string }
+  }[] = []
+
+  for (const { collateralToken, spot, usage } of tokenGroups) {
+    const available = spot.totalDecimal.minus(usage.isolatedMarginUsed)
+    const occupied =
+      !usage.crossMaintenanceMarginUsed.isZero() || !usage.isolatedMarginUsed.isZero()
+    if (occupied && available.lte(0)) {
+      const reasonValue = reason(
+        'non-positive-unified-available-balance',
+        `/spotBalances/${spot.inputIndex}/total`,
+      )
+      return {
+        value: { status: 'indeterminate', reason: reasonValue },
+        trace: unifiedAccountRatioTrace(normalized.value, {
+          status: 'incomplete',
+          reason: reasonValue,
+        }),
+      }
+    }
+
+    const ratio = occupied ? usage.crossMaintenanceMarginUsed.div(available) : decimalZero
+    accountRatio = Decimal40.max(accountRatio, ratio)
+
+    const token = {
+      collateralToken,
+      spotTotal: spot.total,
+      crossMaintenanceMarginUsed: usage.crossMaintenanceMarginUsed.toFixed(),
+      isolatedMarginUsed: usage.isolatedMarginUsed.toFixed(),
+      available: available.toFixed(),
+      ratio: ratio.toFixed(),
+    }
+    if (occupied) {
+      rounding.push({
+        path: `/value/data/tokens/${tokens.length}/ratio`,
+        input: `${token.crossMaintenanceMarginUsed}/${token.available}`,
+        output: token.ratio,
+        mode: 'half-even',
+        reasonCode: 'decimal40-division',
+      })
+    }
+    tokens.push(token)
+    intermediates.push({
+      stepId: 'collateral-token-ratio',
+      inputs: {
+        collateralToken,
+        spotTotal: token.spotTotal,
+        crossMaintenanceMarginUsed: token.crossMaintenanceMarginUsed,
+        isolatedMarginUsed: token.isolatedMarginUsed,
+      },
+      output: { available: token.available, ratio: token.ratio },
+    })
+  }
+
+  return {
+    value: {
+      status: 'ok',
+      data: { tokens, accountRatio: accountRatio.toFixed() },
+    },
+    trace: unifiedAccountRatioTrace(
+      normalized.value,
+      { status: 'complete' },
+      intermediates,
+      rounding,
+    ),
   }
 }

@@ -13,7 +13,9 @@
     "decimal",
     "deterministic",
     "defi",
-    "hip-3"
+    "hip-3",
+    "hip-4",
+    "outcome-markets"
   ],
   "type": "module",
   "sideEffects": false,
@@ -79,6 +81,10 @@
     "./hip3": {
       "types": "./dist/hip3/index.d.ts",
       "import": "./dist/hip3/index.js"
+    },
+    "./hip4": {
+      "types": "./dist/hip4/index.d.ts",
+      "import": "./dist/hip4/index.js"
     },
     "./orderbook": {
       "types": "./dist/orderbook/index.d.ts",

@@ -14,6 +14,11 @@ describe('asset ID properties', () => {
             dexIndex: fc.integer({ min: 1, max: 9_989 }),
             index: fc.integer({ min: 0, max: 9_999 }),
           }),
+          fc.record({
+            kind: fc.constant('outcome'),
+            outcome: fc.integer({ min: 0, max: 900_719_915_474_099 }),
+            side: fc.constantFrom(0 as const, 1 as const),
+          }),
         ),
         (input) => {
           const encoded = encodeAssetId(input)
@@ -25,6 +30,26 @@ describe('asset ID properties', () => {
         },
       ),
       { numRuns: 1_000 },
+    )
+  })
+
+  it('uses the final decimal digit only for the binary outcome side', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 900_719_915_474_099 }),
+        fc.constantFrom(0 as const, 1 as const),
+        (outcome, side) => {
+          const encoded = encodeAssetId({ kind: 'outcome', outcome, side } as never)
+          expect(encoded.value.status).toBe('ok')
+          if (encoded.value.status !== 'ok') return
+
+          expect(encoded.value.data % 10).toBe(side)
+          const other = encodeAssetId({ kind: 'outcome', outcome, side: 1 - side } as never)
+          expect(other.value.status).toBe('ok')
+          if (other.value.status !== 'ok') return
+          expect(Math.abs(other.value.data - encoded.value.data)).toBe(1)
+        },
+      ),
     )
   })
 })

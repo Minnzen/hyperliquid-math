@@ -12,9 +12,12 @@ import {
 import type { MathIssue } from '../model/index.js'
 import type {
   CanonicalAssetRef,
+  NormalizedCalculateUnifiedAccountRatioInput,
   NormalizedEvaluatePerpAccountMarginInput,
   NormalizedPerpMarginPosition,
   NormalizedPerpMarginTier,
+  NormalizedUnifiedAccountDexMargin,
+  NormalizedUnifiedAccountSpotBalance,
 } from './types.js'
 
 export { reason }
@@ -361,6 +364,162 @@ export function normalizeEvaluatePerpAccountMarginInput(
       positions,
     },
   }
+}
+
+function normalizeNonNegativeSafeInteger(input: unknown, path: string): NormalizedResult<number> {
+  if (typeof input !== 'number' || !Number.isSafeInteger(input) || input < 0) {
+    return {
+      ok: false,
+      issue: issue('invalid-index', path, input, 'non-negative safe integer'),
+    }
+  }
+  return { ok: true, value: input }
+}
+
+function normalizeUnifiedDexMargin(
+  input: unknown,
+  path: string,
+): NormalizedResult<NormalizedUnifiedAccountDexMargin> {
+  const row = exactPlainObject(
+    input,
+    ['dexIndex', 'collateralToken', 'crossMaintenanceMarginUsed', 'isolatedMarginUsed'],
+    path,
+  )
+  if (!row.ok) return { ok: false, issue: row.issue }
+
+  const dexIndex = normalizeNonNegativeSafeInteger(
+    ownDataValue(row.object, 'dexIndex'),
+    `${path}/dexIndex`,
+  )
+  if (!dexIndex.ok) return dexIndex
+  const collateralToken = normalizeNonNegativeSafeInteger(
+    ownDataValue(row.object, 'collateralToken'),
+    `${path}/collateralToken`,
+  )
+  if (!collateralToken.ok) return collateralToken
+  const crossMaintenanceMarginUsed = normalizeDecimalAt(
+    ownDataValue(row.object, 'crossMaintenanceMarginUsed'),
+    `${path}/crossMaintenanceMarginUsed`,
+    'non-negative',
+  )
+  if (!crossMaintenanceMarginUsed.ok) {
+    return { ok: false, issue: crossMaintenanceMarginUsed.issue }
+  }
+  const isolatedMarginUsed = normalizeDecimalAt(
+    ownDataValue(row.object, 'isolatedMarginUsed'),
+    `${path}/isolatedMarginUsed`,
+    'non-negative',
+  )
+  if (!isolatedMarginUsed.ok) return { ok: false, issue: isolatedMarginUsed.issue }
+
+  return {
+    ok: true,
+    value: {
+      dexIndex: dexIndex.value,
+      collateralToken: collateralToken.value,
+      crossMaintenanceMarginUsed: crossMaintenanceMarginUsed.value,
+      crossMaintenanceMarginUsedDecimal: crossMaintenanceMarginUsed.decimal,
+      isolatedMarginUsed: isolatedMarginUsed.value,
+      isolatedMarginUsedDecimal: isolatedMarginUsed.decimal,
+    },
+  }
+}
+
+function normalizeUnifiedSpotBalance(
+  input: unknown,
+  path: string,
+  inputIndex: number,
+): NormalizedResult<NormalizedUnifiedAccountSpotBalance> {
+  const row = exactPlainObject(input, ['token', 'total'], path)
+  if (!row.ok) return { ok: false, issue: row.issue }
+
+  const token = normalizeNonNegativeSafeInteger(ownDataValue(row.object, 'token'), `${path}/token`)
+  if (!token.ok) return token
+  const total = normalizeDecimalAt(ownDataValue(row.object, 'total'), `${path}/total`, 'signed')
+  if (!total.ok) return { ok: false, issue: total.issue }
+
+  return {
+    ok: true,
+    value: {
+      inputIndex,
+      token: token.value,
+      total: total.value,
+      totalDecimal: total.decimal,
+    },
+  }
+}
+
+export function normalizeCalculateUnifiedAccountRatioInput(
+  input: unknown,
+): NormalizedResult<NormalizedCalculateUnifiedAccountRatioInput> {
+  const root = exactPlainObject(input, ['dexes', 'spotBalances'], '')
+  if (!root.ok) return { ok: false, issue: root.issue }
+
+  const dexInputs = exactPlainArray(ownDataValue(root.object, 'dexes'), '/dexes', {
+    maxLength: 1024,
+  })
+  if (!dexInputs.ok) return { ok: false, issue: dexInputs.issue }
+  const spotInputs = exactPlainArray(ownDataValue(root.object, 'spotBalances'), '/spotBalances', {
+    maxLength: 1024,
+  })
+  if (!spotInputs.ok) return { ok: false, issue: spotInputs.issue }
+
+  const dexIndexes = new Set<number>()
+  const dexes: NormalizedUnifiedAccountDexMargin[] = []
+  for (const [index, inputRow] of dexInputs.values.entries()) {
+    const dex = normalizeUnifiedDexMargin(inputRow, `/dexes/${index}`)
+    if (!dex.ok) return dex
+    if (dexIndexes.has(dex.value.dexIndex)) {
+      return {
+        ok: false,
+        issue: issue(
+          'duplicate-dex-index',
+          `/dexes/${index}/dexIndex`,
+          dex.value.dexIndex,
+          'unique dexIndex',
+        ),
+      }
+    }
+    dexIndexes.add(dex.value.dexIndex)
+    dexes.push(dex.value)
+  }
+
+  const spotTokens = new Set<number>()
+  const spotBalances: NormalizedUnifiedAccountSpotBalance[] = []
+  for (const [index, inputRow] of spotInputs.values.entries()) {
+    const spot = normalizeUnifiedSpotBalance(inputRow, `/spotBalances/${index}`, index)
+    if (!spot.ok) return spot
+    if (spotTokens.has(spot.value.token)) {
+      return {
+        ok: false,
+        issue: issue(
+          'duplicate-spot-token',
+          `/spotBalances/${index}/token`,
+          spot.value.token,
+          'unique spot token',
+        ),
+      }
+    }
+    spotTokens.add(spot.value.token)
+    spotBalances.push(spot.value)
+  }
+
+  const referencedTokens = new Set(dexes.map((dex) => dex.collateralToken))
+  for (const collateralToken of referencedTokens) {
+    if (!spotTokens.has(collateralToken)) {
+      return {
+        ok: false,
+        issue: issue(
+          'missing-unified-spot-balance',
+          '/spotBalances',
+          `missing-token:${collateralToken}`,
+          'explicit spot balance for every referenced collateral token',
+        ),
+      }
+    }
+  }
+
+  return { ok: true, value: { dexes, spotBalances } }
 }
 
 export function prefixIssue(issueValue: MathIssue, prefix: string): MathIssue {

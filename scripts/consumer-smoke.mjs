@@ -21,6 +21,7 @@ const subpaths = [
   'funding',
   'hip1',
   'hip3',
+  'hip4',
   'identifiers',
   'liquidation',
   'margin',
@@ -41,7 +42,7 @@ try {
   )
   await writeFile(
     join(tempRoot, 'runtime.mjs'),
-    `import { calculateTradeFee, canonicalizeDecimalString, encodeAssetId, quantizePrice } from 'hyperliquid-math'\n` +
+    `import { calculateOutcomeDualPrice, calculateTradeFee, calculateUnifiedAccountRatio, canonicalizeDecimalString, encodeAssetId, quantizePrice } from 'hyperliquid-math'\n` +
       `const subpaths = ${JSON.stringify(subpaths)}\n` +
       `for (const subpath of subpaths) {\n` +
       `  const module = await import(\`hyperliquid-math/\${subpath}\`)\n` +
@@ -53,17 +54,27 @@ try {
       `if (price.value.status !== 'ok' || price.value.data.value !== '12345') throw new Error('price quantization mismatch')\n` +
       `const assetId = encodeAssetId({ kind: 'hip3-perp', dexIndex: 1, index: 7 })\n` +
       `if (assetId.value.status !== 'ok' || assetId.value.data !== 110007) throw new Error('asset ID mismatch')\n` +
+      `const outcomeAssetId = encodeAssetId({ kind: 'outcome', outcome: 1, side: 1 })\n` +
+      `if (outcomeAssetId.value.status !== 'ok' || outcomeAssetId.value.data !== 100000011) throw new Error('outcome asset ID mismatch')\n` +
+      `const dual = calculateOutcomeDualPrice({ price: '0.37' })\n` +
+      `if (dual.value.status !== 'ok' || dual.value.data.dualPrice !== '0.63') throw new Error('outcome dual mismatch')\n` +
+      `const unified = calculateUnifiedAccountRatio({ dexes: [], spotBalances: [] })\n` +
+      `if (unified.value.status !== 'ok' || unified.value.data.accountRatio !== '0') throw new Error('unified ratio mismatch')\n` +
       `const fee = calculateTradeFee({ price: '100', size: '2', rate: '0.001' })\n` +
       `if (fee.value.status !== 'ok' || fee.value.data.feeAmount !== '0.2') throw new Error('fee mismatch')\n`,
   )
   await writeFile(
     join(tempRoot, 'types.ts'),
     `import { calculateTradeFee, canonicalizeDecimalString } from 'hyperliquid-math'\n` +
+      `import { calculateOutcomeDualPrice } from 'hyperliquid-math/hip4'\n` +
       `import { encodeAssetId } from 'hyperliquid-math/identifiers'\n` +
+      `import { calculateUnifiedAccountRatio } from 'hyperliquid-math/margin'\n` +
       `import { quantizePrice } from 'hyperliquid-math/precision'\n` +
       `const canonical = canonicalizeDecimalString({ value: '01.00' })\n` +
       `const price = quantizePrice({ value: '12345.67891', marketKind: 'perp', szDecimals: 2, rounding: 'down' })\n` +
       `const assetId = encodeAssetId({ kind: 'hip3-perp', dexIndex: 1, index: 7 })\n` +
+      `const dual = calculateOutcomeDualPrice({ price: '0.37' })\n` +
+      `const unified = calculateUnifiedAccountRatio({ dexes: [], spotBalances: [] })\n` +
       `const fee = calculateTradeFee({ price: '100', size: '2', rate: '0.001' })\n` +
       `if (canonical.value.status === 'ok') {\n` +
       `  const value: string = canonical.value.data\n` +
@@ -75,6 +86,14 @@ try {
       `}\n` +
       `if (assetId.value.status === 'ok') {\n` +
       `  const value: number = assetId.value.data\n` +
+      `  void value\n` +
+      `}\n` +
+      `if (dual.value.status === 'ok') {\n` +
+      `  const value: string = dual.value.data.dualPrice\n` +
+      `  void value\n` +
+      `}\n` +
+      `if (unified.value.status === 'ok') {\n` +
+      `  const value: string = unified.value.data.accountRatio\n` +
       `  void value\n` +
       `}\n` +
       `if (fee.value.status === 'ok') {\n` +

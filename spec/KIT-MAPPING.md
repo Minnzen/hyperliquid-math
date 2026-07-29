@@ -10,7 +10,7 @@ transport, identity resolution, freshness, policy, and execution. The split is i
 | Orderbook | ordered L2 snapshot and chosen reference price | mid/spread, deterministic book walk, VWAP/slippage |
 | Positions | ordered fills, normalized fee convention, starting cost basis | state transitions, entry, realized/unrealized/closed PnL |
 | Fees/funding | current schedule/rate rules, oracle/impact prices, settlement interval | tier arithmetic, fee amount, premium/rate/payment/annualization |
-| Margin/liquidation | same-snapshot positions, marks, cross account value, isolated values, official tiers | current/projected margin facts and tier-consistent liquidation roots |
+| Margin/liquidation | same-snapshot positions, marks, cross account value, isolated values, official tiers, unified DEX/token join | current/projected margin facts, unified monitoring ratio, and tier-consistent liquidation roots |
 | Order preview | current position/collateral, protocol rule availability, caller target assumptions | objective checks, local max bound, reduce-only, trigger, scale, deterministic TWAP |
 | Replay | ordered/deduplicated events, completeness evidence, observed snapshot | ledger projection, residuals, objective reconciliation checks |
 | Spot/HIP | token metadata, marks, normalized fee token value, account-abstraction and DEX facts | units, cost basis, dust predicates/projection, HIP-1/HIP-3 deterministic constraints |
@@ -61,7 +61,8 @@ transport, identity resolution, freshness, policy, and execution. The split is i
   [account abstraction mode](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes)
   before mapping the snapshot. The direct mappings below are for **standard mode**, where each DEX
   has separate cross collateral.
-- The official app defaults to unified mode. In unified and portfolio-margin modes, balances and holds
+- Unified account is recommended for most users; the official documentation does not establish that
+  every new account defaults to it. In unified and portfolio-margin modes, balances and holds
   are reported through spot clearinghouse state and individual perp-DEX user states are not meaningful.
   Unified mode requires collateral-token aggregation across DEXs;
   [portfolio margin](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/portfolio-margin)
@@ -81,6 +82,42 @@ transport, identity resolution, freshness, policy, and execution. The split is i
   this mapping is unevidenced and must be treated as unmapped until a fixture proves a per-position
   derivation.
 - Observed `liquidationPx` and `marginUsed` are replay/verification evidence, not Math inputs.
+
+### Unified account ratio
+
+- `calculateUnifiedAccountRatio` accepts a normalized join, not raw API responses and not an
+  invented `multiverse` info request.
+- For each DEX, Kit obtains `collateralToken` from the corresponding `meta` response. The first-party
+  DEX is index `0` and uses token `0`; builder DEX indexes follow the `perpDexs` ordering.
+- `crossMaintenanceMarginUsed` comes from that DEX's `clearinghouseState` top-level field.
+- `isolatedMarginUsed` is a package-side normalized field: sum
+  `assetPositions[].position.marginUsed` only where `position.leverage.type === "isolated"`.
+- `spotBalances` comes from `spotClearinghouseState.balances`, mapped field by field as
+  `{ token, total }`. Under unified mode this endpoint is the trading-balance source of truth.
+- The official statement that individual perp DEX user states are not meaningful concerns their
+  balance summaries. The official unified-ratio reference still reads per-DEX cross maintenance and
+  isolated position margin fields.
+- The official reference uses `?? 0` for a missing spot row. Math deliberately requires every
+  DEX-referenced collateral token to have an explicit spot row; synthesize `{ total: "0" }` only when
+  the same snapshot proves the API omitted a true zero balance. Otherwise Math returns
+  `invalid-input`.
+- The official reference skips tokens whose `available = total - isolatedMarginUsed` is non-positive.
+  Math deliberately returns `indeterminate` when such a token has cross or isolated occupation,
+  preventing an at-risk or inconsistent snapshot from appearing safe. A zero-occupation token
+  contributes ratio `"0"` without division even when its available balance is zero or negative.
+- The returned ratio is a monitoring fact. Official documentation does not define `ratio >= 1` as a
+  package-safe liquidation threshold, and Kit must not present it as one.
+
+### Outcome metadata and sides
+
+- Outcome asset IDs use the numeric `outcome` and binary `side` from the same `outcomeMeta` snapshot.
+- HIP-4 settlement math uses semantic `tokenSide: "yes" | "no"`. Official docs say `sideSpecs`
+  labels are often Yes/No but do not define a package-safe numeric-side-to-label mapping.
+- Kit must resolve the token label from the same dated `outcomeMeta.sideSpecs` snapshot and pass the
+  semantic payout side explicitly. Math never converts numeric side `0 | 1` to Yes/No.
+- `evaluateRecurringOutcome` accepts caller-selected mark updates around the settlement timestamp.
+  Kit owns update provenance and bucket-index-to-outcome mapping. `settledOutcome` is comparison
+  evidence, not formula authority.
 
 ### Prices and funding (`metaAndAssetCtxs`)
 

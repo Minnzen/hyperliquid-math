@@ -1,11 +1,11 @@
 # Formula Manual
 
-Status: M0–M5 implemented; formula index verified against `spec/public-functions.json`
+Status: M0–M6 implemented; formula index verified against `spec/public-functions.json`
 
-M0–M5 are this project's delivery milestones: M0 foundation and precision, M1 identifiers and
+M0–M6 are this project's delivery milestones: M0 foundation and precision, M1 identifiers and
 orderbook, M2 fees/positions/funding, M3 margin/liquidation/scenarios, M4 orders and
-reconciliation, M5 spot/HIP-1/HIP-3. The numbering survives in file and fixture names as a
-stable grouping label.
+reconciliation, M5 spot/HIP-1/HIP-3, M6 outcome math and unified-account aggregation. The numbering
+survives in file and fixture names as a stable grouping label.
 
 This directory is the normative mathematical manual for `hyperliquid-math`. The architecture and
 milestone documents explain why the package exists; the files here define what every public function
@@ -28,8 +28,11 @@ Oracle abbreviations below are P = official Python SDK and L = dated live fixtur
 | `quantizePrice` | Selects the directional protocol-valid price from the union of the decimal/significant-figure rule and the integer-price exemption. | [precision](precision.md) · `hl.precision.price.quantize` | stable | partial/partial |
 | `quantizeSize` | Computes `floor(value × 10^szDecimals) / 10^szDecimals`. | [precision](precision.md) · `hl.precision.size.quantize` | stable | partial/partial |
 | `deriveCanonicalAssetKey` | Encodes network, market kind, official dex name (null for the first-party dex), and index into a collision-resistant Math identity. | [identifiers](identifiers.md) · `hl.identifiers.asset-key.derive` | stable | none/none |
-| `encodeAssetId` | Encodes perp `i`, spot `10000+i`, or HIP-3 `100000+10000d+i`. | [identifiers](identifiers.md) · `hl.identifiers.asset-id.encode` | stable | partial/partial |
-| `decodeAssetId` | Inverts supported perp, spot, and HIP-3 ranges and fails closed for the gap/outcome ranges. | [identifiers](identifiers.md) · `hl.identifiers.asset-id.decode` | stable supported ranges | partial/partial |
+| `encodeAssetId` | Encodes perp `i`, spot `10000+i`, HIP-3 `100000+10000d+i`, or outcome `100000000+10o+s`. | [identifiers](identifiers.md) · `hl.identifiers.asset-id.encode` | stable legacy ranges; outcome experimental | partial/partial |
+| `decodeAssetId` | Inverts supported perp, spot, HIP-3, and binary-side outcome ranges. | [identifiers](identifiers.md) · `hl.identifiers.asset-id.decode` | stable legacy ranges; outcome experimental | partial/partial |
+| `calculateOutcomeDualPrice` | Computes the merged-book complementary price `1−price`. | [HIP-4](hip4.md) · `hl.hip4.dual-price.calculate` | experimental | none/none |
+| `calculateOutcomeSettlement` | Projects Yes/No payout, settlement value, entry notional, and gross PnL from an explicit settle fraction. | [HIP-4](hip4.md) · `hl.hip4.settlement.calculate` | experimental | none/none |
+| `evaluateRecurringOutcome` | Interpolates the settlement mark and evaluates `priceBinary` or three-bucket `priceBucket` outcomes. | [HIP-4](hip4.md) · `hl.hip4.recurring-outcome.evaluate` | experimental | none/none |
 | `calculateBookMetrics` | Computes `mid=(bid+ask)/2`, `spread=ask-bid`, and `spreadBps=spread/mid×10000`. | [orderbook](orderbook.md) · `hl.orderbook.metrics` | stable | none/partial |
 | `simulateBookFill` | Walks frozen levels, then derives fills, notional, VWAP, worst price, unfilled amount, and side-aware slippage. | [orderbook](orderbook.md) · `hl.orderbook.fill.simulate` | stable frozen snapshot | none/partial |
 | `calculateTradeFee` | Computes `notional=price×size`, `fee=notional×rate`, and account delta `−fee`. | [fees](fees.md) · `hl.fees.trade-fee.calculate` | stable | none/none |
@@ -46,6 +49,7 @@ Oracle abbreviations below are P = official Python SDK and L = dated live fixtur
 | `calculatePerpInitialMargin` | Computes notional/leverage margin, 10% transfer floor, selected tier, and opening-leverage check. | [margin](margin.md) · `hl.margin.initial.calculate` | stable frozen input | none/partial |
 | `calculatePerpMaintenanceMargin` | Computes tier-continuous `notional×rate−deduction` and the `2/3` backstop threshold. | [margin](margin.md) · `hl.margin.maintenance.calculate` | stable frozen input | none/none |
 | `evaluatePerpAccountMargin` | Aggregates cross and isolated initial, transfer, maintenance, availability, and removable-margin facts. | [margin](margin.md) · `hl.margin.account.evaluate` | stable complete snapshot | none/none |
+| `calculateUnifiedAccountRatio` | Aggregates cross maintenance and isolated usage by collateral token, then returns the maximum fail-closed unified ratio. | [margin](margin.md) · `hl.margin.unified-account-ratio.calculate` | experimental | none/none |
 | `calculatePerpLiquidationPrice` | Solves the positive tier-consistent root where frozen account equity equals maintenance margin. | [liquidation](liquidation.md) · `hl.liquidation-price.calculate` | stable local root; cross-tier server parity unverified | none/partial |
 | `simulatePerpAccountScenario` | All-or-nothing folds fills and account/margin/leverage actions, then recomputes positions, margins, constraints, and liquidation. | [scenarios](scenarios.md) · `hl.scenario.perp-account.simulate` | experimental | none/none |
 | `validatePerpOrder` | Evaluates precision, minimum-notional, and price-band constraints without submitting or silently rounding. | [orders](orders.md) · `hl.orders.perp.validate` | stable local checks | none/none |

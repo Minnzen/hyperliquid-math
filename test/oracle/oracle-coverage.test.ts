@@ -14,11 +14,12 @@ interface CoverageFixture {
   scope: string
   pinnedImplementations: {
     officialPythonSdk: { version: string; commit: string }
-    liveFixtures: { mainnet: string; testnet?: string }
+    liveFixtures: { mainnet?: string; testnet?: string; usage: string }
   }
   functions: Array<{
     exportName: string
     formulaId: string
+    evidenceGroup?: 'm6-hip4' | 'm6-unified'
     oracles: Record<'official-python-sdk' | 'live-fixtures', OracleEntry>
   }>
 }
@@ -43,6 +44,7 @@ describe('oracle coverage contract', () => {
       readJson<CoverageFixture>('fixtures/oracles/m3-oracle-coverage.json'),
       readJson<CoverageFixture>('fixtures/oracles/m4-oracle-coverage.json'),
       readJson<CoverageFixture>('fixtures/oracles/m5-oracle-coverage.json'),
+      readJson<CoverageFixture>('fixtures/oracles/m6-oracle-coverage.json'),
     ])
 
     for (const coverage of coverages) {
@@ -81,6 +83,10 @@ describe('oracle coverage contract', () => {
         usage:
           'offline schema and dated observation replay for spot metadata, spot asset contexts, allMids, HIP-3 DEX metadata, HIP-3 asset contexts, and empty public spotClearinghouseState',
       },
+      {
+        usage:
+          'no M6 outcome or suitable unified-account fixture was captured; live coverage remains explicitly not-supported',
+      },
     ])
     expect(
       coverages.find((coverage) => coverage.scope === 'M4')?.pinnedImplementations.liveFixtures,
@@ -88,13 +94,14 @@ describe('oracle coverage contract', () => {
   })
 
   it('matches public function oracle statuses without implicit support', async () => {
-    const [m1Coverage, m2Coverage, m3Coverage, m4Coverage, m5Coverage, manifest] =
+    const [m1Coverage, m2Coverage, m3Coverage, m4Coverage, m5Coverage, m6Coverage, manifest] =
       await Promise.all([
         readJson<CoverageFixture>('fixtures/oracles/m1-oracle-coverage.json'),
         readJson<CoverageFixture>('fixtures/oracles/m2-oracle-coverage.json'),
         readJson<CoverageFixture>('fixtures/oracles/m3-oracle-coverage.json'),
         readJson<CoverageFixture>('fixtures/oracles/m4-oracle-coverage.json'),
         readJson<CoverageFixture>('fixtures/oracles/m5-oracle-coverage.json'),
+        readJson<CoverageFixture>('fixtures/oracles/m6-oracle-coverage.json'),
         readJson<PublicFunctionsManifest>('spec/public-functions.json'),
       ])
     const coverageByName = new Map(
@@ -104,8 +111,18 @@ describe('oracle coverage contract', () => {
         ...m3Coverage.functions,
         ...m4Coverage.functions,
         ...m5Coverage.functions,
+        ...m6Coverage.functions,
       ].map((entry) => [entry.exportName, entry]),
     )
+
+    expect(
+      m6Coverage.functions.map(({ exportName, evidenceGroup }) => ({ exportName, evidenceGroup })),
+    ).toEqual([
+      { exportName: 'calculateOutcomeDualPrice', evidenceGroup: 'm6-hip4' },
+      { exportName: 'calculateOutcomeSettlement', evidenceGroup: 'm6-hip4' },
+      { exportName: 'evaluateRecurringOutcome', evidenceGroup: 'm6-hip4' },
+      { exportName: 'calculateUnifiedAccountRatio', evidenceGroup: 'm6-unified' },
+    ])
 
     expect([...coverageByName.keys()].sort()).toEqual(
       manifest.functions.map((entry) => entry.exportName).sort(),

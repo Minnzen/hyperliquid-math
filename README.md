@@ -34,7 +34,8 @@
   traced back to the rule it came from.
 - **Covers the derived formulas.** Liquidation-price root solving across margin tiers (with maintenance
   deductions and backstop thresholds), account margin evaluation, PnL attribution, funding, fees, order
-  previews, TWAP/scale schedules, ledger replay, spot units, and HIP-1/HIP-3 constraints.
+  previews, TWAP/scale schedules, ledger replay, spot units, HIP-1/HIP-3 constraints, HIP-4 outcome
+  projection, and the documented unified-account monitoring ratio.
 - **Evidence is explicit, not blanket parity.** The runtime source is held at 100% test coverage. A pinned
   official Python SDK supplies four declared partial oracle slices; dated live fixtures supply 24 partial
   slices. The remaining slices are recorded as `not-supported`, and none is labeled full server-formula
@@ -151,12 +152,13 @@ mapping mistakes are clear from the first error.
 | Subpath | Functions |
 | --- | --- |
 | `/precision` | `canonicalizeDecimalString` · `quantizePrice` · `quantizeSize` |
-| `/identifiers` | `deriveCanonicalAssetKey` · `encodeAssetId` · `decodeAssetId` |
+| `/identifiers` | `deriveCanonicalAssetKey` · `encodeAssetId` · `decodeAssetId` (including outcome asset IDs) |
+| `/hip4` | `calculateOutcomeDualPrice` · `calculateOutcomeSettlement` · `evaluateRecurringOutcome` |
 | `/orderbook` | `calculateBookMetrics` · `simulateBookFill` |
 | `/fees` | `calculateTradeFee` · `calculateWeightedFeeVolume` · `selectFeeTier` |
 | `/positions` | `calculatePerpUnrealizedPnl` · `projectPerpFill` · `projectPerpFillSequence` · `calculatePerpBreakEvenPrice` |
 | `/funding` | `calculateFundingPremiumIndex` · `calculateFundingRate` · `calculateFundingPayment` · `annualizeFundingRate` |
-| `/margin` | `calculatePerpInitialMargin` · `calculatePerpMaintenanceMargin` · `evaluatePerpAccountMargin` |
+| `/margin` | `calculatePerpInitialMargin` · `calculatePerpMaintenanceMargin` · `evaluatePerpAccountMargin` · `calculateUnifiedAccountRatio` |
 | `/liquidation` | `calculatePerpLiquidationPrice` |
 | `/scenarios` | `simulatePerpAccountScenario` |
 | `/orders` | `validatePerpOrder` · `calculatePerpMaxOrderSize` · `evaluatePerpReduceOnly` · `calculatePerpSlippagePrice` · `classifyPerpTrigger` · `derivePerpTriggerPrice` · `buildPerpScaleLadder` · `calculatePerpTwapSchedule` |
@@ -165,7 +167,7 @@ mapping mistakes are clear from the first error.
 | `/hip1` | `validateHip1Deployment` · `evaluateHip1AnchorGenesisEligibility` |
 | `/hip3` | `resolveHip3CollateralSource` · `evaluateHip3MarginMode` · `calculateHip3FeeRates` |
 
-Formulas, derivations, 45 hand-checkable worked examples, and per-function oracle coverage live in
+Formulas, derivations, 49 hand-checkable worked examples, and per-function oracle coverage live in
 the [spec manual](spec/README.md), which ships inside the package.
 
 ## The boundary

@@ -13,6 +13,7 @@ export default defineConfig({
       'test/spot/**/*.test.ts',
       'test/hip1/**/*.test.ts',
       'test/hip3/**/*.test.ts',
+      'test/hip4/**/*.test.ts',
     ],
     coverage: {
       provider: 'v8',

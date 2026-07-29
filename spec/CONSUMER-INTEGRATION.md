@@ -29,10 +29,13 @@ Common public reads that consumers map into Math inputs:
 | `{ type: 'meta' }` | Perp universe, `szDecimals`, `maxLeverage`, `marginTableId`, `marginTables` | Market metadata and margin tiers |
 | `{ type: 'metaAndAssetCtxs' }` | Perp marks, oracle prices, impact prices, funding values | Explicit price and funding inputs |
 | `{ type: 'clearinghouseState', user }` | Signed positions, entry prices, leverage mode/value, account summaries, observed server `liquidationPx` | Account snapshot mapping and comparison evidence |
+| per-DEX `{ type: 'meta', dex }` and `{ type: 'clearinghouseState', user, dex }` | Collateral token, cross maintenance, isolated margin usage | Unified-account ratio rows |
 | `{ type: 'userFees', user }` | Effective maker/taker rates and schedule inputs | Fee-rate inputs after consumer policy chooses the applicable rate |
 | `{ type: 'userFills', user, ... }` | Ordered fill events with `side`, `px`, `sz`, `fee`, `feeToken`, `closedPnl`, `startPosition` | Replay events only after pagination, dedupe, routing, and completeness checks |
 | `{ type: 'l2Book', coin }` | Ordered book levels | Book metrics and deterministic fill simulation |
 | `{ type: 'spotMeta' }` / `{ type: 'spotMetaAndAssetCtxs' }` | Spot token metadata, spot pair metadata, marks | Spot units, portfolio value, and dust math |
+| `{ type: 'spotClearinghouseState', user }` | Unified-mode token totals | Unified-account ratio spot rows |
+| `{ type: 'outcomeMeta', ... }` / `{ type: 'settledOutcome', ... }` | Outcome IDs, side labels, settlement observations | Identifier mapping and comparison evidence; never formula authority |
 
 Networked live comparisons are diagnostics, not package behavior. The scheduled
 `Reliability - Live Differential` workflow runs only outside pull requests, requires the configured
@@ -60,9 +63,10 @@ boundaries:
   with a [separate portfolio-maintenance formula](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/portfolio-margin).
   The current per-DEX liquidation API does not implement that model.
 
-The Hyperliquid app defaults to unified mode, so an arbitrary public address is not a safe
-standard-account fixture. Consumers own the authoritative account-mode configuration; do not infer it
-from the presence or shape of one `clearinghouseState` response.
+Unified mode is recommended for most users, but the official documentation does not establish that
+every new account defaults to it. An arbitrary public address is therefore not a safe standard-mode
+fixture. Consumers own the authoritative account-mode configuration; do not infer it from the
+presence or shape of one `clearinghouseState` response.
 
 Important rules:
 
@@ -142,8 +146,78 @@ const mapPerpPosition = ({ position }) => {
 
 For isolated margin, do not invent per-position equity allocation when an account has multiple
 isolated positions. Keep that slice unmapped until your source evidence proves the allocation.
-For unified or portfolio-margin accounts, do not reuse this standard-account mapping; first implement
-and independently verify the documented cross-DEX/spot or portfolio aggregation.
+For portfolio-margin accounts, do not reuse this standard-account mapping. Unified accounts use the
+separate documented aggregation below.
+
+### Unified Account Ratio
+
+Call `calculateUnifiedAccountRatio` only after independently establishing unified mode and collecting
+one consistent snapshot across every relevant DEX plus Spot. Build each DEX row field by field:
+
+```ts
+const dexes = dexSnapshots.map(({ dexIndex, meta, state }) => ({
+  dexIndex,
+  collateralToken: meta.collateralToken,
+  crossMaintenanceMarginUsed: state.crossMaintenanceMarginUsed,
+  isolatedMarginUsed: state.assetPositions
+    .filter(({ position }) => position.leverage.type === 'isolated')
+    .reduce(
+      (sum, { position }) => decimalStringAdd(sum, position.marginUsed),
+      '0',
+    ),
+}))
+
+const spotBalances = spotState.balances.map(({ token, total }) => ({ token, total }))
+const ratio = calculateUnifiedAccountRatio({ dexes, spotBalances })
+```
+
+`decimalStringAdd` above belongs in the consumer mapping layer and must use exact decimal arithmetic;
+do not aggregate money with JavaScript numbers. The package then revalidates and reaggregates the
+normalized rows with Decimal40.
+
+The first-party DEX is index `0` with collateral token `0`; builder DEX indexes follow the official
+`perpDexs` ordering, and each DEX's `meta.collateralToken` is authoritative. Every referenced
+collateral token needs an explicit Spot row. Do not silently synthesize a missing balance unless the
+same snapshot independently proves the API omitted a true zero.
+
+Two fail-closed differences from the official float reference are deliberate:
+
+- a missing referenced Spot row returns `invalid-input` instead of defaulting to zero;
+- a token with margin occupation and `total − isolatedMarginUsed <= 0` returns `indeterminate`
+  instead of being skipped.
+
+A zero-occupation token contributes ratio `"0"` without division even if its available balance is
+zero or negative. The result is a monitoring fact, not a liquidation threshold and not portfolio
+margin.
+
+### Outcome IDs and HIP-4
+
+Outcome asset IDs encode as `100000000 + 10 × outcome + side`, with binary numeric side `0 | 1`.
+Keep that numeric identity separate from the semantic settlement label:
+
+```ts
+const assetId = encodeAssetId({ kind: 'outcome', outcome, side })
+const tokenSide =
+  sideSpec.label === 'Yes'
+    ? 'yes'
+    : sideSpec.label === 'No'
+      ? 'no'
+      : undefined
+if (tokenSide === undefined) {
+  throw new Error(`unsupported semantic outcome label: ${sideSpec.label}`)
+}
+const payout = calculateOutcomeSettlement({
+  tokenSide,
+  settleFraction,
+  size,
+  entryPrice,
+})
+```
+
+The label mapping must come from the same `outcomeMeta.sideSpecs` snapshot; Math never assumes that
+numeric side `0` means Yes or No. `evaluateRecurringOutcome` likewise requires the caller to select
+the mark updates around settlement. `settledOutcome` is post-settlement comparison evidence, not an
+input that determines the formula.
 
 ### Fees
 
