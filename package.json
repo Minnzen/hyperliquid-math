@@ -1,6 +1,6 @@
 {
   "name": "hyperliquid-math",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Deterministic, explainable Hyperliquid math: margin, liquidation price, PnL, funding, fees, orders, and spot — exact decimals, zero network I/O, every result carries an auditable trace.",
   "keywords": [
     "hyperliquid",
@@ -25,6 +25,10 @@
   "homepage": "https://minnzen.github.io/hyperliquid-math/",
   "bugs": "https://github.com/Minnzen/hyperliquid-math/issues",
   "private": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "packageManager": "pnpm@11.15.0",
   "engines": {
     "node": ">=22"

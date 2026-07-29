@@ -33,16 +33,14 @@
 
 ## 安装
 
-npm 包尚未发布。首次发布前，请在检出的仓库中安装依赖并构建：
-
 ```sh
-pnpm install --frozen-lockfile
-pnpm build
+npm install hyperliquid-math
 ```
 
-首次 npm 发布后可用：`npm install hyperliquid-math`（或 pnpm / yarn / bun）。
+也可使用 pnpm、yarn 或 bun。包为纯 ESM，要求 Node ≥ 22（也可在浏览器运行——CI 验证
+Chromium 下字节级一致）。
 
-纯 ESM。Node ≥ 22（也可在浏览器运行——CI 验证 Chromium 下字节级一致）。
+源码检出后请运行 `pnpm install --frozen-lockfile && pnpm build`。
 
 ## 示例：计算清算价
 

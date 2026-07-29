@@ -1,15 +1,23 @@
-name: Release Candidate
+name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the verified artifact to npm using Trusted Publishing
+        required: true
+        default: false
+        type: boolean
 
 permissions:
+  actions: read
   contents: read
+  id-token: write
 
 jobs:
-  artifact:
+  verify-and-publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
@@ -19,12 +27,73 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24.18.0
-          cache: pnpm
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
-      - run: pnpm pack
+      - run: pnpm audit --audit-level=high
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:browser
+      - name: Build and verify the release artifact
+        run: |
+          pnpm pack
+          node scripts/verify-package-tarball.mjs hyperliquid-math-*.tgz
+          sha256sum hyperliquid-math-*.tgz > SHA256SUMS
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: hyperliquid-math-release-candidate
-          path: hyperliquid-math-*.tgz
+          name: hyperliquid-math-release
+          path: |
+            hyperliquid-math-*.tgz
+            SHA256SUMS
           if-no-files-found: error
+          retention-days: 30
+      - name: Verify publishing gates
+        if: ${{ inputs.publish }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "Publishing is restricted to main; got $GITHUB_REF."
+            exit 1
+          fi
+          sha256sum --check SHA256SUMS
+          node --input-type=module <<'NODE'
+          import packageJson from './package.json' with { type: 'json' }
+
+          const requiredWorkflows = ['CI', 'CodeQL', 'Cross Runtime', 'Docs']
+          const runsResponse = await fetch(
+            `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/actions/runs?head_sha=${process.env.GITHUB_SHA}&per_page=100`,
+            {
+              headers: {
+                Accept: 'application/vnd.github+json',
+                Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+                'X-GitHub-Api-Version': '2022-11-28',
+              },
+            },
+          )
+          if (!runsResponse.ok) {
+            throw new Error(`GitHub Actions API returned HTTP ${runsResponse.status}`)
+          }
+          const { workflow_runs: workflowRuns } = await runsResponse.json()
+          for (const workflow of requiredWorkflows) {
+            const run = workflowRuns.find(({ name }) => name === workflow)
+            if (run?.conclusion !== 'success') {
+              throw new Error(
+                `${workflow} has not passed for ${process.env.GITHUB_SHA}: ${run?.conclusion ?? 'missing'}`,
+              )
+            }
+          }
+
+          const response = await fetch(
+            `https://registry.npmjs.org/${packageJson.name}/${packageJson.version}`,
+          )
+          if (response.status === 200) {
+            throw new Error(`${packageJson.name}@${packageJson.version} already exists`)
+          }
+          if (response.status !== 404) {
+            throw new Error(`npm registry returned HTTP ${response.status}`)
+          }
+          NODE
+      - name: Publish the verified artifact
+        if: ${{ inputs.publish }}
+        run: npm publish hyperliquid-math-*.tgz --access public --tag latest

@@ -43,17 +43,14 @@
 
 ## Install
 
-The npm release has not been published yet. Until the first release, install and build from a checked-out
-repository:
-
 ```sh
-pnpm install --frozen-lockfile
-pnpm build
+npm install hyperliquid-math
 ```
 
-After the first npm release: `npm install hyperliquid-math` (or pnpm / yarn / bun).
+Also available through pnpm, yarn, and bun. The package is ESM-only and requires Node ≥ 22 (it also
+runs in browsers — CI verifies byte-identical results in Chromium).
 
-ESM-only. Node ≥ 22 (also runs in browsers — CI verifies byte-identical results in Chromium).
+For a source checkout, use `pnpm install --frozen-lockfile && pnpm build`.
 
 ## Example: computing a liquidation price
 
