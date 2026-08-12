@@ -1,6 +1,6 @@
 {
   "name": "hyperliquid-math",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Deterministic, explainable Hyperliquid math: margin, liquidation price, PnL, funding, fees, orders, and spot — exact decimals, zero network I/O, every result carries an auditable trace.",
   "keywords": [
     "hyperliquid",
