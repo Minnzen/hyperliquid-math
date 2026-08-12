@@ -172,8 +172,9 @@ export function feeRatesTrace(
         : [],
     sourceRefs: [
       'HLM.SPEC.HIP3.FEE_RATES.V1',
-      'HL.DOC.HIP3.2026-07-19',
-      'HL.DOC.FEES.2026-07-19',
+      'HL.DOC.HIP3.2026-08-12',
+      'HL.DOC.FEES.2026-08-12',
+      'HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-08-12',
       decimalSource,
     ],
   })

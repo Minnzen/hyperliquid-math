@@ -59,7 +59,7 @@ Oracle abbreviations below are P = official Python SDK and L = dated live fixtur
 | `classifyPerpTrigger` | Classifies mark-relative TP/SL/at-mark and checks the closing order side. | [orders](orders.md) · `hl.orders.perp.trigger.classify` | stable | none/none |
 | `derivePerpTriggerPrice` | Solves `entry + (targetNetPnl+cumulativeCost)/signedSize`, with explicit ROE margin basis when requested. | [orders](orders.md) · `hl.orders.perp.trigger-price.derive` | stable | none/none |
 | `buildPerpScaleLadder` | Builds a local linear/geometric price ladder and exact conservative size partition. | [orders](orders.md) · `hl.orders.perp.scale.build` | stable local algorithm | none/none |
-| `calculatePerpTwapSchedule` | Builds deterministic 30-second cumulative targets and the official 3× catch-up bound. | [orders](orders.md) · `hl.orders.perp.twap-schedule.calculate` | stable deterministic subset | none/none |
+| `calculatePerpTwapExecutionTarget` | Computes `totalSize×elapsedMs/durationMs` without inventing the server child schedule. | [orders](orders.md) · `hl.orders.perp.twap-execution-target.calculate` | stable local target | none/none |
 | `replayPerpAccountEvents` | Replays complete ordered fills/funding/transfers into positions, cash ledger, totals, and server-field residuals. | [reconciliation](reconciliation.md) · `hl.reconciliation.perp-account.replay` | stable complete evidence | none/partial |
 | `reconcilePerpAccountSnapshot` | Computes observed-minus-projected cash/position residuals and tolerance checks, preserving observed correction authority. | [reconciliation](reconciliation.md) · `hl.reconciliation.perp-account.reconcile` | stable complete evidence | none/partial |
 | `convertSpotTokenUnits` | Converts exactly between human units and integer minimal units using `10^weiDecimals`. | [spot](spot.md) · `hl.spot.units.convert` | stable | none/partial |
@@ -72,7 +72,7 @@ Oracle abbreviations below are P = official Python SDK and L = dated live fixtur
 | `evaluateHip1AnchorGenesisEligibility` | Computes `max(holderBalanceWei − anchorTokenMaxSupplyWei/10⁶, 0)` eligibility weight. | [HIP-1](hip1.md) · `hl.hip1.anchor-genesis.evaluate` | experimental | none/none |
 | `resolveHip3CollateralSource` | Maps explicit account-abstraction mode and collateral metadata to an objective balance route. | [HIP-3](hip3.md) · `hl.hip3.collateral-source.resolve` | experimental | none/partial |
 | `evaluateHip3MarginMode` | Resolves normal/noCross/strictIsolated support, effective mode, removal semantics, and checks. | [HIP-3](hip3.md) · `hl.hip3.margin-mode.evaluate` | experimental | none/partial |
-| `calculateHip3FeeRates` | Applies official deployer scale, growth, referral, and aligned-quote maker/taker adjustments. | [HIP-3](hip3.md) · `hl.hip3.fee-rates.calculate` | experimental | none/partial |
+| `calculateHip3FeeRates` | Applies fee adjustments for non-conflicted scales and preserves the official growth-scale conflict as indeterminate. | [HIP-3](hip3.md) · `hl.hip3.fee-rates.calculate` | experimental | none/partial |
 
 ## Result interpretation
 

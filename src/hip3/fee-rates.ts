@@ -1,5 +1,5 @@
 import { Decimal40 } from '../core/decimal.js'
-import type { ConstraintCheck, MathResult } from '../model/index.js'
+import type { ConstraintCheck, MathReason, MathResult } from '../model/index.js'
 import { feeRatesTrace } from './trace.js'
 import type { CalculateHip3FeeRatesInput, Hip3EffectiveFeeRates } from './types.js'
 import { normalizeCalculateHip3FeeRatesInput, reason } from './validation.js'
@@ -47,6 +47,18 @@ export function calculateHip3FeeRates(
   }
 
   const value = normalized.value
+  if (value.growthMode && value.deployerFeeScaleDecimal.gt(1)) {
+    const reasonValue: MathReason = {
+      code: 'official-source-conflict',
+      path: '/deployerFeeScale',
+      sourceRefs: ['HL.DOC.FEES.2026-08-12', 'HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-08-12'],
+    }
+    return {
+      value: { status: 'indeterminate', reason: reasonValue },
+      trace: feeRatesTrace(value, { status: 'incomplete', reason: reasonValue }),
+    }
+  }
+
   const one = new Decimal40(1)
   const growthMultiplier = value.growthMode ? new Decimal40('0.1') : one
   const hip3Scale = value.deployerFeeScaleDecimal.lt(1)

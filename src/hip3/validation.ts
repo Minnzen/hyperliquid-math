@@ -1,4 +1,3 @@
-import { Decimal40 } from '../core/decimal.js'
 import { exactPlainObject, issue, normalizeDecimalAt, ownDataValue } from '../core/validation.js'
 import type { MathIssue, MathReason } from '../model/index.js'
 import type {
@@ -216,15 +215,17 @@ export function normalizeCalculateHip3FeeRatesInput(
   const growthMode = booleanValue(ownDataValue(root.object, 'growthMode'), '/growthMode')
   if (!growthMode.ok) return { ok: false, issue: growthMode.issue }
 
-  const scaleLimit = growthMode.value ? new Decimal40(1) : new Decimal40(3)
-  if (deployerFeeScale.decimal.gt(scaleLimit)) {
+  const invalidScale = growthMode.value
+    ? deployerFeeScale.decimal.gte(10)
+    : deployerFeeScale.decimal.gt(3)
+  if (invalidScale) {
     return {
       ok: false,
       issue: issue(
         'invalid-deployer-fee-scale',
         '/deployerFeeScale',
         deployerFeeScale.value,
-        growthMode.value ? 'decimal in [0,1] when growthMode is true' : 'decimal in [0,3]',
+        growthMode.value ? 'decimal in [0,10) when growthMode is true' : 'decimal in [0,3]',
       ),
     }
   }

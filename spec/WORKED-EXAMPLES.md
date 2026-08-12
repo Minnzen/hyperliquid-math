@@ -45,7 +45,7 @@ from documentation drift.
 | `classifyPerpTrigger` | Long position, sell order, mark `100`, trigger `110`: correct closing side and `take-profit`. |
 | `derivePerpTriggerPrice` | Long `2@100`, target gross PnL `20`, no cost: `100 + 20/2 = 110`. |
 | `buildPerpScaleLadder` | Linear `90..110`, size `1`, three legs, two size decimals: prices `90,100,110`; sizes `0.33,0.33,0.34`. |
-| `calculatePerpTwapSchedule` | Size `6` over `90,000 ms`: three 30-second children, normal size `2`, cumulative targets `2,4,6`, catch-up bound `6`. |
+| `calculatePerpTwapExecutionTarget` | Size `6`, duration `90,000 ms`, elapsed `45,000 ms`: cumulative target `6×45,000/90,000 = 3`. |
 | `replayPerpAccountEvents` | Cash `100`; open long `1@100`, then sell `1@110` with fee `1`: gross `10`, net cash delta `9`, final cash `109`. |
 | `reconcilePerpAccountSnapshot` | Projected cash `109`, observed `109.01`, tolerance `0.02`: residual `0.01`, check satisfied. |
 | `convertSpotTokenUnits` | Human `0.5` with `weiDecimals=5` becomes `0.5×10^5 = 50000` minimal units. |

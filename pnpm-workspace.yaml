@@ -1,6 +1,10 @@
 engineStrict: true
 overrides:
-  "brace-expansion@": 5.0.8
-  "fast-uri@": 3.1.4
+  "brace-expansion@": 5.0.9
+  "fast-uri@": 3.1.5
+  "js-yaml@^3": 3.15.1
+  "js-yaml@^4": 4.3.1
+  "nanoid@<3.3.17": 3.3.17
+  "postcss@<=8.5.22": 8.5.23
 saveExact: true
 strictPeerDependencies: true

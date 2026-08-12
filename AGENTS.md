@@ -33,3 +33,6 @@ official-API field mapping before changing anything.
   precise to 40 significant digits.
 - New public API requires: spec section, manifest entry, oracle-coverage entry, unit + property +
   contract tests, and an API-report update (`pnpm api:report`).
+- Before `1.0.0`, a minor release may include an explicitly reviewed breaking public-contract change;
+  its changeset and release notes must name the break and migration. Patch releases must remain
+  backward compatible. At and after `1.0.0`, breaking public-contract changes require a major release.

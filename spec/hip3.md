@@ -1,10 +1,10 @@
 # HIP-3 Perpetual Math Contract
 
 Status: M5 verified
-Last verified: 2026-07-19
+Last verified: 2026-08-12
 
-Official sources: `HL.DOC.HIP3.2026-07-19`, `HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-07-19`,
-`HL.DOC.FEES.2026-07-19`, `HL.DOC.ACCOUNT_ABSTRACTION.2026-07-19`,
+Official sources: `HL.DOC.HIP3.2026-08-12`, `HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-08-12`,
+`HL.DOC.FEES.2026-08-12`, `HL.DOC.ACCOUNT_ABSTRACTION.2026-07-19`,
 `HL.DOC.MARGINING.2026-07-19`, `HL.DOC.INFO.PERP.2026-07-19`
 
 HIP-3 uses the same linear perpetual PnL, funding-settlement, fee-amount, margin, liquidation, order,
@@ -111,8 +111,11 @@ Input is exactly:
 - `makerRate` and `takerRate` are the signed decimal rates from the caller's frozen `userFees`
   evidence. Positive rates are charges and negative rates are rebates. `activeReferralDiscount` is in
   `[0, 1]` and is also explicit `userFees` evidence.
-- `deployerFeeScale` is a decimal string in `[0, 3]`. When `growthMode` is true, it must be in
-  `[0, 1]`.
+- `deployerFeeScale` is a decimal string in `[0, 3]` when `growthMode` is false and `[0, 10)` when
+  `growthMode` is true. However, the official Fees page limits growth-mode scale to `[0, 1]`, while
+  the official HIP-3 deployer-action schema and worked examples allow `[0, 10)` (including `3.01`
+  and `9.99`). Therefore a growth-mode scale in `(1, 10)` is valid input shape but returns
+  `indeterminate` with reason `official-source-conflict`; it is not evaluated by the formula.
 - The v1 function is the official developer fee-rate formula expressed as decimal rates rather than
   UI percentages:
 
@@ -146,7 +149,8 @@ effectiveTakerRate = effectiveTakerRate * alignedTakerScale
 - Output includes `{ effectiveMakerRate, effectiveTakerRate, hip3Scale, deployerShare,
   growthMultiplier, alignedMakerScale, alignedTakerScale, checks }` and trace assumptions for explicit
   caller-supplied rates, referral discount, aligned-quote status, deployer scale, and growth mode.
-- Authority is `local-exact` for explicit rates and scales; maturity is `experimental`.
+- Authority is `local-exact` for non-conflicted explicit rates and scales; maturity is
+  `experimental`. `indeterminate` preserves the source conflict instead of choosing server policy.
 
 When `deployerFeeScale < 1`, the `deployerShare = scale / (1 + scale)` division is recorded in
 `trace.rounding` as a Decimal40/HALF_EVEN boundary. The exact divide-by-ten growth adjustment is a

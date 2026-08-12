@@ -11,7 +11,7 @@ import type {
   BuildPerpScaleLadderInput,
   CalculatePerpMaxOrderSizeInput,
   CalculatePerpSlippagePriceInput,
-  CalculatePerpTwapScheduleInput,
+  CalculatePerpTwapExecutionTargetInput,
   ClassifyPerpTriggerInput,
   DecimalValue,
   DerivePerpTriggerPriceInput,
@@ -130,10 +130,11 @@ export interface NormalizedBuildPerpScaleLadderInput {
   readonly szDecimals: number
 }
 
-export interface NormalizedCalculatePerpTwapScheduleInput {
+export interface NormalizedCalculatePerpTwapExecutionTargetInput {
   readonly totalSize: string
   readonly totalSizeDecimal: DecimalValue
   readonly durationMs: number
+  readonly elapsedMs: number
 }
 
 function root(
@@ -637,10 +638,10 @@ export function normalizeBuildPerpScaleLadderInput(
   }
 }
 
-export function normalizeCalculatePerpTwapScheduleInput(
-  input: CalculatePerpTwapScheduleInput,
-): NormalizedResult<NormalizedCalculatePerpTwapScheduleInput> {
-  const object = root(input, ['totalSize', 'durationMs'])
+export function normalizeCalculatePerpTwapExecutionTargetInput(
+  input: CalculatePerpTwapExecutionTargetInput,
+): NormalizedResult<NormalizedCalculatePerpTwapExecutionTargetInput> {
+  const object = root(input, ['totalSize', 'durationMs', 'elapsedMs'])
   if (!object.ok) return object
   const totalSize = decimal(ownDataValue(object.value, 'totalSize'), '/totalSize', 'positive')
   if (!totalSize.ok) return totalSize
@@ -651,17 +652,17 @@ export function normalizeCalculatePerpTwapScheduleInput(
       issue: issue('invalid-duration-ms', '/durationMs', durationMs, 'positive safe integer'),
     }
   }
-  if (durationMs % 30000 !== 0) {
+  const elapsedMs = ownDataValue(object.value, 'elapsedMs')
+  if (typeof elapsedMs !== 'number' || !Number.isSafeInteger(elapsedMs) || elapsedMs < 0) {
     return {
       ok: false,
-      issue: issue('invalid-duration-ms', '/durationMs', durationMs, 'multiple of 30000'),
+      issue: issue('invalid-elapsed-ms', '/elapsedMs', elapsedMs, 'non-negative safe integer'),
     }
   }
-  const childCount = durationMs / 30000
-  if (childCount > 10000) {
+  if (elapsedMs > durationMs) {
     return {
       ok: false,
-      issue: issue('invalid-duration-ms', '/durationMs', durationMs, 'at most 10000 targets'),
+      issue: issue('invalid-elapsed-ms', '/elapsedMs', elapsedMs, 'at most durationMs'),
     }
   }
   return {
@@ -670,6 +671,7 @@ export function normalizeCalculatePerpTwapScheduleInput(
       totalSize: totalSize.value.value,
       totalSizeDecimal: totalSize.value.decimal,
       durationMs,
+      elapsedMs,
     },
   }
 }

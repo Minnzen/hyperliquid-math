@@ -39,7 +39,7 @@
 | `HLM.SPEC.ORDERS.TRIGGER_CLASSIFY.V1` | internal normative spec | `spec/orders.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.ORDERS.TRIGGER_DERIVE.V1` | internal normative spec | `spec/orders.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.ORDERS.SCALE.V1` | internal normative spec | `spec/orders.md` | 2026-07-19 | git-tracked |
-| `HLM.SPEC.ORDERS.TWAP_SCHEDULE.V1` | internal normative spec | `spec/orders.md` | 2026-07-19 | git-tracked |
+| `HLM.SPEC.ORDERS.TWAP_EXECUTION_TARGET.V1` | internal normative spec | `spec/orders.md` | 2026-08-12 | git-tracked |
 | `HLM.SPEC.RECONCILIATION.REPLAY.V1` | internal normative spec | `spec/reconciliation.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.RECONCILIATION.RECONCILE.V1` | internal normative spec | `spec/reconciliation.md` | 2026-07-19 | git-tracked |
 | `HLM.SPEC.SPOT.UNITS_CONVERT.V1` | internal normative spec | `spec/spot.md` | 2026-07-19 | git-tracked |
@@ -75,9 +75,13 @@
 | `HL.DOC.HIP3.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-3-builder-deployed-perpetuals` | 2026-07-19 | Markdown SHA-256 `a1fa28a060a87818d654c4b69d9c9ebe8eb340c7bd569568d6472dc4988b05e4` |
 | `HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-07-19` | official action schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/hip-3-deployer-actions` | 2026-07-19 | Markdown SHA-256 `1dd7cc0249b7b544fe39acf8a1703ec73335b8581b94381d6c324d117e8f1dcf` |
 | `HL.DOC.ACCOUNT_ABSTRACTION.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes` | 2026-07-19 | Markdown SHA-256 `456d4902355576304837404a897a43cae75ff06279add2ddd948a5a676b83f23` |
+| `HL.DOC.HIP3.2026-08-12` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-3-builder-deployed-perpetuals` | 2026-08-12 | Markdown SHA-256 `31358d37ccd0ace67ab941f70215b4a0e648973dc519666a51928cd1a915eb79` |
+| `HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-08-12` | official action schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/hip-3-deployer-actions` | 2026-08-12 | Markdown SHA-256 `aeab9685e257b46e2c36310c71551b65ef3d39cca1f720fc2cfbdece4a29a0a9` |
+| `HL.DOC.ACCOUNT_ABSTRACTION.2026-08-12` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes` | 2026-08-12 | Markdown SHA-256 `4de73b2624c88427b1fa345d194604ad3dcbc3576af90f9c4790c800c5247bbf` |
 | `HL.DOC.ALIGNED_QUOTES.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/hypercore/aligned-quote-assets` | 2026-07-19 | Markdown SHA-256 `4137884a40b2efe55577c003c4b3273a9035f1f55f10c192c0523e4f8b72e23f` |
 | `HL.DOC.FUNDING.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding` | 2026-07-19 | Markdown SHA-256 `126d1a0489517bad351787542d555a0de25339c69fd544a0d8d283ae172d234c` |
 | `HL.DOC.FEES.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees` | 2026-07-19 | Markdown SHA-256 `ee9cc666d0a16fb54c3789f87c98d6bebc11e2a1af7fe7a9d86b8b92cafce084` |
+| `HL.DOC.FEES.2026-08-12` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees` | 2026-08-12 | Markdown SHA-256 `03599e19f0ec9dde14132c2de784293e2e28d25629d8f34d2fb7203c9533fc5a` |
 | `HL.DOC.INFO.USER_FILLS.2026-07-19` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-fills` | 2026-07-19 | parent Markdown SHA-256 `d83d3b88b9a8939be31fc82dd2db7b3a25a2f254582cd9f5a91abaef67ca16dc` |
 | `HL.DOC.INFO.USER_FEES.2026-07-19` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-fees` | 2026-07-19 | parent Markdown SHA-256 `d83d3b88b9a8939be31fc82dd2db7b3a25a2f254582cd9f5a91abaef67ca16dc` |
 | `HL.DOC.MARGINING.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margining` | 2026-07-19 | Markdown SHA-256 `95891a47102caca3171f406873178efc0d456ecda5636ed89fd5dc797f6c90a7` |
@@ -85,6 +89,8 @@
 | `HL.DOC.LIQUIDATIONS.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/liquidations` | 2026-07-19 | Markdown SHA-256 `162afe17f94665546d4e4169591368921a06a94d3f7f48c8fbec6b1ee9394a57` |
 | `HL.DOC.EXCHANGE.2026-07-19` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint` | 2026-07-19 | Markdown SHA-256 `f4eed32de54e2fe29ce2ee33c343a06729f00e0cde458dbe3599364381c71966` |
 | `HL.DOC.ORDER_TYPES.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/order-types` | 2026-07-19 | Markdown SHA-256 `246611008291ec1eff8d6d52142dc9499a5ea356ad1a9e762ae30fc5c961e5db` |
+| `HL.DOC.EXCHANGE.2026-08-12` | official API schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint` | 2026-08-12 | Markdown SHA-256 `fd05f4499e6595c1e6b4b5185d1d9abcf8ebbd356a761991b5add637889212f2` |
+| `HL.DOC.ORDER_TYPES.2026-08-12` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/order-types` | 2026-08-12 | Markdown SHA-256 `d5873371283dc9ed3c3ff731bbd660014b71708b46913301a625acd0277f6a63` |
 | `HL.DOC.TP_SL.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/take-profit-and-stop-loss-orders-tp-sl` | 2026-07-19 | Markdown SHA-256 `7d808bcbc4ceea550a091d646b3a92bc265380934c63d6428d2fc18a79da4b8a` |
 | `HL.DOC.ORDER_ERRORS.2026-07-19` | official API error schema | `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/error-responses` | 2026-07-19 | Markdown SHA-256 `f094b0d8eb40cee3c0ef8d22fbb60032e82382bd7d641bd2d144186af6d92595` |
 | `HL.DOC.CONTRACT_SPECIFICATIONS.2026-07-19` | official protocol docs | `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications` | 2026-07-19 | Markdown SHA-256 `59ef08be4b7e3d7cc0f4245abd4f133d743a983820df5b2ef0ce1ceb6af50ea3` |

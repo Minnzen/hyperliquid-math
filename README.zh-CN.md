@@ -147,7 +147,7 @@ value.status === 'indeterminate'   // → 声明的规则不完整
 | `/margin` | `calculatePerpInitialMargin` · `calculatePerpMaintenanceMargin` · `evaluatePerpAccountMargin` · `calculateUnifiedAccountRatio` |
 | `/liquidation` | `calculatePerpLiquidationPrice` |
 | `/scenarios` | `simulatePerpAccountScenario` |
-| `/orders` | `validatePerpOrder` · `calculatePerpMaxOrderSize` · `evaluatePerpReduceOnly` · `calculatePerpSlippagePrice` · `classifyPerpTrigger` · `derivePerpTriggerPrice` · `buildPerpScaleLadder` · `calculatePerpTwapSchedule` |
+| `/orders` | `validatePerpOrder` · `calculatePerpMaxOrderSize` · `evaluatePerpReduceOnly` · `calculatePerpSlippagePrice` · `classifyPerpTrigger` · `derivePerpTriggerPrice` · `buildPerpScaleLadder` · `calculatePerpTwapExecutionTarget` |
 | `/reconciliation` | `replayPerpAccountEvents` · `reconcilePerpAccountSnapshot` |
 | `/spot` | `convertSpotTokenUnits` · `calculateSpotOrderDeltas` · `projectSpotPositionEvent` · `calculateSpotPortfolioValue` · `evaluateSpotDustEligibility` · `projectSpotDustAllocation` |
 | `/hip1` | `validateHip1Deployment` · `evaluateHip1AnchorGenesisEligibility` |

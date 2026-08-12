@@ -1,11 +1,11 @@
 # Perpetual Order Math Contract
 
 Status: M4 complete (independently reviewed)
-Last verified: 2026-07-19
+Last verified: 2026-08-12
 
-Official sources: `HL.DOC.TICK_LOT.2026-07-19`, `HL.DOC.ORDER_TYPES.2026-07-19`,
+Official sources: `HL.DOC.TICK_LOT.2026-07-19`, `HL.DOC.ORDER_TYPES.2026-08-12`,
 `HL.DOC.TP_SL.2026-07-19`, `HL.DOC.ORDER_ERRORS.2026-07-19`,
-`HL.DOC.CONTRACT_SPECIFICATIONS.2026-07-19`, `HL.DOC.EXCHANGE.2026-07-19`
+`HL.DOC.CONTRACT_SPECIFICATIONS.2026-07-19`, `HL.DOC.EXCHANGE.2026-08-12`
 
 Fixture source: `HL.LIVE.MAINNET.M4.2026-07-19`
 
@@ -151,20 +151,22 @@ Source ID: `HLM.SPEC.ORDERS.SCALE.V1`
   caller-selected local ladder contract, not a claim about a hidden native server split algorithm.
 - Authority is `local-exact`; maturity is `stable`.
 
-## `hl.orders.perp.twap-schedule.calculate` v1
+## `hl.orders.perp.twap-execution-target.calculate` v1
 
-Source ID: `HLM.SPEC.ORDERS.TWAP_SCHEDULE.V1`
+Source ID: `HLM.SPEC.ORDERS.TWAP_EXECUTION_TARGET.V1`
 
-- Input is exactly `{ totalSize, durationMs }`.
-- `durationMs` is a positive safe integer multiple of the official 30,000 ms interval and produces at
-  most 10,000 targets.
-- `childCount = durationMs / 30000`, `normalChildSize = totalSize / childCount`, and
-  `maxCatchUpChildSize = 3 × normalChildSize`.
-- For target `i` in `[1, childCount]`, elapsed time is `i × 30000` and cumulative target size is
-  `totalSize × i / childCount`. The final target is exactly total size.
-- Output also records the official 300 bps child slippage cap as a protocol fact.
-- This function does not model randomization, child rounding, actual scheduling, orderbook fills,
-  catch-up decisions, or final completion. Explicit actual fills can be replayed separately.
+- Input is exactly `{ totalSize, durationMs, elapsedMs }`.
+- `totalSize` is a positive decimal string. `durationMs` is a positive safe integer. `elapsedMs` is a
+  non-negative safe integer no greater than `durationMs`.
+- `cumulativeTargetSize = totalSize × elapsedMs / durationMs` under Decimal40/HALF_EVEN arithmetic.
+  The result is exactly zero at elapsed time zero and exactly total size at full duration.
+- The official order-types documentation defines this continuous execution target, while the server
+  computes its fixed child interval from total size and running time. The public documentation does
+  not expose the child-count formula, so this function deliberately returns no child count, interval,
+  normal-child size, catch-up size, slippage field, or synthetic schedule.
+- The mutable 5-minute-to-7-day duration range and minimum order value are Kit admission rules, not
+  arithmetic preconditions. Randomization, child rounding, scheduling, fills, catch-up decisions, and
+  final completion remain server-authoritative and are excluded.
 - Authority is `local-exact`; maturity is `stable`; capability coverage remains partial because live
   execution is intentionally excluded.
 
@@ -172,14 +174,14 @@ Source ID: `HLM.SPEC.ORDERS.TWAP_SCHEDULE.V1`
 
 Successful M4 order traces state mutable caller evidence explicitly: available collateral, position,
 reference/mark price, mutable protocol-rule availability, target-cost completeness, the caller-selected
-local Scale algorithm, and the deterministic-only TWAP boundary. Invalid or validation-stopped traces
-remain assumption-free.
+local Scale algorithm, and the caller-provided TWAP duration with server scheduling excluded. Invalid
+or validation-stopped traces remain assumption-free.
 
 ## Oracle boundary
 
 - The pinned official Python SDK provides order schemas, wire formatting, and request
   builders only. Because those surfaces do not execute the public order formulas independently,
-  their formula coverage is `not-supported`, including validation and deterministic TWAP scheduling.
+  their formula coverage is `not-supported`, including validation and the continuous TWAP target.
 - The dated mainnet fixture proves fill/order/status fields and endpoint truncation boundaries. It does
   not prove local order acceptance or hidden server scheduling.
 - No signed order is submitted. Market, testnet, or mainnet execution remains outside this milestone.

@@ -2,7 +2,7 @@ import {
   buildPerpScaleLadder,
   calculatePerpMaxOrderSize,
   calculatePerpSlippagePrice,
-  calculatePerpTwapSchedule,
+  calculatePerpTwapExecutionTarget,
   classifyPerpTrigger,
   derivePerpTriggerPrice,
   evaluatePerpReduceOnly,
@@ -77,7 +77,11 @@ export function m4Results() {
     distribution: 'linear',
     szDecimals: 2,
   })
-  const twapSchedule = calculatePerpTwapSchedule({ totalSize: '12', durationMs: 120_000 })
+  const twapExecutionTarget = calculatePerpTwapExecutionTarget({
+    totalSize: '12',
+    durationMs: 120_000,
+    elapsedMs: 60_000,
+  })
   const replay = replayPerpAccountEvents({
     snapshot: {
       cashBalance: '1000',
@@ -132,7 +136,7 @@ export function m4Results() {
     triggerClassification,
     triggerPrice,
     scaleLadder,
-    twapSchedule,
+    twapExecutionTarget,
     replay,
     reconciliation,
   }
@@ -155,7 +159,7 @@ export function m4Results() {
           : triggerClassification.value,
       triggerPrice: triggerPrice.value,
       scaleLadder: scaleLadder.value,
-      twapSchedule: twapSchedule.value,
+      twapExecutionTarget: twapExecutionTarget.value,
       replay:
         replay.value.status === 'ok'
           ? {

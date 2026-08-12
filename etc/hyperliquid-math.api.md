@@ -274,11 +274,12 @@ export interface CalculatePerpSlippagePriceInput {
 }
 
 // @public
-export function calculatePerpTwapSchedule(input: CalculatePerpTwapScheduleInput): MathResult<PerpTwapSchedule>;
+export function calculatePerpTwapExecutionTarget(input: CalculatePerpTwapExecutionTargetInput): MathResult<PerpTwapExecutionTarget>;
 
 // @public (undocumented)
-export interface CalculatePerpTwapScheduleInput {
+export interface CalculatePerpTwapExecutionTargetInput {
     readonly durationMs: number;
+    readonly elapsedMs: number;
     // (undocumented)
     readonly totalSize: string;
 }
@@ -1614,23 +1615,8 @@ export type PerpTriggerTarget = {
 };
 
 // @public (undocumented)
-export interface PerpTwapSchedule {
-    // (undocumented)
-    readonly childCount: number;
-    readonly intervalMs: 30000;
-    readonly maxCatchUpChildSize: string;
-    readonly maxSlippageBps: '300';
-    readonly normalChildSize: string;
-    // (undocumented)
-    readonly targets: readonly PerpTwapTarget[];
-}
-
-// @public (undocumented)
-export interface PerpTwapTarget {
+export interface PerpTwapExecutionTarget {
     readonly cumulativeTargetSize: string;
-    readonly elapsedMs: number;
-    // (undocumented)
-    readonly index: number;
 }
 
 // @public (undocumented)

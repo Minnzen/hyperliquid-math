@@ -215,23 +215,61 @@ describe('calculateHip3FeeRates', () => {
     expect(high.value.status).toBe('ok')
   })
 
-  it('rejects growth mode deployer scales above one', () => {
+  it('returns indeterminate when official growth-mode scale sources conflict', () => {
     const result = calculateHip3FeeRates({
       ...baseInput,
-      deployerFeeScale: '1.0000001',
+      deployerFeeScale: '3.01',
       growthMode: true,
     })
 
-    expect(result.value.status).toBe('invalid-input')
-    if (result.value.status !== 'invalid-input') return
-    expect(result.value.issues).toEqual(
-      expect.arrayContaining([
+    expect(result.value).toEqual({
+      status: 'indeterminate',
+      reason: {
+        code: 'official-source-conflict',
+        path: '/deployerFeeScale',
+        sourceRefs: ['HL.DOC.FEES.2026-08-12', 'HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-08-12'],
+      },
+    })
+    expect(result.trace).toMatchObject({
+      completion: {
+        status: 'incomplete',
+        reason: { code: 'official-source-conflict', path: '/deployerFeeScale' },
+      },
+      normalizedInputs: { deployerFeeScale: '3.01', growthMode: true },
+    })
+  })
+
+  it('keeps the documented growth-mode upper boundary fail-closed', () => {
+    const sharedBoundary = calculateHip3FeeRates({
+      ...baseInput,
+      deployerFeeScale: '1',
+      growthMode: true,
+    })
+    const belowUpperBound = calculateHip3FeeRates({
+      ...baseInput,
+      deployerFeeScale: '9.99',
+      growthMode: true,
+    })
+    const upperBound = calculateHip3FeeRates({
+      ...baseInput,
+      deployerFeeScale: '10',
+      growthMode: true,
+    })
+
+    expect(sharedBoundary.value.status).toBe('ok')
+    expect(belowUpperBound.value).toMatchObject({
+      status: 'indeterminate',
+      reason: { code: 'official-source-conflict', path: '/deployerFeeScale' },
+    })
+    expect(upperBound.value).toMatchObject({
+      status: 'invalid-input',
+      issues: [
         expect.objectContaining({
           code: 'invalid-deployer-fee-scale',
           path: '/deployerFeeScale',
         }),
-      ]),
-    )
+      ],
+    })
   })
 
   it('rejects referral discounts below zero', () => {

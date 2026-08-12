@@ -168,7 +168,7 @@
         },
         "live-fixtures": {
           "coverage": "partial",
-          "slice": "perpDexs deployerFeeScale, feeRecipient, growthMode, and subDeployer schema observations; no executed fee row"
+          "slice": "perpDexs deployerFeeScale, feeRecipient, growthMode, and subDeployer schema observations; no executed fee row or growth-scale-above-one resolution"
         }
       }
     }
@@ -177,7 +177,7 @@
     "SDK coverage is schema or metadata coverage only, not formula parity.",
     "Spot PnL and dust execution are not proven by the public HLP address because spot balances were empty.",
     "HIP-1 deployment and anchor-genesis behavior are official-doc constrained but not live-executed.",
-    "HIP-3 margin and fee fixtures prove current metadata shapes, including noCross/growthMode/deployerFeeScale fields, but not signed execution parity.",
+    "HIP-3 margin and fee fixtures prove current metadata shapes, including noCross/growthMode/deployerFeeScale fields, but not signed execution parity or the official growth-scale source conflict.",
     "No mainnet or testnet signed spot, HIP-1, or HIP-3 action was submitted."
   ]
 }

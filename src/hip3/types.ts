@@ -86,7 +86,7 @@ export interface CalculateHip3FeeRatesInput {
   readonly activeReferralDiscount: string
   /** Whether the DEX quote token is aligned; explicit caller evidence, never inferred. */
   readonly isAlignedQuoteToken: boolean
-  /** Deployer fee scale in `[0, 3]` (`[0, 1]` when `growthMode` is true). */
+  /** Deployer fee scale in `[0, 3]`, or `[0, 10)` in growth mode; growth values above 1 are source-conflicted. */
   readonly deployerFeeScale: string
   /** Growth mode applies a 0.1 multiplier to base rates before scaling. */
   readonly growthMode: boolean

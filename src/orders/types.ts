@@ -205,31 +205,16 @@ export interface PerpScaleLadder {
 }
 
 /** @public */
-export interface CalculatePerpTwapScheduleInput {
+export interface CalculatePerpTwapExecutionTargetInput {
   readonly totalSize: string
-  /** TWAP duration in milliseconds; positive safe-integer multiple of 30,000 ms, max 10,000 targets. */
+  /** Caller-provided TWAP duration in milliseconds; positive safe integer. */
   readonly durationMs: number
-}
-
-/** @public */
-export interface PerpTwapTarget {
-  readonly index: number
-  /** `index * 30000` milliseconds from start. */
+  /** Elapsed milliseconds in the inclusive range `[0, durationMs]`. */
   readonly elapsedMs: number
-  /** `totalSize * index / childCount`; the final target equals total size exactly. */
-  readonly cumulativeTargetSize: string
 }
 
 /** @public */
-export interface PerpTwapSchedule {
-  /** Official fixed 30-second child interval. */
-  readonly intervalMs: 30000
-  readonly childCount: number
-  /** `totalSize / childCount`. */
-  readonly normalChildSize: string
-  /** `3 * normalChildSize` — the official catch-up ceiling. */
-  readonly maxCatchUpChildSize: string
-  /** Official 3% per-child slippage cap, recorded as a protocol fact. */
-  readonly maxSlippageBps: '300'
-  readonly targets: readonly PerpTwapTarget[]
+export interface PerpTwapExecutionTarget {
+  /** `totalSize * elapsedMs / durationMs`. */
+  readonly cumulativeTargetSize: string
 }

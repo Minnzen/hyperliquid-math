@@ -3,7 +3,7 @@ import {
   buildPerpScaleLadder,
   calculatePerpMaxOrderSize,
   calculatePerpSlippagePrice,
-  calculatePerpTwapSchedule,
+  calculatePerpTwapExecutionTarget,
   classifyPerpTrigger,
   derivePerpTriggerPrice,
   evaluatePerpReduceOnly,
@@ -605,30 +605,44 @@ describe('buildPerpScaleLadder', () => {
   })
 })
 
-describe('calculatePerpTwapSchedule', () => {
-  it('builds official 30-second targets and the three-times catch-up bound', () => {
-    const result = calculatePerpTwapSchedule({ totalSize: '12', durationMs: 120_000 })
+describe('calculatePerpTwapExecutionTarget', () => {
+  it('computes the continuous execution target without inventing a child schedule', () => {
+    const result = calculatePerpTwapExecutionTarget({
+      totalSize: '10',
+      durationMs: 345_600_000,
+      elapsedMs: 172_800_000,
+    })
 
     expect(result.value).toEqual({
       status: 'ok',
       data: {
-        intervalMs: 30_000,
-        childCount: 4,
-        normalChildSize: '3',
-        maxCatchUpChildSize: '9',
-        maxSlippageBps: '300',
-        targets: [
-          { index: 0, elapsedMs: 30_000, cumulativeTargetSize: '3' },
-          { index: 1, elapsedMs: 60_000, cumulativeTargetSize: '6' },
-          { index: 2, elapsedMs: 90_000, cumulativeTargetSize: '9' },
-          { index: 3, elapsedMs: 120_000, cumulativeTargetSize: '12' },
-        ],
+        cumulativeTargetSize: '5',
+      },
+    })
+    expect(result.trace).toMatchObject({
+      formulaId: 'hl.orders.perp.twap-execution-target.calculate',
+      authority: 'local-exact',
+      normalizedInputs: {
+        totalSize: '10',
+        durationMs: 345_600_000,
+        elapsedMs: 172_800_000,
       },
     })
   })
 
-  it('rejects a duration that is not a 30-second multiple', () => {
-    const result = calculatePerpTwapSchedule({ totalSize: '12', durationMs: 45_000 })
-    expect(result.value.status).toBe('invalid-input')
+  it('returns exact endpoints for zero elapsed time and full duration', () => {
+    const start = calculatePerpTwapExecutionTarget({
+      totalSize: '10',
+      durationMs: 300_000,
+      elapsedMs: 0,
+    })
+    const end = calculatePerpTwapExecutionTarget({
+      totalSize: '10',
+      durationMs: 300_000,
+      elapsedMs: 300_000,
+    })
+
+    expect(start.value).toEqual({ status: 'ok', data: { cumulativeTargetSize: '0' } })
+    expect(end.value).toEqual({ status: 'ok', data: { cumulativeTargetSize: '10' } })
   })
 })
