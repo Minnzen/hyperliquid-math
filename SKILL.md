@@ -95,7 +95,7 @@ The full mapping contract with evidence citations is `spec/KIT-MAPPING.md` in th
   actions; results marked `experimental`, `protocolSupport: 'unverified'`)
 - `hyperliquid-math/orders` — `validatePerpOrder`, `calculatePerpMaxOrderSize`,
   `evaluatePerpReduceOnly`, `calculatePerpSlippagePrice`, `classifyPerpTrigger`,
-  `derivePerpTriggerPrice`, `buildPerpScaleLadder`, `calculatePerpTwapSchedule`
+  `derivePerpTriggerPrice`, `buildPerpScaleLadder`, `calculatePerpTwapExecutionTarget`
 - `hyperliquid-math/reconciliation` — `replayPerpAccountEvents`, `reconcilePerpAccountSnapshot`
 - `hyperliquid-math/spot` — `convertSpotTokenUnits`, `calculateSpotOrderDeltas`,
   `projectSpotPositionEvent`, `calculateSpotPortfolioValue`, `evaluateSpotDustEligibility`,

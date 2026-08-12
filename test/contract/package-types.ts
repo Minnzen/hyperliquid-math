@@ -31,7 +31,7 @@ import type {
   buildPerpScaleLadder,
   calculatePerpMaxOrderSize,
   calculatePerpSlippagePrice,
-  calculatePerpTwapSchedule,
+  calculatePerpTwapExecutionTarget,
   classifyPerpTrigger,
   derivePerpTriggerPrice,
   evaluatePerpReduceOnly,
@@ -81,7 +81,7 @@ declare const slippagePriceResult: ReturnType<typeof calculatePerpSlippagePrice>
 declare const triggerClassificationResult: ReturnType<typeof classifyPerpTrigger>
 declare const triggerPriceResult: ReturnType<typeof derivePerpTriggerPrice>
 declare const scaleLadderResult: ReturnType<typeof buildPerpScaleLadder>
-declare const twapScheduleResult: ReturnType<typeof calculatePerpTwapSchedule>
+declare const twapExecutionTargetResult: ReturnType<typeof calculatePerpTwapExecutionTarget>
 declare const replayResult: ReturnType<typeof replayPerpAccountEvents>
 declare const reconciliationResult: ReturnType<typeof reconcilePerpAccountSnapshot>
 declare const spotUnitsResult: ReturnType<typeof convertSpotTokenUnits>
@@ -120,7 +120,7 @@ slippagePriceResult satisfies MathResult<unknown>
 triggerClassificationResult satisfies MathResult<unknown>
 triggerPriceResult satisfies MathResult<unknown>
 scaleLadderResult satisfies MathResult<unknown>
-twapScheduleResult satisfies MathResult<unknown>
+twapExecutionTargetResult satisfies MathResult<unknown>
 replayResult satisfies MathResult<unknown>
 reconciliationResult satisfies MathResult<unknown>
 spotUnitsResult satisfies MathResult<unknown>

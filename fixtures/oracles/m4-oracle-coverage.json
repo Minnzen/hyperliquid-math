@@ -116,16 +116,16 @@
       }
     },
     {
-      "exportName": "calculatePerpTwapSchedule",
-      "formulaId": "hl.orders.perp.twap-schedule.calculate",
+      "exportName": "calculatePerpTwapExecutionTarget",
+      "formulaId": "hl.orders.perp.twap-execution-target.calculate",
       "oracles": {
         "official-python-sdk": {
           "coverage": "not-supported",
-          "reason": "The pinned release has no independent schedule-math oracle."
+          "reason": "The pinned release has no independent execution-target oracle."
         },
         "live-fixtures": {
           "coverage": "not-supported",
-          "reason": "No TWAP slice fills were captured."
+          "reason": "No live TWAP target or child-schedule observation was captured."
         }
       }
     },

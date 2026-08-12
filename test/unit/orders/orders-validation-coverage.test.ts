@@ -3,7 +3,7 @@ import {
   buildPerpScaleLadder,
   calculatePerpMaxOrderSize,
   calculatePerpSlippagePrice,
-  calculatePerpTwapSchedule,
+  calculatePerpTwapExecutionTarget,
   classifyPerpTrigger,
   derivePerpTriggerPrice,
   evaluatePerpReduceOnly,
@@ -18,7 +18,7 @@ type PublicOrderFunction =
   | typeof classifyPerpTrigger
   | typeof derivePerpTriggerPrice
   | typeof buildPerpScaleLadder
-  | typeof calculatePerpTwapSchedule
+  | typeof calculatePerpTwapExecutionTarget
 
 function expectInvalid(
   fn: PublicOrderFunction,
@@ -91,6 +91,7 @@ const validScale = {
 const validTwap = {
   totalSize: '1',
   durationMs: 30_000,
+  elapsedMs: 15_000,
 } as const
 
 describe('orders validation defensive coverage', () => {
@@ -532,24 +533,31 @@ describe('orders validation defensive coverage', () => {
     ],
     [
       'invalid twap total size',
-      calculatePerpTwapSchedule,
+      calculatePerpTwapExecutionTarget,
       { ...validTwap, totalSize: '0' },
       'non-positive-decimal',
       '/totalSize',
     ],
     [
       'invalid twap duration type',
-      calculatePerpTwapSchedule,
+      calculatePerpTwapExecutionTarget,
       { ...validTwap, durationMs: 30_000.5 },
       'invalid-duration-ms',
       '/durationMs',
     ],
     [
-      'invalid twap target count',
-      calculatePerpTwapSchedule,
-      { ...validTwap, durationMs: 300_030_000 },
-      'invalid-duration-ms',
-      '/durationMs',
+      'invalid twap elapsed type',
+      calculatePerpTwapExecutionTarget,
+      { ...validTwap, elapsedMs: 15_000.5 },
+      'invalid-elapsed-ms',
+      '/elapsedMs',
+    ],
+    [
+      'twap elapsed exceeds duration',
+      calculatePerpTwapExecutionTarget,
+      { ...validTwap, elapsedMs: 30_001 },
+      'invalid-elapsed-ms',
+      '/elapsedMs',
     ],
   ] as const)('returns invalid-input for %s', (_, fn, input, code, path) => {
     expectInvalid(fn, input, { code, path })

@@ -28,7 +28,7 @@ import type {
   BuildPerpScaleLadderInput,
   CalculatePerpMaxOrderSizeInput,
   CalculatePerpSlippagePriceInput,
-  CalculatePerpTwapScheduleInput,
+  CalculatePerpTwapExecutionTargetInput,
   ClassifyPerpTriggerInput,
   DecimalValue,
   DerivedPerpTriggerPrice,
@@ -43,8 +43,7 @@ import type {
   PerpTriggerClassification,
   PerpTriggerClassificationResult,
   PerpTriggerRelation,
-  PerpTwapSchedule,
-  PerpTwapTarget,
+  PerpTwapExecutionTarget,
   ValidatedPerpOrder,
   ValidatePerpOrderInput,
 } from './types.js'
@@ -53,7 +52,7 @@ import {
   normalizeBuildPerpScaleLadderInput,
   normalizeCalculatePerpMaxOrderSizeInput,
   normalizeCalculatePerpSlippagePriceInput,
-  normalizeCalculatePerpTwapScheduleInput,
+  normalizeCalculatePerpTwapExecutionTargetInput,
   normalizeClassifyPerpTriggerInput,
   normalizeDerivePerpTriggerPriceInput,
   normalizeEvaluatePerpReduceOnlyInput,
@@ -66,7 +65,7 @@ export type {
   BuildPerpScaleLadderInput,
   CalculatePerpMaxOrderSizeInput,
   CalculatePerpSlippagePriceInput,
-  CalculatePerpTwapScheduleInput,
+  CalculatePerpTwapExecutionTargetInput,
   ClassifyPerpTriggerInput,
   DerivedPerpTriggerPrice,
   DerivePerpTriggerPriceInput,
@@ -86,17 +85,14 @@ export type {
   PerpTriggerClassificationResult,
   PerpTriggerRelation,
   PerpTriggerTarget,
-  PerpTwapSchedule,
-  PerpTwapTarget,
+  PerpTwapExecutionTarget,
   ValidatedPerpOrder,
   ValidatePerpOrderInput,
 } from './types.js'
 
 const decimalZero = new Decimal40(0)
 const decimalOne = new Decimal40(1)
-const decimalThree = new Decimal40(3)
 const decimalTenThousand = new Decimal40(10000)
-const twapIntervalMs = 30000 as const
 
 function fixed(decimal: DecimalValue): string {
   return decimal.isZero() ? '0' : decimal.toFixed()
@@ -729,53 +725,49 @@ export function buildPerpScaleLadder(
 }
 
 /**
- * Computes the deterministic TWAP target curve on the official 30-second interval:
- * `childCount = durationMs / 30000`, cumulative target `totalSize * i / childCount`, plus the
- * `3x` catch-up child ceiling and 300 bps child slippage cap as protocol facts.
- * It models no randomization, child rounding, actual scheduling, or fills.
+ * Computes the continuous TWAP execution target `totalSize * elapsedMs / durationMs` at one
+ * caller-selected elapsed time. It does not model or infer the server's child count, interval,
+ * rounding, randomization, catch-up decisions, scheduling, or fills.
  *
  * @public
  */
-export function calculatePerpTwapSchedule(
-  input: CalculatePerpTwapScheduleInput,
-): MathResult<PerpTwapSchedule> {
-  const normalized = normalizeCalculatePerpTwapScheduleInput(input)
-  const formulaId = 'hl.orders.perp.twap-schedule.calculate'
+export function calculatePerpTwapExecutionTarget(
+  input: CalculatePerpTwapExecutionTargetInput,
+): MathResult<PerpTwapExecutionTarget> {
+  const normalized = normalizeCalculatePerpTwapExecutionTargetInput(input)
+  const formulaId = 'hl.orders.perp.twap-execution-target.calculate'
   if (!normalized.ok) return invalid(formulaId, normalized.issue)
 
   const value = normalized.value
-  const childCount = value.durationMs / twapIntervalMs
-  const childCountDecimal = new Decimal40(childCount)
-  const normalChildSize = value.totalSizeDecimal.div(childCountDecimal)
-  const targets: PerpTwapTarget[] = []
-  for (let index = 0; index < childCount; index += 1) {
-    const childNumber = index + 1
-    const cumulativeTargetSize =
-      childNumber === childCount
-        ? value.totalSizeDecimal
-        : value.totalSizeDecimal.mul(childNumber).div(childCountDecimal)
-    targets.push({
-      index,
-      elapsedMs: childNumber * twapIntervalMs,
-      cumulativeTargetSize: fixed(cumulativeTargetSize),
-    })
-  }
+  const cumulativeTargetSize = value.totalSizeDecimal.mul(value.elapsedMs).div(value.durationMs)
   return ok(
     formulaId,
-    {
-      intervalMs: twapIntervalMs,
-      childCount,
-      normalChildSize: fixed(normalChildSize),
-      maxCatchUpChildSize: fixed(normalChildSize.mul(decimalThree)),
-      maxSlippageBps: '300',
-      targets,
-    },
+    { cumulativeTargetSize: fixed(cumulativeTargetSize) },
     {
       totalSize: value.totalSize,
       durationMs: value.durationMs,
+      elapsedMs: value.elapsedMs,
     },
-    [],
-    [],
+    [
+      {
+        stepId: 'execution-target',
+        inputs: {
+          totalSize: value.totalSize,
+          durationMs: value.durationMs,
+          elapsedMs: value.elapsedMs,
+        },
+        output: fixed(cumulativeTargetSize),
+      },
+    ],
+    [
+      {
+        path: '/value/data/cumulativeTargetSize',
+        input: `${value.totalSize}*${value.elapsedMs}/${value.durationMs}`,
+        output: fixed(cumulativeTargetSize),
+        mode: 'half-even',
+        reasonCode: 'decimal40-division',
+      },
+    ],
     twapAssumptions,
   )
 }

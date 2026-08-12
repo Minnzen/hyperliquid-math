@@ -71,7 +71,7 @@ export const twapAssumptions = [
   {
     kind: 'frozen-input',
     path: '/durationMs',
-    value: 'deterministic-targets-only-execution-excluded',
+    value: 'caller-provided-duration-server-schedule-excluded',
   },
 ] as const satisfies readonly Assumption[]
 
@@ -83,13 +83,13 @@ export const ordersSourceRefs = [
   'HLM.SPEC.ORDERS.TRIGGER_CLASSIFY.V1',
   'HLM.SPEC.ORDERS.TRIGGER_DERIVE.V1',
   'HLM.SPEC.ORDERS.SCALE.V1',
-  'HLM.SPEC.ORDERS.TWAP_SCHEDULE.V1',
+  'HLM.SPEC.ORDERS.TWAP_EXECUTION_TARGET.V1',
   'HL.DOC.TICK_LOT.2026-07-19',
-  'HL.DOC.ORDER_TYPES.2026-07-19',
+  'HL.DOC.ORDER_TYPES.2026-08-12',
   'HL.DOC.TP_SL.2026-07-19',
   'HL.DOC.ORDER_ERRORS.2026-07-19',
   'HL.DOC.CONTRACT_SPECIFICATIONS.2026-07-19',
-  'HL.DOC.EXCHANGE.2026-07-19',
+  'HL.DOC.EXCHANGE.2026-08-12',
   'DECIMALJS.10.6.0',
 ] as const
 

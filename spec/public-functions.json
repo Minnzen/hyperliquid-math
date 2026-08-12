@@ -430,9 +430,9 @@
       }
     },
     {
-      "exportName": "calculatePerpTwapSchedule",
+      "exportName": "calculatePerpTwapExecutionTarget",
       "subpaths": [".", "./orders"],
-      "formulaId": "hl.orders.perp.twap-schedule.calculate",
+      "formulaId": "hl.orders.perp.twap-execution-target.calculate",
       "formulaVersion": 1,
       "specPath": "spec/orders.md",
       "testKinds": ["unit", "metamorphic", "contract", "cross-runtime"],

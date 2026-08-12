@@ -11,7 +11,7 @@ transport, identity resolution, freshness, policy, and execution. The split is i
 | Positions | ordered fills, normalized fee convention, starting cost basis | state transitions, entry, realized/unrealized/closed PnL |
 | Fees/funding | current schedule/rate rules, oracle/impact prices, settlement interval | tier arithmetic, fee amount, premium/rate/payment/annualization |
 | Margin/liquidation | same-snapshot positions, marks, cross account value, isolated values, official tiers, unified DEX/token join | current/projected margin facts, unified monitoring ratio, and tier-consistent liquidation roots |
-| Order preview | current position/collateral, protocol rule availability, caller target assumptions | objective checks, local max bound, reduce-only, trigger, scale, deterministic TWAP |
+| Order preview | current position/collateral, protocol rule availability, caller target assumptions | objective checks, local max bound, reduce-only, trigger, scale, continuous TWAP target |
 | Replay | ordered/deduplicated events, completeness evidence, observed snapshot | ledger projection, residuals, objective reconciliation checks |
 | Spot/HIP | token metadata, marks, normalized fee token value, account-abstraction and DEX facts | units, cost basis, dust predicates/projection, HIP-1/HIP-3 deterministic constraints |
 
@@ -160,6 +160,18 @@ transport, identity resolution, freshness, policy, and execution. The split is i
   and quote-valued fee; otherwise the mapping is not-supported until an explicit base-fee input contract
   is sourced.
 
+### TWAP execution target
+
+- `calculatePerpTwapExecutionTarget` receives the native TWAP total base size as `totalSize`, the
+  caller-selected total duration as `durationMs`, and one caller-observed elapsed time as `elapsedMs`.
+  Kit owns the start-time evidence and elapsed-time convention; Math only checks
+  `0 <= elapsedMs <= durationMs` and computes the continuous target.
+- The official 5-minute-to-7-day duration window and minimum total order value are mutable admission
+  rules enforced by Kit/server policy. They are not Math arithmetic preconditions.
+- The server derives child count and interval from total size and running time. Kit must not use the
+  Math target to invent native child orders, interval timing, randomization, catch-up size, slippage,
+  or fill behavior.
+
 ## What Kit must not infer from an `ok` result
 
 An `ok` Math result is not an execution authorization. Kit still owns warnings, severity, blocking,
@@ -168,7 +180,7 @@ submission, and reconciliation after execution. In particular:
 
 - local max size is not the server-accepted maximum;
 - a liquidation root is not a prediction of partial liquidation, backstop fill, ADL, or scheduling;
-- a deterministic TWAP/Scale projection is not a fill forecast;
+- a continuous TWAP target or local Scale projection is not a fill forecast;
 - HIP-1/HIP-3 experimental results do not prove deployment, collateral, or cross-margin eligibility;
 - `not-evaluated` constraints must remain visible to product policy rather than being treated as
   satisfied.

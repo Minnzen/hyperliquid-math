@@ -3,7 +3,7 @@ import {
   buildPerpScaleLadder,
   calculatePerpMaxOrderSize,
   calculatePerpSlippagePrice,
-  calculatePerpTwapSchedule,
+  calculatePerpTwapExecutionTarget,
   classifyPerpTrigger,
   derivePerpTriggerPrice,
   evaluatePerpReduceOnly,
@@ -20,7 +20,7 @@ const facades = [
   ['classifyPerpTrigger', classifyPerpTrigger],
   ['derivePerpTriggerPrice', derivePerpTriggerPrice],
   ['buildPerpScaleLadder', buildPerpScaleLadder],
-  ['calculatePerpTwapSchedule', calculatePerpTwapSchedule],
+  ['calculatePerpTwapExecutionTarget', calculatePerpTwapExecutionTarget],
   ['replayPerpAccountEvents', replayPerpAccountEvents],
   ['reconcilePerpAccountSnapshot', reconcilePerpAccountSnapshot],
 ] as const
@@ -162,7 +162,7 @@ describe('M4 public facade safety', () => {
         distribution: 'linear',
         szDecimals: 2,
       }),
-      calculatePerpTwapSchedule({ totalSize: '1', durationMs: 60_000 }),
+      calculatePerpTwapExecutionTarget({ totalSize: '1', durationMs: 60_000, elapsedMs: 30_000 }),
     ]
 
     const expectedAssumptions = [
@@ -222,7 +222,7 @@ describe('M4 public facade safety', () => {
         {
           kind: 'frozen-input',
           path: '/durationMs',
-          value: 'deterministic-targets-only-execution-excluded',
+          value: 'caller-provided-duration-server-schedule-excluded',
         },
       ],
     ]
@@ -402,7 +402,12 @@ describe('M4 public facade safety', () => {
           distribution: 'linear',
           szDecimals: 2,
         } as never),
-      () => calculatePerpTwapSchedule({ totalSize: '1', durationMs: Object.freeze({}) } as never),
+      () =>
+        calculatePerpTwapExecutionTarget({
+          totalSize: '1',
+          durationMs: Object.freeze({}),
+          elapsedMs: 0,
+        } as never),
       () =>
         replayPerpAccountEvents({
           snapshot: { cashBalance: '0', positions: [] },

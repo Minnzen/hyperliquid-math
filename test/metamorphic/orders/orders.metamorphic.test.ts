@@ -4,7 +4,7 @@ import {
   buildPerpScaleLadder,
   calculatePerpMaxOrderSize,
   calculatePerpSlippagePrice,
-  calculatePerpTwapSchedule,
+  calculatePerpTwapExecutionTarget,
   evaluatePerpReduceOnly,
 } from '../../../src/orders/index.js'
 
@@ -96,24 +96,27 @@ describe('orders metamorphic behavior', () => {
     )
   })
 
-  it('makes the final TWAP target exact and preserves the three-child catch-up bound', () => {
-    const result = calculatePerpTwapSchedule({ totalSize: '10', durationMs: 90_000 })
-
-    expect(result.value.status).toBe('ok')
-    if (result.value.status !== 'ok') return
-    expect(result.value.data.childCount).toBe(3)
-    expect(result.value.data.normalChildSize).toBe('3.333333333333333333333333333333333333333')
-    expect(result.value.data.maxCatchUpChildSize).toBe('9.999999999999999999999999999999999999999')
-    expect(result.value.data.targets.map((target) => target.cumulativeTargetSize)).toEqual([
-      '3.333333333333333333333333333333333333333',
-      '6.666666666666666666666666666666666666667',
-      '10',
-    ])
-    expect(result.value.data.targets.at(-1)).toEqual({
-      index: 2,
-      elapsedMs: 90_000,
-      cumulativeTargetSize: '10',
+  it('keeps the TWAP execution target monotone and proportional without a discrete schedule', () => {
+    const durationMs = 345_600_000
+    const quarter = calculatePerpTwapExecutionTarget({
+      totalSize: '10',
+      durationMs,
+      elapsedMs: 86_400_000,
     })
+    const half = calculatePerpTwapExecutionTarget({
+      totalSize: '10',
+      durationMs,
+      elapsedMs: 172_800_000,
+    })
+    const scaled = calculatePerpTwapExecutionTarget({
+      totalSize: '30',
+      durationMs,
+      elapsedMs: 172_800_000,
+    })
+
+    expect(quarter.value).toEqual({ status: 'ok', data: { cumulativeTargetSize: '2.5' } })
+    expect(half.value).toEqual({ status: 'ok', data: { cumulativeTargetSize: '5' } })
+    expect(scaled.value).toEqual({ status: 'ok', data: { cumulativeTargetSize: '15' } })
   })
 
   it('kills slippage mutants that invert conservative rounding or use percent instead of bps', () => {
