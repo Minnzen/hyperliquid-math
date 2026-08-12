@@ -512,11 +512,11 @@
     {
       "id": "hl.capability.9.07.10",
       "section": "9.7",
-      "capability": "TWAP 时间目标、正常子单和 catch-up 上界",
+      "capability": "TWAP 连续时间执行目标",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "仅确定性 schedule math；真实 scheduling/fills 不属于此结果"
+      "notes": "仅计算 totalSize × elapsedMs / durationMs 的连续目标；不推导 child orders、interval、randomization、catch-up、slippage、scheduling 或 fills"
     },
     {
       "id": "hl.capability.9.07.11",
