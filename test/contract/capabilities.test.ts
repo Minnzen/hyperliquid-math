@@ -39,4 +39,29 @@ describe('capability registry', () => {
       }
     }
   })
+
+  it('describes TWAP as a continuous execution target without a child schedule', async () => {
+    const registry = JSON.parse(await readFile('spec/capabilities.json', 'utf8')) as {
+      capabilities: Array<{
+        id: string
+        section: string
+        capability: string
+        intendedCoverage: string
+        authority: string
+        maturity: string
+        notes: string
+      }>
+    }
+
+    expect(registry.capabilities.find((item) => item.id === 'hl.capability.9.07.10')).toEqual({
+      id: 'hl.capability.9.07.10',
+      section: '9.7',
+      capability: 'TWAP 连续时间执行目标',
+      intendedCoverage: 'partial',
+      authority: 'local-exact',
+      maturity: 'stable',
+      notes:
+        '仅计算 totalSize × elapsedMs / durationMs 的连续目标；不推导 child orders、interval、randomization、catch-up、slippage、scheduling 或 fills',
+    })
+  })
 })
