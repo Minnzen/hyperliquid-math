@@ -1,4 +1,4 @@
-# CLAUDE.md — hyperliquid-math
+# AGENTS.md — hyperliquid-math
 
 Deterministic Hyperliquid math on plain data. MIT. Zero network I/O; the only runtime dependency is
 `decimal.js`. Read `spec/README.md` for the formula manual and `spec/KIT-MAPPING.md` for the
