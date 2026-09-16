@@ -172,6 +172,62 @@ transport, identity resolution, freshness, policy, and execution. The split is i
   Math target to invent native child orders, interval timing, randomization, catch-up size, slippage,
   or fill behavior.
 
+## Official surfaces this package does not map
+
+Re-verified 2026-09-17. These surfaces exist in the official documentation and are deliberately
+absent here. Declaring them keeps their absence honest; none of them may be synthesized from an
+`ok` Math result.
+
+### HIP-3 funding configuration
+
+Source IDs: `HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-09-17`, `HL.DOC.FUNDING.2026-07-19`
+
+A HIP-3 deployer configures funding per asset: `setFundingMultipliers` (between 0 and 10, scaling
+the funding rate), `setFundingInterestRates` (an 8-hour interest rate between -0.01 and 0.01) and
+`setFundingClamps` (an 8-hour clamp between 0 and 0.01, default 0.0003). The official funding page
+also specifies a different, more responsive premium for HIP-3 perps,
+`premium = (0.5 * (impactBid + impactAsk) / oraclePrice) - 1`, rather than the standard
+impact-price difference.
+
+`calculateFundingRate` takes `interestRate`, `clampLower`, `clampUpper`, `baseIntervalHours` and
+`hourlyCap` as explicit caller inputs and hardcodes no version-sensitive rule, so a caller may
+already supply a dex's interest rate and clamp. The multiplier and the HIP-3 premium formula have no
+Math function: `calculateFundingPremiumIndex` implements the standard premium only, and nothing here
+applies a funding multiplier. Kit must not feed HIP-3 impact prices into the standard premium
+function and present the result as a HIP-3 funding rate.
+
+### HIP-3 permissioned markets and sub-deployer proxy actions
+
+Source ID: `HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-09-17`
+
+`modifyApproval` and `modifyBackstopLiquidatorApproval` maintain onchain allowlists, and a
+sub-deployer may proxy cancellations, `cancelAll`, reduce-only placement, and collateral movement on
+a user's behalf. This is access control and delegated action authority, not arithmetic. Whether an
+address may trade or act on a venue is server-authoritative and belongs to Kit policy.
+
+### Read-only and deploy surfaces without a formula
+
+Source IDs: `HL.DOC.INFO.PERP.2026-09-17`, `HL.DOC.INFO.SPOT.2026-09-17`,
+`HL.DOC.INFO.ORDERS_FILLS.2026-09-17`, `HL.DOC.EXCHANGE.2026-09-17`,
+`HL.DOC.WS.USER_FILLS.2026-09-17`, `HL.DOC.HIP1_DEPLOY.2026-09-17`
+
+Outcome deployer limits, perp annotations, perp categories, concise perp annotations, perp market
+status, builder-deployed market limits, the HIP-1 `disableQuoteToken` action and the deployer label
+are metadata and action surfaces with no public formula in this package. Spot token metadata also
+publishes `deployerTradingFeeShare`; unlike the HIP-3 `deployerFeeScale`, it splits a fee the user
+already pays rather than changing what the user pays, so it has no effect on any user-side fee
+result and no deployer-side revenue attribution exists here.
+
+### TP/SL parent-order lifecycle
+
+Source ID: `HL.DOC.TP_SL.2026-09-17`
+
+`classifyPerpTrigger` and `derivePerpTriggerPrice` cover mark-relative classification and trigger
+price derivation only. Children of a parent order are placed if and only if the parent fully fills,
+or partially fills and is then cancelled for insufficient margin, and cancelling a partially filled
+parent cancels its children. That lifecycle, including one-cancels-other behavior, is
+server-authoritative and belongs to Kit.
+
 ## What Kit must not infer from an `ok` result
 
 An `ok` Math result is not an execution authorization. Kit still owns warnings, severity, blocking,

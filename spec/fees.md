@@ -97,7 +97,7 @@ never as a property of being aligned.
 What follows for this contract:
 
 - The M2 fee functions classify nothing and take no alignment input. `calculateTradeFee` consumes
-  the `rate` it is given, and `calculateWeightedVolume` applies only the official
+  the `rate` it is given, and `calculateWeightedFeeVolume` applies only the official
   `perps + 2 * spot` rule. HIP-3 deployer fee composition, including how an explicit caller-supplied
   aligned-quote input is consumed, is normative in `spec/hip3.md`.
 - An AQAv1 rate adjustment or volume uplift must already be reflected in the rates and volumes the
