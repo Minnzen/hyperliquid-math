@@ -137,6 +137,7 @@
     "benchmark:record": "pnpm build && node scripts/benchmark.mjs --record",
     "benchmark:check": "pnpm build && node scripts/benchmark.mjs",
     "actions:check": "node scripts/check-action-pins.mjs",
+    "docs:check": "node scripts/check-doc-hashes.mjs",
     "check": "pnpm lint && pnpm build && pnpm typecheck && pnpm test:coverage && pnpm capabilities:check && pnpm manifest:check && pnpm dependencies:check && pnpm boundaries:check && pnpm api:check && pnpm publint && pnpm actions:check && pnpm benchmark:check",
     "prepack": "pnpm build"
   },

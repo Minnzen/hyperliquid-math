@@ -83,3 +83,5 @@ jobs:
 
           console.log(`validated ${meta.universe.length} perps, ${spotMeta.universe.length} spot pairs`)
           NODE
+      - name: Verify pinned official documentation Markdown hashes
+        run: pnpm docs:check
