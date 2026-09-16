@@ -168,7 +168,7 @@
         },
         "live-fixtures": {
           "coverage": "partial",
-          "slice": "perpDexs deployerFeeScale, feeRecipient, growthMode, and subDeployer schema observations; no executed fee row or growth-scale-above-one resolution"
+          "slice": "perpDexs deployerFeeScale, feeRecipient, growthMode, and subDeployer schema observations, including the mainnet and testnet deployerFeeScale 1.0 observed alongside an enabled growthMode asset; no executed fee row and no server-side protocol/deployer split was captured"
         }
       }
     }
@@ -177,7 +177,8 @@
     "SDK coverage is schema or metadata coverage only, not formula parity.",
     "Spot PnL and dust execution are not proven by the public HLP address because spot balances were empty.",
     "HIP-1 deployment and anchor-genesis behavior are official-doc constrained but not live-executed.",
-    "HIP-3 margin and fee fixtures prove current metadata shapes, including noCross/growthMode/deployerFeeScale fields, but not signed execution parity or the official growth-scale source conflict.",
+    "HIP-3 margin and fee fixtures prove current metadata shapes, including noCross/growthMode/deployerFeeScale fields, but not signed execution parity.",
+    "The full HIP-3 deployer fee scale range is proven against the official worked-example table in test/hip3/oracle/fee-rates.official-table.test.ts. That is official-documentation evidence replayed as an executable test, not an oracle-implementation or live-execution parity claim.",
     "No mainnet or testnet signed spot, HIP-1, or HIP-3 action was submitted."
   ]
 }

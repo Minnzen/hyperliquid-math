@@ -215,28 +215,31 @@ describe('calculateHip3FeeRates', () => {
     expect(high.value.status).toBe('ok')
   })
 
-  it('returns indeterminate when official growth-mode scale sources conflict', () => {
+  it('evaluates growth-mode scales above one instead of deferring them', () => {
     const result = calculateHip3FeeRates({
       ...baseInput,
       deployerFeeScale: '3.01',
       growthMode: true,
     })
 
-    expect(result.value).toEqual({
-      status: 'indeterminate',
-      reason: {
-        code: 'official-source-conflict',
-        path: '/deployerFeeScale',
-        sourceRefs: ['HL.DOC.FEES.2026-08-12', 'HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-08-12'],
+    // hip3Scale = 3.01 * 2 = 6.02; deployerShare = 0.5; growthMultiplier = 0.1.
+    // maker: 0.0001 * 6.02 * (1 - 0.04) / 10 = 0.000057792
+    // taker: 0.0004 * 6.02 * (1 - 0.04) / 10 = 0.000231168
+    expect(result.value).toMatchObject({
+      status: 'ok',
+      data: {
+        effectiveMakerRate: '0.000057792',
+        effectiveTakerRate: '0.000231168',
+        hip3Scale: '6.02',
+        deployerShare: '0.5',
+        growthMultiplier: '0.1',
       },
     })
     expect(result.trace).toMatchObject({
-      completion: {
-        status: 'incomplete',
-        reason: { code: 'official-source-conflict', path: '/deployerFeeScale' },
-      },
+      completion: { status: 'complete' },
       normalizedInputs: { deployerFeeScale: '3.01', growthMode: true },
     })
+    expect(result.trace.rounding).toEqual([])
   })
 
   it('keeps the documented growth-mode upper boundary fail-closed', () => {
@@ -257,9 +260,17 @@ describe('calculateHip3FeeRates', () => {
     })
 
     expect(sharedBoundary.value.status).toBe('ok')
+    // hip3Scale = 9.99 * 2 = 19.98; deployerShare = 0.5; growthMultiplier = 0.1.
+    // maker: 0.0001 * 19.98 * (1 - 0.04) / 10 = 0.000191808
+    // taker: 0.0004 * 19.98 * (1 - 0.04) / 10 = 0.000767232
     expect(belowUpperBound.value).toMatchObject({
-      status: 'indeterminate',
-      reason: { code: 'official-source-conflict', path: '/deployerFeeScale' },
+      status: 'ok',
+      data: {
+        effectiveMakerRate: '0.000191808',
+        effectiveTakerRate: '0.000767232',
+        hip3Scale: '19.98',
+        deployerShare: '0.5',
+      },
     })
     expect(upperBound.value).toMatchObject({
       status: 'invalid-input',

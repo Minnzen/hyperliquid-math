@@ -82,28 +82,54 @@ describe('HIP-3 fee rate properties', () => {
     )
   })
 
-  it('keeps growth mode equal to one tenth of non-growth positive effective rates', () => {
+  it('keeps growth mode equal to one tenth of non-growth positive effective rates across [0, 10)', () => {
     fc.assert(
       fc.property(
         fc.bigInt({ min: 1n, max: 1_000n }),
         fc.bigInt({ min: 1n, max: 1_000n }),
         fc.bigInt({ min: 0n, max: 500_000n }),
-        fc.bigInt({ min: 0n, max: 1_000_000n }),
+        fc.bigInt({ min: 0n, max: 9_999_999n }),
         (makerMicros, takerMicros, discountMicros, scaleMicros) => {
+          const deployerFeeScale = fixedMicros(scaleMicros)
           const common = {
             makerRate: fixedMicros(makerMicros),
             takerRate: fixedMicros(takerMicros),
             activeReferralDiscount: fixedMicros(discountMicros),
             isAlignedQuoteToken: true,
-            deployerFeeScale: fixedMicros(scaleMicros),
+            deployerFeeScale,
           }
 
           const growth = calculateHip3FeeRates({ ...common, growthMode: true })
-          const normal = calculateHip3FeeRates({ ...common, growthMode: false })
-
           expect(growth.value.status).toBe('ok')
+          if (growth.value.status !== 'ok') return
+
+          const normal = calculateHip3FeeRates({ ...common, growthMode: false })
+          if (new Decimal40(deployerFeeScale).gt(3)) {
+            // Outside growth mode the official scale ceiling is 3, so there is no non-growth twin
+            // above it; the growth-mode rate is still one tenth of the same scaled arithmetic.
+            expect(normal.value.status).toBe('invalid-input')
+            const hip3Scale = new Decimal40(deployerFeeScale).mul(2)
+            const referralMultiplier = new Decimal40(1).minus(common.activeReferralDiscount)
+            expect(
+              new Decimal40(common.takerRate)
+                .mul(hip3Scale)
+                .mul(referralMultiplier)
+                .mul(growth.value.data.alignedTakerScale)
+                .div(10)
+                .toFixed(),
+            ).toBe(growth.value.data.effectiveTakerRate)
+            expect(
+              new Decimal40(common.makerRate)
+                .mul(hip3Scale)
+                .mul(referralMultiplier)
+                .div(10)
+                .toFixed(),
+            ).toBe(growth.value.data.effectiveMakerRate)
+            return
+          }
+
           expect(normal.value.status).toBe('ok')
-          if (growth.value.status !== 'ok' || normal.value.status !== 'ok') return
+          if (normal.value.status !== 'ok') return
           expect(new Decimal40(normal.value.data.effectiveMakerRate).div(10).toFixed()).toBe(
             growth.value.data.effectiveMakerRate,
           )

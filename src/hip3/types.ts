@@ -84,9 +84,9 @@ export interface CalculateHip3FeeRatesInput {
   readonly takerRate: string
   /** Referral discount as a decimal fraction in `[0, 1]`, explicit `userFees` evidence. */
   readonly activeReferralDiscount: string
-  /** Whether the DEX quote token is aligned; explicit caller evidence, never inferred. */
+  /** Eligibility for the AQAv1 fee benefit under the current fee schedule (AQAv2 has none); explicit caller evidence, never inferred. */
   readonly isAlignedQuoteToken: boolean
-  /** Deployer fee scale in `[0, 3]`, or `[0, 10)` in growth mode; growth values above 1 are source-conflicted. */
+  /** Deployer fee scale in `[0, 3]`, or `[0, 10)` in growth mode; the whole range is evaluated. */
   readonly deployerFeeScale: string
   /** Growth mode applies a 0.1 multiplier to base rates before scaling. */
   readonly growthMode: boolean

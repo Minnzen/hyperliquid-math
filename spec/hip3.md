@@ -111,11 +111,26 @@ Input is exactly:
 - `makerRate` and `takerRate` are the signed decimal rates from the caller's frozen `userFees`
   evidence. Positive rates are charges and negative rates are rebates. `activeReferralDiscount` is in
   `[0, 1]` and is also explicit `userFees` evidence.
+- `isAlignedQuoteToken` states eligibility for the AQAv1 fee benefit under the current fee schedule.
+  The official aligned-quote-assets page grants AQAv1 quote assets 20% lower taker fees, 50% larger
+  maker rebates, and 20% more volume contribution, which is exactly the `0.8` and `1.5` arithmetic
+  below; AQAv2 carries no trading-fee or volume-contribution benefit, so an AQAv2 asset is `false`
+  here. The field is not "this asset carries an aligned designation": deciding which version applies
+  to a given quote asset, and therefore whether the benefit is live, belongs to the caller
+  (`HL.DOC.FEES.2026-08-12`).
 - `deployerFeeScale` is a decimal string in `[0, 3]` when `growthMode` is false and `[0, 10)` when
-  `growthMode` is true. However, the official Fees page limits growth-mode scale to `[0, 1]`, while
-  the official HIP-3 deployer-action schema and worked examples allow `[0, 10)` (including `3.01`
-  and `9.99`). Therefore a growth-mode scale in `(1, 10)` is valid input shape but returns
-  `indeterminate` with reason `official-source-conflict`; it is not evaluated by the formula.
+  `growthMode` is true. The whole range is evaluated by the formula. The official Fees page states
+  the deployer *share* (0-300%, or 0-100% under growth mode), while the official HIP-3
+  deployer-action schema states the *scale* (a multiplier in `[0, 3]`, or `[0, 10)` under growth
+  mode). These are two units for one limit, not two limits: growth mode multiplies every fee by
+  `0.1`, so growth scale `10` is a 100% share ceiling and non-growth scale `3` is the 300% share
+  ceiling. The official worked example table reconciles exactly under both units, including its
+  growth rows at scale `3.01` and `9.99` (`HL.DOC.FEES.2026-08-12`,
+  `HL.DOC.HIP3_DEPLOYER_ACTIONS.2026-08-12`).
+- The returned `effectiveMakerRate`/`effectiveTakerRate` are the all-in rates: the official
+  `userFeeToProtocol + userFeeToDeployer`. The split is derivable from the returned `deployerShare`:
+  the deployer leg is `effectiveRate * deployerShare` and the protocol leg is the remainder. The
+  function does not choose or report which leg the caller settles.
 - The v1 function is the official developer fee-rate formula expressed as decimal rates rather than
   UI percentages:
 
@@ -149,8 +164,8 @@ effectiveTakerRate = effectiveTakerRate * alignedTakerScale
 - Output includes `{ effectiveMakerRate, effectiveTakerRate, hip3Scale, deployerShare,
   growthMultiplier, alignedMakerScale, alignedTakerScale, checks }` and trace assumptions for explicit
   caller-supplied rates, referral discount, aligned-quote status, deployer scale, and growth mode.
-- Authority is `local-exact` for non-conflicted explicit rates and scales; maturity is
-  `experimental`. `indeterminate` preserves the source conflict instead of choosing server policy.
+- Authority is `local-exact` for explicit rates and in-range scales; maturity is `experimental`.
+  Out-of-range scales are `invalid-input`; the function has no `indeterminate` outcome.
 
 When `deployerFeeScale < 1`, the `deployerShare = scale / (1 + scale)` division is recorded in
 `trace.rounding` as a Decimal40/HALF_EVEN boundary. The exact divide-by-ten growth adjustment is a
