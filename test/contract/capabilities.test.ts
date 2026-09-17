@@ -56,12 +56,12 @@ describe('capability registry', () => {
     expect(registry.capabilities.find((item) => item.id === 'hl.capability.9.07.10')).toEqual({
       id: 'hl.capability.9.07.10',
       section: '9.7',
-      capability: 'TWAP 连续时间执行目标',
+      capability: 'TWAP continuous-time execution target',
       intendedCoverage: 'partial',
       authority: 'local-exact',
       maturity: 'stable',
       notes:
-        '仅计算 totalSize × elapsedMs / durationMs 的连续目标；不推导 child orders、interval、randomization、catch-up、slippage、scheduling 或 fills',
+        'Computes the continuous target totalSize × elapsedMs / durationMs only; derives no child orders, interval, randomization, catch-up, slippage, scheduling or fills',
     })
   })
 })

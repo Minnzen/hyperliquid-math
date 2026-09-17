@@ -8,65 +8,65 @@
     {
       "id": "hl.capability.9.01.01",
       "section": "9.1",
-      "capability": "内部十进制 parse/compare/clamp kernel",
+      "capability": "Internal decimal parse/compare/clamp kernel",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "`src/core` only，不导出、不单独 trace"
+      "notes": "`src/core` only; not exported and not separately traced"
     },
     {
       "id": "hl.capability.9.01.02",
       "section": "9.1",
-      "capability": "public canonical string、比例/bps",
+      "capability": "Public canonical string, ratio and bps conversion",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "有协议语义，返回 `{value, trace}`"
+      "notes": "Carries protocol semantics and returns `{value, trace}`"
     },
     {
       "id": "hl.capability.9.01.03",
       "section": "9.1",
-      "capability": "px 有效位与最大小数位校验",
+      "capability": "Price significant-digit and maximum-decimal validation",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "perps/spot 规则由显式 `szDecimals` 和市场类型决定"
+      "notes": "Perp and spot rules follow the explicit `szDecimals` and the market type"
     },
     {
       "id": "hl.capability.9.01.04",
       "section": "9.1",
-      "capability": "size 小数位校验与保守规范化",
+      "capability": "Size decimal validation and conservative normalization",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "不隐式放大 size"
+      "notes": "Never silently increases a size"
     },
     {
       "id": "hl.capability.9.01.05",
       "section": "9.1",
-      "capability": "trailing-zero-free numeric serialization",
+      "capability": "Trailing-zero-free numeric serialization",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "只规范数值字符串；签名仍由 Kit/SDK 负责"
+      "notes": "Normalizes numeric strings only; signing stays with Kit and the SDK"
     },
     {
       "id": "hl.capability.9.01.06",
       "section": "9.1",
-      "capability": "perp / spot / HIP-3 asset ID 编解码",
+      "capability": "Perp, spot and HIP-3 asset ID encoding and decoding",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "网络 meta index 作为显式输入"
+      "notes": "The network meta index is an explicit input"
     },
     {
       "id": "hl.capability.9.01.07",
       "section": "9.1",
-      "capability": "outcome ID 编解码",
+      "capability": "Outcome ID encoding and decoding",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "公式稳定，但产品域仍实验性"
+      "notes": "The formula is stable while the product domain stays experimental"
     },
     {
       "id": "hl.capability.9.01.08",
@@ -75,592 +75,592 @@
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "Kit 负责；不是 Math 结果 authority"
+      "notes": "Owned by Kit; not a Math result authority"
     },
     {
       "id": "hl.capability.9.02.01",
       "section": "9.2",
-      "capability": "bid/ask/mid/spread/spread bps",
+      "capability": "Bid, ask, mid, spread and spread in bps",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "针对给定快照"
+      "notes": "For the supplied snapshot"
     },
     {
       "id": "hl.capability.9.02.02",
       "section": "9.2",
-      "capability": "指定 notional/size 的逐档成交模拟",
+      "capability": "Level-by-level fill simulation for a given notional or size",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "输出 fills、VWAP、未成交量"
+      "notes": "Returns fills, VWAP and unfilled quantity"
     },
     {
       "id": "hl.capability.9.02.03",
       "section": "9.2",
-      "capability": "slippage、price impact、最差成交价",
+      "capability": "Slippage, price impact and worst fill price",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "相对显式 reference price"
+      "notes": "Relative to an explicit reference price"
     },
     {
       "id": "hl.capability.9.02.04",
       "section": "9.2",
-      "capability": "limit 是否 marketable",
+      "capability": "Whether a limit order is marketable",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "相对给定 BBO"
+      "notes": "Relative to the supplied BBO"
     },
     {
       "id": "hl.capability.9.02.05",
       "section": "9.2",
-      "capability": "funding impact bid/ask price",
+      "capability": "Funding impact bid and ask price",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "需要完整深度与 impact notional"
+      "notes": "Requires full depth and the impact notional"
     },
     {
       "id": "hl.capability.9.02.06",
       "section": "9.2",
-      "capability": "提交后的真实 fills、队列位置和 latency",
+      "capability": "Real fills, queue position and latency after submission",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "HyperCore 负责；不模拟撮合引擎"
+      "notes": "Owned by HyperCore; the matching engine is not simulated"
     },
     {
       "id": "hl.capability.9.03.01",
       "section": "9.3",
-      "capability": "给定 fee rate 的 maker/taker fee",
+      "capability": "Maker and taker fee for a given fee rate",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "输入明确时精确"
+      "notes": "Exact when the inputs are explicit"
     },
     {
       "id": "hl.capability.9.03.02",
       "section": "9.3",
-      "capability": "14d weighted volume",
+      "capability": "14-day weighted volume",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "需要完整 perps/spot volume 输入"
+      "notes": "Requires complete perp and spot volume inputs"
     },
     {
       "id": "hl.capability.9.03.03",
       "section": "9.3",
-      "capability": "从显式 fee schedule 选择 tier",
+      "capability": "Tier selection from an explicit fee schedule",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "schedule 由 Kit/API 提供"
+      "notes": "The schedule is supplied by Kit or the API"
     },
     {
       "id": "hl.capability.9.03.04",
       "section": "9.3",
-      "capability": "referral/staking/aligned collateral/builder fee 组合",
+      "capability": "Referral, staking, aligned-collateral and builder fee composition",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "只组合显式规则，不自行猜用户资格"
+      "notes": "Composes explicit rules only and never guesses user eligibility"
     },
     {
       "id": "hl.capability.9.03.05",
       "section": "9.3",
-      "capability": "HIP-3 growth-mode 数学调整",
+      "capability": "HIP-3 growth-mode arithmetic adjustment",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "规则易变，版本化输入"
+      "notes": "Volatile rules, versioned inputs"
     },
     {
       "id": "hl.capability.9.03.06",
       "section": "9.3",
-      "capability": "服务端最终 fee tier 与实际 fill fee",
+      "capability": "Server-side final fee tier and actual fill fee",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "HyperCore/API 负责；Math 用实际 fills 对账"
+      "notes": "Owned by HyperCore and the API; Math reconciles against actual fills"
     },
     {
       "id": "hl.capability.9.04.01",
       "section": "9.4",
-      "capability": "notional、side、ROE 基础量",
+      "capability": "Notional, side and ROE base quantities",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "基于显式 mark/entry/size"
+      "notes": "From an explicit mark, entry and size"
     },
     {
       "id": "hl.capability.9.04.02",
       "section": "9.4",
-      "capability": "unrealized PnL",
+      "capability": "Unrealized PnL",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "按官方 entry/PnL 语义"
+      "notes": "Follows the official entry and PnL semantics"
     },
     {
       "id": "hl.capability.9.04.03",
       "section": "9.4",
-      "capability": "opening fill 的加权 entry price",
+      "capability": "Weighted entry price for an opening fill",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "同方向加仓"
+      "notes": "Same-direction size increases"
     },
     {
       "id": "hl.capability.9.04.04",
       "section": "9.4",
-      "capability": "partial/full close 的 realized/closed PnL",
+      "capability": "Realized and closed PnL for a partial or full close",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "fee 单独归因"
+      "notes": "Fees are attributed separately"
     },
     {
       "id": "hl.capability.9.04.05",
       "section": "9.4",
-      "capability": "position flip",
+      "capability": "Position flip",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "先平旧仓、剩余量按新方向开仓"
+      "notes": "Closes the old position first, then opens the remainder in the new direction"
     },
     {
       "id": "hl.capability.9.04.06",
       "section": "9.4",
-      "capability": "多 fill 顺序投影",
+      "capability": "Sequential multi-fill projection",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "scale/TWAP/partial fills 共用"
+      "notes": "Shared by scale ladders, TWAP and partial fills"
     },
     {
       "id": "hl.capability.9.04.07",
       "section": "9.4",
-      "capability": "fee/funding 后 break-even price",
+      "capability": "Break-even price after fees and funding",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "fee/funding assumptions 必须显式"
+      "notes": "Fee and funding assumptions must be explicit"
     },
     {
       "id": "hl.capability.9.04.08",
       "section": "9.4",
-      "capability": "服务端历史展示字段复刻",
+      "capability": "Reproduction of server-side historical display fields",
       "intendedCoverage": "partial",
       "authority": "server-authoritative",
       "maturity": "stable",
-      "notes": "可重算并 reconcile，不把前端展示字段当账本"
+      "notes": "Recomputes and reconciles instead of treating a display field as a ledger"
     },
     {
       "id": "hl.capability.9.05.01",
       "section": "9.5",
-      "capability": "premium index",
+      "capability": "Premium index",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "给定 impact prices 和 oracle price"
+      "notes": "For the supplied impact prices and oracle price"
     },
     {
       "id": "hl.capability.9.05.02",
       "section": "9.5",
-      "capability": "funding rate clamp 与 hourly rate",
+      "capability": "Funding rate clamp and hourly rate",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "常量和 cap 来自版本化 rules"
+      "notes": "Constants and caps come from versioned rules"
     },
     {
       "id": "hl.capability.9.05.03",
       "section": "9.5",
-      "capability": "funding payment",
+      "capability": "Funding payment",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "使用显式 position size、oracle、rate"
+      "notes": "Uses an explicit position size, oracle price and rate"
     },
     {
       "id": "hl.capability.9.05.04",
       "section": "9.5",
-      "capability": "年化/累计 funding",
+      "capability": "Annualized and cumulative funding",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "明确 simple/compound convention"
+      "notes": "States the simple or compound convention explicitly"
     },
     {
       "id": "hl.capability.9.05.05",
       "section": "9.5",
-      "capability": "下一周期 funding 预测",
+      "capability": "Next-interval funding prediction",
       "intendedCoverage": "partial",
       "authority": "local-estimate",
       "maturity": "stable",
-      "notes": "需要采样窗口和未来不变假设"
+      "notes": "Requires a sampling window and an assumption that the future is unchanged"
     },
     {
       "id": "hl.capability.9.05.06",
       "section": "9.5",
-      "capability": "验证者最终 oracle、premium average、结算",
+      "capability": "Validator final oracle, premium average and settlement",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "验证者/HyperCore 负责；使用服务端结果对账"
+      "notes": "Owned by validators and HyperCore; server results are used for reconciliation"
     },
     {
       "id": "hl.capability.9.06.01",
       "section": "9.6",
-      "capability": "initial margin、maintenance margin",
+      "capability": "Initial margin and maintenance margin",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "初始保证金还需用户 leverage；维持保证金需 rules、marks、positions"
+      "notes": "Initial margin also needs the user leverage; maintenance margin needs rules, marks and positions"
     },
     {
       "id": "hl.capability.9.06.02",
       "section": "9.6",
-      "capability": "margin tier rate/deduction",
+      "capability": "Margin tier rate and deduction",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "piecewise evaluation"
+      "notes": "Piecewise evaluation"
     },
     {
       "id": "hl.capability.9.06.03",
       "section": "9.6",
-      "capability": "cross account value 与 maintenance requirement",
+      "capability": "Cross account value and maintenance requirement",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "完整 cross snapshot"
+      "notes": "Complete cross snapshot"
     },
     {
       "id": "hl.capability.9.06.04",
       "section": "9.6",
-      "capability": "isolated margin evaluation",
+      "capability": "Isolated margin evaluation",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "完整 isolated position snapshot"
+      "notes": "Complete isolated position snapshot"
     },
     {
       "id": "hl.capability.9.06.05",
       "section": "9.6",
-      "capability": "transfer margin requirement / max removable margin",
+      "capability": "Transfer margin requirement and maximum removable margin",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "输入规则显式"
+      "notes": "The input rules are explicit"
     },
     {
       "id": "hl.capability.9.06.06",
       "section": "9.6",
-      "capability": "current liquidation price",
+      "capability": "Current liquidation price",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "对冻结快照和完整规则精确；未来状态变化不在该结论内"
+      "notes": "Exact for a frozen snapshot and complete rules; later state changes are outside the result"
     },
     {
       "id": "hl.capability.9.06.07",
       "section": "9.6",
-      "capability": "tier-aware liquidation solver",
+      "capability": "Tier-aware liquidation solver",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "求解时检查 liquidation notional 对应 tier"
+      "notes": "Checks the tier the liquidation notional falls into while solving"
     },
     {
       "id": "hl.capability.9.06.08",
       "section": "9.6",
-      "capability": "fill/cross-account/isolated-margin action 后 liquidation price",
+      "capability": "Liquidation price after a fill, cross-account or isolated-margin action",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "对显式 actions、allocation 和冻结其他 marks/funding 的反事实场景精确；actual-fill/server snapshot replay 待 testnet"
+      "notes": "Exact for explicit actions, allocation and a counterfactual that freezes other marks and funding; actual-fill and server-snapshot replay await testnet"
     },
     {
       "id": "hl.capability.9.06.09",
       "section": "9.6",
-      "capability": "leverage/margin-mode action 后 liquidation price",
+      "capability": "Liquidation price after a leverage or margin-mode action",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "对显式 `LeverageMarginEffect` 的反事实状态精确；协议接受与实际重分配待 testnet"
+      "notes": "Exact for the explicit `LeverageMarginEffect` counterfactual state; protocol acceptance and real reallocation await testnet"
     },
     {
       "id": "hl.capability.9.06.10",
       "section": "9.6",
-      "capability": "`updateLeverage` 的真实接受条件与 margin 重分配",
+      "capability": "Real acceptance conditions and margin reallocation for `updateLeverage`",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "HyperCore 负责；Kit 用 testnet/live result 纠偏"
+      "notes": "Owned by HyperCore; Kit corrects against testnet or live results"
     },
     {
       "id": "hl.capability.9.06.11",
       "section": "9.6",
-      "capability": "liquidation distance、margin usage、buffer",
+      "capability": "Liquidation distance, margin usage and buffer",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "只返回客观数值，不评价风险高低"
+      "notes": "Returns objective values only and never rates risk"
     },
     {
       "id": "hl.capability.9.06.12",
       "section": "9.6",
-      "capability": "backstop eligibility threshold / distance",
+      "capability": "Backstop eligibility threshold and distance",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "给定官方 `2/3 × maintenance margin` 规则；不代表真实执行"
+      "notes": "For the official `2/3 × maintenance margin` rule; not a statement about real execution"
     },
     {
       "id": "hl.capability.9.06.13",
       "section": "9.6",
-      "capability": "partial liquidation、backstop、ADL 的真实执行顺序",
+      "capability": "Real execution order of partial liquidation, backstop and ADL",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "HyperCore 负责；Math 只解释已发生事件，不预测执行"
+      "notes": "Owned by HyperCore; Math explains events that already happened and never predicts execution"
     },
     {
       "id": "hl.capability.9.07.01",
       "section": "9.7",
-      "capability": "price/size/notional validation",
+      "capability": "Price, size and notional validation",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "逐规则输出 constraint checks，无 severity"
+      "notes": "Emits constraint checks rule by rule, without severity"
     },
     {
       "id": "hl.capability.9.07.02",
       "section": "9.7",
-      "capability": "oracle/mark price-band validation",
+      "capability": "Oracle and mark price-band validation",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "规则 available 时精确；缺失在 report 中记 not-evaluated，Kit 提交前 fail-closed"
+      "notes": "Exact when the rule is available; a missing rule is recorded as not-evaluated and Kit fails closed before submission"
     },
     {
       "id": "hl.capability.9.07.03",
       "section": "9.7",
-      "capability": "side-aware slippage protection price",
+      "capability": "Side-aware slippage protection price",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "明确 reference 与 rounding"
+      "notes": "Explicit reference and rounding"
     },
     {
       "id": "hl.capability.9.07.04",
       "section": "9.7",
-      "capability": "available collateral 与 leverage 下的 max size",
+      "capability": "Maximum size under available collateral and leverage",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "对已知本地约束给出确定上界；最终接受另属服务端"
+      "notes": "Gives a definite upper bound for known local constraints; final acceptance is server-side"
     },
     {
       "id": "hl.capability.9.07.05",
       "section": "9.7",
-      "capability": "reduce-only 可减仓量与 flip guard",
+      "capability": "Reduce-only reducible quantity and flip guard",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "不允许越过零仓位"
+      "notes": "Never allows crossing through a zero position"
     },
     {
       "id": "hl.capability.9.07.06",
       "section": "9.7",
-      "capability": "TP/SL trigger 方向分类",
+      "capability": "TP/SL trigger direction classification",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "需要 position side、order side、mark/trigger"
+      "notes": "Requires the position side, order side, mark and trigger"
     },
     {
       "id": "hl.capability.9.07.07",
       "section": "9.7",
-      "capability": "由 target PnL/ROE 推导 trigger price",
+      "capability": "Trigger price derived from a target PnL or ROE",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "fee/funding assumptions 显式"
+      "notes": "Fee and funding assumptions are explicit"
     },
     {
       "id": "hl.capability.9.07.08",
       "section": "9.7",
-      "capability": "scale 价格腿与 size 分配",
+      "capability": "Scale price legs and size allocation",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "linear/geometric、余数保守处理"
+      "notes": "Linear or geometric, with conservative remainder handling"
     },
     {
       "id": "hl.capability.9.07.09",
       "section": "9.7",
-      "capability": "scale 顺序 fill 的仓位/清算投影",
+      "capability": "Position and liquidation projection for sequential scale fills",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "ladder legs 映射为 scenario explicit fill actions；组合 contract test 锁定"
+      "notes": "Ladder legs map to explicit scenario fill actions; the composition is locked by a contract test"
     },
     {
       "id": "hl.capability.9.07.10",
       "section": "9.7",
-      "capability": "TWAP 连续时间执行目标",
+      "capability": "TWAP continuous-time execution target",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "仅计算 totalSize × elapsedMs / durationMs 的连续目标；不推导 child orders、interval、randomization、catch-up、slippage、scheduling 或 fills"
+      "notes": "Computes the continuous target totalSize × elapsedMs / durationMs only; derives no child orders, interval, randomization, catch-up, slippage, scheduling or fills"
     },
     {
       "id": "hl.capability.9.07.11",
       "section": "9.7",
-      "capability": "GTC/ALO/IOC/trigger wire 构造",
+      "capability": "GTC, ALO, IOC and trigger wire construction",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "Kit/SDK 负责"
+      "notes": "Owned by Kit and the SDK"
     },
     {
       "id": "hl.capability.9.07.12",
       "section": "9.7",
-      "capability": "server preflight、rate limit、真实订单接受",
+      "capability": "Server preflight, rate limits and real order acceptance",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "Kit 负责 fail-closed；`oracleRejected` 等只能消费服务端结果"
+      "notes": "Kit fails closed; `oracleRejected` and similar can only consume server results"
     },
     {
       "id": "hl.capability.9.08.01",
       "section": "9.8",
-      "capability": "weiDecimals/szDecimals 单位换算",
+      "capability": "weiDecimals and szDecimals unit conversion",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "minimal/human 双向精确换算，不舍入"
+      "notes": "Exact in both directions between minimal and human units, without rounding"
     },
     {
       "id": "hl.capability.9.08.02",
       "section": "9.8",
-      "capability": "spot order notional 与 balance deltas",
+      "capability": "Spot order notional and balance deltas",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "显式 base/quote metadata，费用另算"
+      "notes": "Explicit base and quote metadata; fees are computed separately"
     },
     {
       "id": "hl.capability.9.08.03",
       "section": "9.8",
-      "capability": "spot entry/PnL 状态转移",
+      "capability": "Spot entry and PnL state transitions",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "buy/sell/transfer；genesis 与既有余额路径显式标 experimental"
+      "notes": "Buy, sell and transfer; the genesis and pre-existing balance paths are explicitly experimental"
     },
     {
       "id": "hl.capability.9.08.04",
       "section": "9.8",
-      "capability": "spot portfolio value",
+      "capability": "Spot portfolio value",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "显式 cost basis 与 frozen marks；不消费未定义 `entryNtl` 公式"
+      "notes": "Explicit cost basis and frozen marks; never consumes the undefined `entryNtl` formula"
     },
     {
       "id": "hl.capability.9.08.05",
       "section": "9.8",
-      "capability": "dust eligibility",
+      "capability": "Dust eligibility",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "只判定 balance、lot、mid/notional；执行 gates 不评估"
+      "notes": "Judges balance, lot and mid or notional only; execution gates are not evaluated"
     },
     {
       "id": "hl.capability.9.08.06",
       "section": "9.8",
-      "capability": "dust aggregate allocation projection",
+      "capability": "Dust aggregate allocation projection",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "对显式 aggregate 与已执行 proceeds 精确；实际卖出和最终舍入另属服务端"
+      "notes": "Exact for an explicit aggregate and executed proceeds; the actual sale and final rounding are server-side"
     },
     {
       "id": "hl.capability.9.08.07",
       "section": "9.8",
-      "capability": "HIP-1 deployment units/genesis 约束",
+      "capability": "HIP-1 deployment unit and genesis constraints",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "只判当前文档化约束；legacy/testnet metadata 不是 acceptance oracle"
+      "notes": "Judges currently documented constraints only; legacy and testnet metadata are not an acceptance oracle"
     },
     {
       "id": "hl.capability.9.08.08",
       "section": "9.8",
-      "capability": "spot matching、dust 实际执行与最终 allocation",
+      "capability": "Spot matching, real dust execution and final allocation",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "由 HyperCore 决定"
+      "notes": "Decided by HyperCore"
     },
     {
       "id": "hl.capability.9.09.01",
       "section": "9.9",
-      "capability": "DEX namespace 与 asset ID",
+      "capability": "DEX namespace and asset ID",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "基于 meta/dex index"
+      "notes": "Based on the meta dex index"
     },
     {
       "id": "hl.capability.9.09.02",
       "section": "9.9",
-      "capability": "collateral-denominated notional、PnL、margin",
+      "capability": "Collateral-denominated notional, PnL and margin",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "复用同 DEX perps 内核并显式解析 collateral route；unified/portfolio 聚合不在 M5"
+      "notes": "Reuses the same DEX perp kernel and resolves the collateral route explicitly; unified and portfolio aggregation are outside M5"
     },
     {
       "id": "hl.capability.9.09.03",
       "section": "9.9",
-      "capability": "isolated/cross mode 计算",
+      "capability": "Isolated and cross mode evaluation",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "mode 来自当前 meta；cross eligibility 保持 not-evaluated"
+      "notes": "The mode comes from current meta; cross eligibility stays not-evaluated"
     },
     {
       "id": "hl.capability.9.09.04",
       "section": "9.9",
-      "capability": "fee multiplier/share/growth-mode 组合",
+      "capability": "Fee multiplier, share and growth-mode composition",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "官方 developer 公式精确；tier/eligibility/服务器舍入不在本地选择"
+      "notes": "Exact for the official developer formula; tier, eligibility and server rounding are not chosen locally"
     },
     {
       "id": "hl.capability.9.09.05",
       "section": "9.9",
-      "capability": "deployment auction deterministic math",
+      "capability": "Deterministic deployment auction math",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "不在 M5；Math 无 clock，等待后续独立 spec"
+      "notes": "Outside M5; Math has no clock and awaits its own spec"
     },
     {
       "id": "hl.capability.9.09.06",
       "section": "9.9",
-      "capability": "oracle 合法性、cross eligibility、settlement/slashing",
+      "capability": "Oracle validity, cross eligibility, settlement and slashing",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "只展示服务端状态"
+      "notes": "Surfaces server state only"
     },
     {
       "id": "hl.capability.9.10.01",
@@ -669,124 +669,124 @@
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "给定 balances、oracle、LTV"
+      "notes": "For supplied balances, oracle price and LTV"
     },
     {
       "id": "hl.capability.9.10.02",
       "section": "9.10",
-      "capability": "utilization 与显式利率曲线",
+      "capability": "Utilization and an explicit interest rate curve",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "曲线必须版本化输入"
+      "notes": "The curve must be a versioned input"
     },
     {
       "id": "hl.capability.9.10.03",
       "section": "9.10",
-      "capability": "continuous interest accrual projection",
+      "capability": "Continuous interest accrual projection",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "对显式时间与 rate path assumptions 精确"
+      "notes": "Exact for explicit time and rate-path assumptions"
     },
     {
       "id": "hl.capability.9.10.04",
       "section": "9.10",
-      "capability": "unified equity / portfolio margin ratio",
+      "capability": "Unified equity and portfolio margin ratio",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "只实现官方公开且 fixture 可验证部分"
+      "notes": "Implements only the officially published, fixture-verifiable part"
     },
     {
       "id": "hl.capability.9.10.05",
       "section": "9.10",
-      "capability": "liquidation eligibility 检查",
+      "capability": "Liquidation eligibility check",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "只覆盖官方公开规则，不预测服务器处置顺序"
+      "notes": "Covers officially published rules only and never predicts server disposal order"
     },
     {
       "id": "hl.capability.9.10.06",
       "section": "9.10",
-      "capability": "自动借贷、清算、资产处置顺序",
+      "capability": "Automatic borrowing, liquidation and asset disposal order",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "pre-alpha，Math fail-closed"
+      "notes": "Pre-alpha; Math fails closed"
     },
     {
       "id": "hl.capability.9.11.01",
       "section": "9.11",
-      "capability": "outcome/side encoding 与 asset ID",
+      "capability": "Outcome and side encoding and asset ID",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "官方公式"
+      "notes": "Official formula"
     },
     {
       "id": "hl.capability.9.11.02",
       "section": "9.11",
-      "capability": "显式 payout 下的 payoff/PnL",
+      "capability": "Payoff and PnL under an explicit payout",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "payout rules 必须输入"
+      "notes": "Payout rules must be supplied"
     },
     {
       "id": "hl.capability.9.11.03",
       "section": "9.11",
-      "capability": "市场价格/赔率算术换算",
+      "capability": "Market price and odds arithmetic conversion",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "只做表示转换，不声称得到“真实概率”"
+      "notes": "A change of representation only; never claims to yield a true probability"
     },
     {
       "id": "hl.capability.9.11.04",
       "section": "9.11",
-      "capability": "真实概率推断",
+      "capability": "True probability inference",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "不属于确定性数学层"
+      "notes": "Not part of a deterministic math layer"
     },
     {
       "id": "hl.capability.9.11.05",
       "section": "9.11",
-      "capability": "outcome resolution 和最终 payout",
+      "capability": "Outcome resolution and final payout",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "由协议状态决定"
+      "notes": "Decided by protocol state"
     },
     {
       "id": "hl.capability.9.12.01",
       "section": "9.12",
-      "capability": "给定 reward rate/commission 的 staking projection",
+      "capability": "Staking projection for a given reward rate and commission",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "对显式 rate path 精确；不复刻共识奖励分配"
+      "notes": "Exact for an explicit rate path; does not reproduce consensus reward distribution"
     },
     {
       "id": "hl.capability.9.12.02",
       "section": "9.12",
-      "capability": "validator minimum/self-delegation 规则校验",
+      "capability": "Validator minimum and self-delegation rule validation",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "参数来自当前 protocol rules"
+      "notes": "Parameters come from current protocol rules"
     },
     {
       "id": "hl.capability.9.12.03",
       "section": "9.12",
-      "capability": "vault share、PnL 和 leader fee projection",
+      "capability": "Vault share, PnL and leader fee projection",
       "intendedCoverage": "partial",
       "authority": "local-estimate",
       "maturity": "experimental",
-      "notes": "给定 NAV、flows、fee rules"
+      "notes": "For supplied NAV, flows and fee rules"
     },
     {
       "id": "hl.capability.9.12.04",
@@ -795,229 +795,229 @@
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "给定 start/end/time/price parameters"
+      "notes": "For supplied start, end, time and price parameters"
     },
     {
       "id": "hl.capability.9.12.05",
       "section": "9.12",
-      "capability": "token genesis/allocation/unit constraints",
+      "capability": "Token genesis, allocation and unit constraints",
       "intendedCoverage": "partial",
       "authority": "local-exact",
       "maturity": "experimental",
-      "notes": "只实现公开确定规则"
+      "notes": "Implements published deterministic rules only"
     },
     {
       "id": "hl.capability.9.12.06",
       "section": "9.12",
-      "capability": "实际 reward、vault accounting、auction winner、部署成功",
+      "capability": "Actual rewards, vault accounting, auction winner and deployment success",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "API/HyperCore 负责"
+      "notes": "Owned by the API and HyperCore"
     },
     {
       "id": "hl.capability.9.13.01",
       "section": "9.13",
-      "capability": "fill → position/account transition replay",
+      "capability": "Fill to position and account transition replay",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "事件顺序显式"
+      "notes": "The event order is explicit"
     },
     {
       "id": "hl.capability.9.13.02",
       "section": "9.13",
-      "capability": "PnL/fee/funding/transfer 分项归因",
+      "capability": "Itemized PnL, fee, funding and transfer attribution",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "输出 ledger lines"
+      "notes": "Emits ledger lines"
     },
     {
       "id": "hl.capability.9.13.03",
       "section": "9.13",
-      "capability": "previous + events 与 current snapshot 对账",
+      "capability": "Reconciliation of previous state plus events against the current snapshot",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "输出 residual 和 tolerance"
+      "notes": "Emits residuals and tolerance"
     },
     {
       "id": "hl.capability.9.13.04",
       "section": "9.13",
-      "capability": "公式版本、输入、舍入、assumption trace",
+      "capability": "Formula version, input, rounding and assumption trace",
       "intendedCoverage": "full",
       "authority": "local-exact",
       "maturity": "stable",
-      "notes": "所有公开领域函数统一"
+      "notes": "Uniform across every public domain function"
     },
     {
       "id": "hl.capability.9.13.05",
       "section": "9.13",
-      "capability": "服务端实际状态纠偏",
+      "capability": "Correction against real server state",
       "intendedCoverage": "full",
       "authority": "server-authoritative",
       "maturity": "stable",
-      "notes": "current snapshot 胜过本地 projection"
+      "notes": "The current snapshot wins over a local projection"
     },
     {
       "id": "hl.capability.9.13.06",
       "section": "9.13",
-      "capability": "无事件历史时推断唯一真实原因",
+      "capability": "Inferring one true cause without event history",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
-      "notes": "不提供推断；邻接 reconcile API 因缺失 evidence 返回 indeterminate"
+      "notes": "No inference is offered; the adjacent reconcile API returns indeterminate for missing evidence"
     },
     {
       "id": "hl.capability.9.14.01",
       "section": "9.14",
-      "capability": "Info API、历史查询、分页",
+      "capability": "Info API, historical queries and pagination",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit",
-      "notes": "对返回的 plain data 做计算/对账"
+      "notes": "Computes and reconciles over the plain data that is returned"
     },
     {
       "id": "hl.capability.9.14.02",
       "section": "9.14",
-      "capability": "WebSocket、重连、backfill、dedupe、sequence",
+      "capability": "WebSocket, reconnection, backfill, dedupe and sequencing",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit",
-      "notes": "对原子快照计算"
+      "notes": "Computes over atomic snapshots"
     },
     {
       "id": "hl.capability.9.14.03",
       "section": "9.14",
-      "capability": "下单、改单、撤单、批量动作、TWAP 提交",
+      "capability": "Order placement, modification, cancellation, batch actions and TWAP submission",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit",
-      "notes": "validation、price/size/scale/TWAP 数学"
+      "notes": "Validation and price, size, scale and TWAP math"
     },
     {
       "id": "hl.capability.9.14.04",
       "section": "9.14",
-      "capability": "签名、nonce、API wallet、agent approval",
+      "capability": "Signing, nonce, API wallet and agent approval",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit",
-      "notes": "trailing-zero-free decimal serialization"
+      "notes": "Trailing-zero-free decimal serialization"
     },
     {
       "id": "hl.capability.9.14.05",
       "section": "9.14",
-      "capability": "subaccount、vault account、portfolio account 选择",
+      "capability": "Subaccount, vault account and portfolio account selection",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "Kit + App",
-      "notes": "对明确归属的 snapshot 计算"
+      "notes": "Computes over a snapshot whose ownership is unambiguous"
     },
     {
       "id": "hl.capability.9.14.06",
       "section": "9.14",
-      "capability": "spot/perps/staking 内部转账、提现、bridge",
+      "capability": "Spot, perp and staking internal transfers, withdrawals and bridging",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit",
-      "notes": "amount/fee/balance delta 与 reconciliation"
+      "notes": "Amount, fee and balance deltas plus reconciliation"
     },
     {
       "id": "hl.capability.9.14.07",
       "section": "9.14",
-      "capability": "builder code 提交、referral 资格与奖励领取",
+      "capability": "Builder code submission, referral eligibility and reward claiming",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit",
-      "notes": "给定规则下的 fee projection"
+      "notes": "Fee projection under supplied rules"
     },
     {
       "id": "hl.capability.9.14.08",
       "section": "9.14",
-      "capability": "multisig 和账户权限",
+      "capability": "Multisig and account permissions",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit",
-      "notes": "无"
+      "notes": "None"
     },
     {
       "id": "hl.capability.9.14.09",
       "section": "9.14",
-      "capability": "HIP-1/HIP-3 部署动作、halt/settle、slashing",
+      "capability": "HIP-1 and HIP-3 deployment actions, halt and settle, and slashing",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit + HyperCore",
-      "notes": "单位、约束、auction projection"
+      "notes": "Units, constraints and auction projection"
     },
     {
       "id": "hl.capability.9.14.10",
       "section": "9.14",
-      "capability": "oracle/mark 的验证者共识计算",
+      "capability": "Validator consensus computation of oracle and mark prices",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "HyperCore",
-      "notes": "消费显式 oracle/mark；不自造权威价格"
+      "notes": "Consumes explicit oracle and mark prices; never invents an authoritative price"
     },
     {
       "id": "hl.capability.9.14.11",
       "section": "9.14",
-      "capability": "撮合、队列优先级、self-trade prevention",
+      "capability": "Matching, queue priority and self-trade prevention",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "HyperCore",
-      "notes": "给定静态 L2 的 fill simulation"
+      "notes": "Fill simulation over a static L2 snapshot"
     },
     {
       "id": "hl.capability.9.14.12",
       "section": "9.14",
-      "capability": "真实 liquidation、partial liquidation、backstop、ADL",
+      "capability": "Real liquidation, partial liquidation, backstop and ADL",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "HyperCore",
-      "notes": "threshold projection 与事后 reconciliation"
+      "notes": "Threshold projection and after-the-fact reconciliation"
     },
     {
       "id": "hl.capability.9.14.13",
       "section": "9.14",
-      "capability": "rate limit、builder limits、server preflight",
+      "capability": "Rate limits, builder limits and server preflight",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "nktkas + Kit",
-      "notes": "本地 deterministic guards 只能作为前置条件"
+      "notes": "Local deterministic guards are preconditions only"
     },
     {
       "id": "hl.capability.9.14.14",
       "section": "9.14",
-      "capability": "portfolio graphs、UI history aggregation",
+      "capability": "Portfolio graphs and UI history aggregation",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "Kit + App",
-      "notes": "PnL/fee/funding/reconciliation primitives"
+      "notes": "PnL, fee, funding and reconciliation primitives"
     },
     {
       "id": "hl.capability.9.14.15",
       "section": "9.14",
-      "capability": "用户选择、policy、warnings/blocking、表单、文案、确认、telemetry",
+      "capability": "User choice, policy, warnings and blocking, forms, copy, confirmation and telemetry",
       "intendedCoverage": "none",
       "authority": "n/a",
       "maturity": "n/a",
       "owner": "Kit + App",
-      "notes": "Math 提供 typed facts、constraints、assumptions、trace"
+      "notes": "Math supplies typed facts, constraints, assumptions and trace"
     }
   ]
 }
